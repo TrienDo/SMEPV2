@@ -1,0 +1,28 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 20
+    buildToolsVersion "22.0.1"
+    defaultConfig {
+        applicationId 'uk.lancs.sharc.smep'
+        minSdkVersion 16
+        targetSdkVersion 19
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.txt'
+        }
+    }
+    productFlavors {
+    }
+}
+
+dependencies {
+    compile project(':library')
+    compile 'com.github.satyan:sugar:1.4'
+    compile 'com.android.support:support-v4:20.0.0'
+    compile 'com.google.android.gms:play-services:7.3.0'
+    compile files('libs/dropbox-sync-sdk-android.jar')
+    compile 'com.ogaclejapan.smarttablayout:library:1.2.1@aar'
+}
