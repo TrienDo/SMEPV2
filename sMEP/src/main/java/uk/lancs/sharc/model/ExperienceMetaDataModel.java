@@ -15,8 +15,6 @@ import java.net.URLDecoder;
  * Date: Feb 2015
  **/
 public class ExperienceMetaDataModel extends SugarRecord {
-
-	@Unique
 	private Long id;
 	private String name;
 	String description;

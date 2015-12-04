@@ -9,6 +9,8 @@ import uk.lancs.sharc.service.SharcLibrary;
 import android.net.Uri;
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Ignore;
+import com.orm.dsl.Unique;
 
 /**
  * <p>This class is a model of the response entity</p>
@@ -18,18 +20,20 @@ import com.orm.SugarRecord;
  */
 
 public class ResponseModel extends SugarRecord {
+	//@Unique
 	private Long id;
-	private String type;
-	private String desc;
+	private Long experienceId;
+	private Long userId;
+	private String contentType;
 	private String content;
-	private String noOfLike;
-
-	private String noOfComment;
+	private String description;
 	private String entityType;
-	private String entityID;
-	private String conName;
-	private String conEmail;
+	private Long entityId;
 	private String status;
+	private int size;
+	private String submittedDate;
+
+	@Ignore
 	private Uri fileUri;
 
 	public static final String FOR_POI = "POI";
@@ -42,51 +46,42 @@ public class ResponseModel extends SugarRecord {
 	public static final String STATUS_ACCEPTED = "accepted";
 	public static final String STATUS_FOR_UPLOAD = "uploading";
 
-	
-	public ResponseModel(String mID, String mStatus, String mType, String mDesc, String mContent, String mEntityType, String mEntityID, String mNoOfLike, String mConName, String mConEmail)
+	public ResponseModel(){
+
+	}
+	public ResponseModel(Long id, Long experienceId, Long userId, String contentType, String content, String description,
+						 String entityType, Long entityId, String status, int size, String submittedDate)
 	{
-		this.id = Long.getLong(mID);
-	    this.type = mType;//(Text/Image/Audio/Video)
-	    this.desc = mDesc;
-	    this.content = mContent; // Content (Text vs. path to media)
-	    this.noOfLike = mNoOfLike;
-	    this.entityType = mEntityType;
-	    this.entityID = mEntityID;
-	    this.conName = mConName;
-	    this.conEmail = mConEmail;
-	    this.status = mStatus;
+		this.id = id;
+		this.experienceId = experienceId;
+		this.userId = userId;
+	    this.contentType = contentType;//(Text/Image/Audio/Video)
+		this.content = content; // Content (Path to media)
+	    this.description = description;
+		this.entityType = entityType;
+		this.entityId = entityId;
+	    this.status = status;
+	    this.size = size;
+	    this.submittedDate = submittedDate;
 	}
 
-	public String getEntityID() {
-		return entityID;
+	public Long getEntityId() {
+		return entityId;
 	}
 
-	public void setEntityID(String entityID) {
-		this.entityID = entityID;
+	public void setEntityID(Long entityId) {
+		this.entityId = entityId;
 	}
 
-	public String getDesc() {
-        try {
-            return URLDecoder.decode(desc, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return desc;
+	public String getDescription() {
+        return description;
 	}
 
-	public void setDesc(String desc) {
-		this.desc = desc;
+	public void setDescription(String desc) {
+		this.description = desc;
 	}
 
 	public String getContent() {
-        if(type.equalsIgnoreCase("text"))
-        {
-            try {
-                return URLDecoder.decode(content,"UTF-8");
-            } catch (UnsupportedEncodingException e) {
-                e.printStackTrace();
-            }
-        }
         return content;
 	}
 
@@ -94,20 +89,12 @@ public class ResponseModel extends SugarRecord {
 		this.content = content;
 	}
 
-	public String getNoOfLike() {
-		return noOfLike;
+	public int getNoOfLike() {
+		return 0;
 	}
 
-	public void setNoOfLike(String noOfLike) {
-		this.noOfLike = noOfLike;
-	}
-
-	public String getNoOfComment() {
-		return noOfComment;
-	}
-
-	public void setNoOfComment(String noOfComment) {
-		this.noOfComment = noOfComment;
+	public int getNoOfComment() {
+		return 0;
 	}
 
 	public String getEntityType() {
@@ -118,27 +105,6 @@ public class ResponseModel extends SugarRecord {
 		this.entityType = entityType;
 	}
 
-	public String getConName() {
-        try {
-            return URLDecoder.decode(conName,"UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        return conName;
-	}
-
-	public void setConName(String conName) {
-		this.conName = conName;
-	}
-
-	public String getConEmail() {
-		return conEmail;
-	}
-
-	public void setConEmail(String conEmail) {
-		this.conEmail = conEmail;
-	}
-
 	public String getStatus() {
 		return status;
 	}
@@ -147,20 +113,20 @@ public class ResponseModel extends SugarRecord {
 		this.status = status;
 	}
 
-	public String getResponseId() {
-		return id.toString();
+	public Long getId() {
+		return id;
 	}
 
-	public void setId(String id) {
-		this.id = Long.getLong(id);
+	public void setId(Long id) {
+		this.id = id;
 	}
 
-	public String getType() {
-		return type;
+	public String getContentType() {
+		return contentType;
 	}
 
-	public void setType(String type) {
-		this.type = type;
+	public void setContentType(String type) {
+		this.contentType = type;
 	}
 
 	public Uri getFileUri() {
@@ -177,9 +143,19 @@ public class ResponseModel extends SugarRecord {
 	{
 		String responseHeader = "<div style='background-color:#AAEEFF;'><p style='margin-left:30px;font-weight:bold;'> A response added by ";
 		if(isLocal)
-			responseHeader += "you at " + new Date(this.getId()).toString() + "</p>";
+			responseHeader += "you at " + this.submittedDate + "</p>";
 		else
-			responseHeader += this.getConName() + " at " + new Date(this.getId()).toString() + "</p>";
-		return responseHeader + SharcLibrary.getHTMLCodeForMedia(this.getId().toString(),"Responses", this.getNoOfLike(), this.getNoOfComment(), this.getType(), this.getContent(), this.getDesc(), isLocal) + "</div>";
+			responseHeader += this.userId + " at " + this.submittedDate + "</p>";
+		return responseHeader + SharcLibrary.getHTMLCodeForMedia(this.getId().toString(),"Responses", this.getNoOfLike(), this.getNoOfComment(), this.getContentType(),
+				this.getContent(), this.getDescription(), isLocal) + "</div>";
 	}
+
+	public String getSubmittedDate(){
+		return submittedDate;
+	}
+
+	public Long getUserId(){
+		return  userId;
+	}
+
 }

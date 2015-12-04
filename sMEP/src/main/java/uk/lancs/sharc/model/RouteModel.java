@@ -1,5 +1,7 @@
 package uk.lancs.sharc.model;
 
+import android.location.Location;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
@@ -8,6 +10,7 @@ import java.util.List;
 import com.google.android.gms.maps.model.LatLng;
 import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
+import com.orm.dsl.Unique;
 
 /**
  * <p>This class is a reduced model of the route entity</p>
@@ -18,6 +21,7 @@ import com.orm.dsl.Ignore;
  */
 
 public class RouteModel extends SugarRecord {
+	//@Unique
 	private Long id;
 	private Long designerId;
 	private Long experienceId;
@@ -28,9 +32,6 @@ public class RouteModel extends SugarRecord {
 	private String path;
 	private String poiList;
 	private String eoiList;
-
-	@Ignore
-	private float distance; //the length of the route --> summary info
 
 	public RouteModel(){
 
@@ -67,10 +68,18 @@ public class RouteModel extends SugarRecord {
 		this.path = path;
 	}
 	public float getDistance() {
-		return distance;
+		float distance = 0.0f;
+		float[] results = new float[1];
+		List<LatLng> routePath = this.getPath();
+		for (int i=1; i < routePath.size(); i++)
+		{
+			Location.distanceBetween(routePath.get(i - 1).latitude, routePath.get(i - 1).longitude, routePath.get(i).latitude, routePath.get(i).longitude, results);
+			distance += results[0];
+		}
+		return distance / 1000 ;//km
 	}
 	public void setDistance(float distance) {
-		this.distance = distance;
+		//this.distance = distance;
 	}
 
 	public String getDescription() {
@@ -106,5 +115,46 @@ public class RouteModel extends SugarRecord {
 
 	public void setDirected(boolean directed) {
 		this.directed = directed;
+	}
+
+	@Override
+	public Long getId() {
+		return id;
+	}
+
+	public Long getDesignerId() {
+		return designerId;
+	}
+
+	public void setDesignerId(Long designerId) {
+		this.designerId = designerId;
+	}
+
+	public Long getExperienceId() {
+		return experienceId;
+	}
+
+	public void setExperienceId(Long experienceId) {
+		this.experienceId = experienceId;
+	}
+
+	public boolean isDirected() {
+		return directed;
+	}
+
+	public String getPoiList() {
+		return poiList;
+	}
+
+	public void setPoiList(String poiList) {
+		this.poiList = poiList;
+	}
+
+	public String getEoiList() {
+		return eoiList;
+	}
+
+	public void setEoiList(String eoiList) {
+		this.eoiList = eoiList;
 	}
 }

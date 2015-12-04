@@ -31,7 +31,7 @@ public class BackgroundService extends Service
 {
 	private static final String TAG = "SMEP_SERVICE";
 	private LocationManager mLocationManager = null;
-	private ArrayList<POIModel> allPOIs;
+	private List<POIModel> allPOIs;
     private Hashtable<Integer,Long> shownLocation;
 
 	private class LocationListener implements android.location.LocationListener

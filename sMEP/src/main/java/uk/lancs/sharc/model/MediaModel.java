@@ -1,6 +1,7 @@
 package uk.lancs.sharc.model;
 
 import com.orm.SugarRecord;
+import com.orm.dsl.Unique;
 
 import uk.lancs.sharc.service.SharcLibrary;
 
@@ -24,13 +25,15 @@ public class MediaModel extends SugarRecord {
     private int size;
     private boolean mainMedia;
     private boolean visible;
-    private int order;
+    private int mediaOrder;
 
     public static final String TYPE_TEXT = "text";
     public static final String TYPE_IMAGE = "image";
     public static final String TYPE_AUDIO = "audio";
     public static final String TYPE_VIDEO = "video";
 
+    public MediaModel(){
+    }
     public MediaModel(Long id, Long designerId, Long experienceId, String contentType, String content, String context, String name, String caption,
                       String entityType, Long entityID, int size, boolean mainMedia, boolean visible, int order) {
         this.id = id;
@@ -48,12 +51,12 @@ public class MediaModel extends SugarRecord {
         this.size = size;
         this.mainMedia = mainMedia;
         this.visible = visible;
-        this.order = order;
+        this.mediaOrder = order;
     }
 
     public String getHTMLPresentation()
     {
-        return SharcLibrary.getHTMLCodeForMedia(this.getId().toString(), "media", this.getNoOfLike(), this.getNoOfComment(),this.getContentType(), this.getContent(), this.getName(),false);
+        return SharcLibrary.getHTMLCodeForMedia(this.getId().toString(), "media", this.getNoOfLike(), this.getNoOfComment(),this.getContentType(), this.getContent(), this.getCaption(),false);
     }
     public Long getId() {
         return id;
@@ -128,5 +131,57 @@ public class MediaModel extends SugarRecord {
 
     public void setEntityId(Long entityId) {
         this.entityId = entityId;
+    }
+
+    public Long getDesignerId() {
+        return designerId;
+    }
+
+    public void setDesignerId(Long designerId) {
+        this.designerId = designerId;
+    }
+
+    public Long getExperienceId() {
+        return experienceId;
+    }
+
+    public void setExperienceId(Long experienceId) {
+        this.experienceId = experienceId;
+    }
+
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+    }
+
+    public int getSize() {
+        return size;
+    }
+
+    public void setSize(int size) {
+        this.size = size;
+    }
+
+    public boolean isMainMedia() {
+        return mainMedia;
+    }
+
+    public void setMainMedia(boolean mainMedia) {
+        this.mainMedia = mainMedia;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
+    }
+
+    public int getOrder() {
+        return mediaOrder;
+    }
+
+    public void setOrder(int order) {
+        this.mediaOrder = order;
     }
 }

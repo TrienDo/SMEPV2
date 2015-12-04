@@ -78,7 +78,7 @@ public class SharcLibrary
 	//RESTful APIs
 	public static final String api_path = "http://wraydisplay.lancs.ac.uk/SHARC20/api/v1/";
 	public static final String url_all_experiences = api_path + "experiences";
-	public static final String url_experience_snapshot = api_path + "experiences/";
+	public static final String url_experience_snapshot = api_path + "experienceSnapshot/";
 	public static final String url_mockLocation = api_path + "locations/";
 	public static final String url_emailDesigner = api_path + "emailDesigner";
 	public static final String url_updateConsumerExperience = api_path + "consumerExperience";

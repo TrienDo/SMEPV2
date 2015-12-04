@@ -1,9 +1,6 @@
 package uk.lancs.sharc.model;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
 import uk.lancs.sharc.service.ExperienceDatabaseManager;
@@ -11,6 +8,7 @@ import uk.lancs.sharc.service.ExperienceDatabaseManager;
 import com.google.android.gms.maps.model.LatLng;
 import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
+import com.orm.dsl.Unique;
 
 /**
  * <p>This class is a model of the POI entity</p>
@@ -21,7 +19,7 @@ import com.orm.dsl.Ignore;
  **/
 
 public class POIModel extends SugarRecord{
-	
+	//@Unique
 	private Long id;
 	private Long designerId;
 	private Long experienceId;
@@ -33,21 +31,14 @@ public class POIModel extends SugarRecord{
 	private String typeList;
 	private String eoiList;
 	private String routeList;
-
-	//Info of trigger zone -> extracted from triggerZone string
-	@Ignore
-	private String triggerType;
-	@Ignore
-	private String triggerZoneColour;
-	@Ignore
-	private float triggerZoneRadius;
-	@Ignore
-	private ArrayList<LatLng> triggerZoneCoordinates = new ArrayList<LatLng>();
+	private String thumbnailPath;
+	private int mediaCount;
+	private int responseCount;
 
 	public POIModel(){
 
 	}
-	public POIModel(Long id, String name, String description, String coordinate, String triggerZone, Long designerId, Long experienceId, String typeList, String eoiList, String routeList)
+	public POIModel(Long id, String name, String description, String coordinate, String triggerZone, Long designerId, Long experienceId, String typeList, String eoiList, String routeList, String thumbnailPath, int mediaCount, int responseCount)
 	{
 		this.id = id;
 		this.name = name;
@@ -59,26 +50,9 @@ public class POIModel extends SugarRecord{
 		this.typeList = typeList;
 		this.eoiList = eoiList;
 		this.routeList = routeList;
-
-		//Extract information for trigger zone
-		String[] triggerInfo = triggerZone.split(" ");
-		this.triggerType = triggerInfo[0];
-		this.triggerZoneColour = "#" + triggerInfo[1];
-		if(this.triggerType.equalsIgnoreCase("circle")) //triggerZoneString of circle: type[space]triggerZoneColour[space]triggerZoneRadius[space]lat[space]lng
-		{
-			triggerZoneRadius = Float.parseFloat(triggerInfo[2]);
-			triggerZoneCoordinates.add(new LatLng(Float.parseFloat(triggerInfo[3]), Float.parseFloat(triggerInfo[4])));
-		}
-		else //triggerZoneString of polygon: type[space]triggerZoneColour[space]lat1[space]lng1---latN[space]lngN
-		{
-			triggerZoneRadius = 0;
-			int k = 2;
-			while (k < triggerInfo.length)
-			{
-				triggerZoneCoordinates.add(new LatLng(Float.parseFloat(triggerInfo[k]), Float.parseFloat(triggerInfo[k + 1])));
-				k+=2;
-			}
-		}
+		this.thumbnailPath = thumbnailPath;
+		this.mediaCount = mediaCount;
+		this.responseCount = responseCount;
 	}	 
 	
 	public Long getId(){
@@ -93,6 +67,10 @@ public class POIModel extends SugarRecord{
 	public String getDescription()
 	{
         return description;
+	}
+
+	public String getThumbnailPath(){
+		return thumbnailPath.substring(thumbnailPath.lastIndexOf("/"));
 	}
 
 	public List<LatLng> getPoiViz() {
@@ -113,16 +91,41 @@ public class POIModel extends SugarRecord{
 
 	public String getTriggerZoneColour()
 	{
-		return triggerZoneColour;
+		String[] triggerInfo = triggerZone.split(" ");
+		return "#" + triggerInfo[1];
 	}
 	
 	public ArrayList<LatLng> getTriggerZoneCoordinates()
 	{
+		//Extract information for trigger zone
+		ArrayList<LatLng> triggerZoneCoordinates = new ArrayList<LatLng>();
+		String[] triggerInfo = triggerZone.split(" ");
+		String triggerType = triggerInfo[0];
+		if(triggerType.equalsIgnoreCase("circle")) //triggerZoneString of circle: type[space]triggerZoneColour[space]triggerZoneRadius[space]lat[space]lng
+		{
+			triggerZoneCoordinates.add(new LatLng(Float.parseFloat(triggerInfo[3]), Float.parseFloat(triggerInfo[4])));
+		}
+		else //triggerZoneString of polygon: type[space]triggerZoneColour[space]lat1[space]lng1---latN[space]lngN
+		{
+			int k = 2;
+			while (k < triggerInfo.length)
+			{
+				triggerZoneCoordinates.add(new LatLng(Float.parseFloat(triggerInfo[k]), Float.parseFloat(triggerInfo[k + 1])));
+				k+=2;
+			}
+		}
 		return triggerZoneCoordinates;
 	}
 		
 	public float getTriggerZoneRadius()
 	{
+		String[] triggerInfo = triggerZone.split(" ");
+		String triggerType = triggerInfo[0];
+		float triggerZoneRadius = 0;
+		if(triggerType.equalsIgnoreCase("circle")) //triggerZoneString of circle: type[space]triggerZoneColour[space]triggerZoneRadius[space]lat[space]lng
+		{
+			triggerZoneRadius = Float.parseFloat(triggerInfo[2]);
+		}
 		return triggerZoneRadius;
 	}
 
@@ -131,7 +134,8 @@ public class POIModel extends SugarRecord{
 	}
 
 	public String getTriggerType() {
-		return triggerType;
+		String[] triggerInfo = triggerZone.split(" ");
+		return triggerInfo[0];
 	}
 
 	public LatLng getLocation() {

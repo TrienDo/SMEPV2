@@ -72,36 +72,58 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/controller/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-9.931034">
-              <caret line="1376" column="74" selection-start-line="1376" selection-start-column="74" selection-end-line="1376" selection-end-column="74" />
+            <state vertical-scroll-proportion="-6.0">
+              <caret line="1396" column="46" selection-start-line="1396" selection-start-column="46" selection-end-line="1396" selection-end-column="46" />
               <folding>
                 <element signature="imports" expanded="true" />
-                <element signature="e#5676#5701#0" expanded="true" />
-                <element signature="e#5826#5827#0" expanded="true" />
-                <element signature="e#5864#5865#0" expanded="true" />
-                <element signature="e#6225#6234#0" expanded="true" />
-                <element signature="e#12649#12680#0" expanded="true" />
-                <element signature="e#12718#12749#0" expanded="true" />
-                <element signature="e#14615#14643#0" expanded="true" />
-                <element signature="e#14655#14686#0" expanded="true" />
-                <element signature="e#23021#23063#0" expanded="true" />
-                <element signature="e#24271#24313#0" expanded="true" />
-                <element signature="e#24931#24972#0" expanded="true" />
-                <element signature="e#27802#27842#0" expanded="true" />
-                <element signature="e#35802#35843#0" expanded="true" />
-                <element signature="e#37618#37659#0" expanded="true" />
-                <element signature="e#38641#38686#0" expanded="true" />
-                <element signature="e#38805#38847#0" expanded="true" />
-                <element signature="e#39332#39373#0" expanded="true" />
-                <element signature="e#47289#47304#0" expanded="true" />
-                <element signature="e#51878#52834#0" expanded="true" />
-                <element signature="e#52833#52834#0" expanded="true" />
-                <element signature="e#65954#65977#0" expanded="true" />
-                <element signature="e#80985#81030#0" expanded="true" />
-                <element signature="e#81167#81209#0" expanded="true" />
-                <element signature="e#89232#89272#0" expanded="true" />
-                <element signature="e#91495#91535#0" expanded="true" />
+                <element signature="e#5721#5746#0" expanded="true" />
+                <element signature="e#5871#5872#0" expanded="true" />
+                <element signature="e#5909#5910#0" expanded="true" />
+                <element signature="e#6214#6223#0" expanded="true" />
+                <element signature="e#12638#12669#0" expanded="true" />
+                <element signature="e#12707#12738#0" expanded="true" />
+                <element signature="e#14604#14632#0" expanded="true" />
+                <element signature="e#14676#14707#0" expanded="true" />
+                <element signature="e#23042#23084#0" expanded="true" />
+                <element signature="e#24292#24334#0" expanded="true" />
+                <element signature="e#24952#24993#0" expanded="true" />
+                <element signature="e#27823#27863#0" expanded="true" />
+                <element signature="e#35818#35859#0" expanded="true" />
+                <element signature="e#37632#37673#0" expanded="true" />
+                <element signature="e#38655#38700#0" expanded="true" />
+                <element signature="e#38819#38861#0" expanded="true" />
+                <element signature="e#39346#39387#0" expanded="true" />
+                <element signature="e#47303#47318#0" expanded="true" />
+                <element signature="e#51910#52978#0" expanded="true" />
+                <element signature="e#52977#52978#0" expanded="true" />
+                <element signature="e#57338#58263#0" expanded="true" />
+                <element signature="e#58262#58263#0" expanded="true" />
+                <element signature="e#66148#66171#0" expanded="true" />
+                <element signature="e#81241#81286#0" expanded="true" />
+                <element signature="e#81423#81465#0" expanded="true" />
+                <element signature="e#89488#89528#0" expanded="true" />
+                <element signature="e#91751#91791#0" expanded="true" />
+                <element signature="e#97216#97315#0" expanded="true" />
+                <element signature="e#97314#97315#0" expanded="true" />
+                <element signature="e#99195#101054#0" expanded="true" />
+                <element signature="e#100221#100783#0" expanded="true" />
+                <element signature="e#100508#100736#0" expanded="true" />
+                <element signature="e#100735#100736#0" expanded="true" />
+                <element signature="e#100782#100783#0" expanded="true" />
+                <element signature="e#101053#101054#0" expanded="true" />
+                <element signature="e#101845#101995#0" expanded="true" />
+                <element signature="e#101994#101995#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="EOIModel.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/EOIModel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="19" column="6" selection-start-line="19" selection-start-column="6" selection-end-line="19" selection-end-column="6" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -109,26 +131,26 @@
       <file leaf-file-name="ExperienceDatabaseManager.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/ExperienceDatabaseManager.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-19.0">
-              <caret line="316" column="5" selection-start-line="316" selection-start-column="5" selection-end-line="316" selection-end-column="5" />
+            <state vertical-scroll-proportion="-9.0">
+              <caret line="292" column="25" selection-start-line="292" selection-start-column="25" selection-end-line="292" selection-end-column="25" />
               <folding>
-                <element signature="e#1237#1238#0" expanded="true" />
-                <element signature="e#1285#1286#0" expanded="true" />
-                <element signature="e#11058#11059#0" expanded="true" />
-                <element signature="e#11113#11114#0" expanded="true" />
-                <element signature="e#11159#11160#0" expanded="true" />
-                <element signature="e#11214#11215#0" expanded="true" />
-                <element signature="e#11321#11333#0" expanded="true" />
+                <element signature="imports" expanded="true" />
+                <element signature="e#1171#1172#0" expanded="true" />
+                <element signature="e#1218#1219#0" expanded="true" />
+                <element signature="e#1277#1278#0" expanded="true" />
+                <element signature="e#1325#1326#0" expanded="true" />
+                <element signature="e#12857#12858#0" expanded="true" />
+                <element signature="e#12893#12894#0" expanded="true" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ExperienceDetailsModel.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ExperienceDetailsModel.java">
+      <file leaf-file-name="ExperienceMetaDataModel.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ExperienceMetaDataModel.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="43" column="59" selection-start-line="43" selection-start-column="59" selection-end-line="43" selection-end-column="59" />
+              <caret line="16" column="58" selection-start-line="16" selection-start-column="58" selection-end-line="16" selection-end-column="58" />
               <folding />
             </state>
           </provider>
@@ -138,20 +160,52 @@
         <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/SharcLibrary.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="120" column="87" selection-start-line="120" selection-start-column="87" selection-end-line="120" selection-end-column="87" />
+              <caret line="221" column="25" selection-start-line="221" selection-start-column="25" selection-end-line="221" selection-end-column="25" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="ResponseModel.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ResponseModel.java">
+      <file leaf-file-name="ExperienceDetailsModel.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ExperienceDetailsModel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.23512337">
-              <caret line="50" column="68" selection-start-line="50" selection-start-column="68" selection-end-line="50" selection-end-column="68" />
+            <state vertical-scroll-proportion="0.5616197">
+              <caret line="115" column="12" selection-start-line="115" selection-start-column="12" selection-end-line="115" selection-end-column="12" />
               <folding>
-                <element signature="e#3496#3497#0" expanded="true" />
-                <element signature="e#3529#3530#0" expanded="true" />
+                <element signature="e#17736#17737#0" expanded="true" />
+                <element signature="e#17785#17786#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RouteModel.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/RouteModel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-2.2222223">
+              <caret line="23" column="6" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
+              <folding>
+                <element signature="e#1340#1348#0" expanded="true" />
+                <element signature="e#2745#2746#0" expanded="true" />
+                <element signature="e#2761#2762#0" expanded="true" />
+                <element signature="e#2793#2794#0" expanded="true" />
+                <element signature="e#2817#2818#0" expanded="true" />
+                <element signature="e#2864#2865#0" expanded="true" />
+                <element signature="e#2899#2900#0" expanded="true" />
+                <element signature="e#2933#2934#0" expanded="true" />
+                <element signature="e#2959#2960#0" expanded="true" />
+                <element signature="e#3010#3011#0" expanded="true" />
+                <element signature="e#3049#3050#0" expanded="true" />
+                <element signature="e#3081#3082#0" expanded="true" />
+                <element signature="e#3103#3104#0" expanded="true" />
+                <element signature="e#3134#3135#0" expanded="true" />
+                <element signature="e#3155#3156#0" expanded="true" />
+                <element signature="e#3198#3199#0" expanded="true" />
+                <element signature="e#3227#3228#0" expanded="true" />
+                <element signature="e#3258#3259#0" expanded="true" />
+                <element signature="e#3279#3280#0" expanded="true" />
+                <element signature="e#3322#3323#0" expanded="true" />
+                <element signature="e#3351#3352#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -160,22 +214,20 @@
       <file leaf-file-name="POIModel.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/POIModel.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="53.814816">
-              <caret line="95" column="5" selection-start-line="95" selection-start-column="5" selection-end-line="95" selection-end-column="5" />
+            <state vertical-scroll-proportion="-8.185185">
+              <caret line="21" column="6" selection-start-line="21" selection-start-column="6" selection-end-line="21" selection-end-column="6" />
               <folding>
-                <element signature="e#1103#1111#0" expanded="true" />
-                <element signature="e#2476#2477#0" expanded="true" />
-                <element signature="e#2492#2493#0" expanded="true" />
-                <element signature="e#2522#2523#0" expanded="true" />
-                <element signature="e#2546#2547#0" expanded="true" />
-                <element signature="e#2583#2584#0" expanded="true" />
-                <element signature="e#2614#2615#0" expanded="true" />
-                <element signature="e#2689#2697#0" expanded="true" />
-                <element signature="e#3203#3204#0" expanded="true" />
-                <element signature="e#3239#3240#0" expanded="true" />
-                <element signature="e#4060#4068#0" expanded="true" />
-                <element signature="e#6374#6382#0" expanded="true" />
-                <element signature="e#6766#6774#0" expanded="true" />
+                <element signature="e#1554#1555#0" expanded="true" />
+                <element signature="e#1570#1571#0" expanded="true" />
+                <element signature="e#1600#1601#0" expanded="true" />
+                <element signature="e#1624#1625#0" expanded="true" />
+                <element signature="e#1661#1662#0" expanded="true" />
+                <element signature="e#1692#1693#0" expanded="true" />
+                <element signature="e#1872#1880#0" expanded="true" />
+                <element signature="e#2539#2547#0" expanded="true" />
+                <element signature="e#4447#4455#0" expanded="true" />
+                <element signature="e#6761#6769#0" expanded="true" />
+                <element signature="e#7153#7161#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -185,22 +237,61 @@
         <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/MediaModel.java">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0">
-              <caret line="34" column="112" selection-start-line="33" selection-start-column="11" selection-end-line="34" selection-end-column="112" />
+              <caret line="59" column="5" selection-start-line="59" selection-start-column="5" selection-end-line="59" selection-end-column="5" />
               <folding>
-                <element signature="e#1901#1902#0" expanded="true" />
-                <element signature="e#1926#1927#0" expanded="true" />
-                <element signature="e#1960#1961#0" expanded="true" />
-                <element signature="e#1988#1989#0" expanded="true" />
-                <element signature="e#2086#2087#0" expanded="true" />
-                <element signature="e#2118#2119#0" expanded="true" />
-                <element signature="e#2388#2389#0" expanded="true" />
-                <element signature="e#2432#2433#0" expanded="true" />
-                <element signature="e#2690#2691#0" expanded="true" />
-                <element signature="e#2728#2729#0" expanded="true" />
-                <element signature="e#2760#2761#0" expanded="true" />
-                <element signature="e#2784#2785#0" expanded="true" />
-                <element signature="e#3072#3073#0" expanded="true" />
-                <element signature="e#3106#3107#0" expanded="true" />
+                <element signature="e#1972#1973#0" expanded="true" />
+                <element signature="e#1997#1998#0" expanded="true" />
+                <element signature="e#2031#2032#0" expanded="true" />
+                <element signature="e#2059#2060#0" expanded="true" />
+                <element signature="e#2157#2158#0" expanded="true" />
+                <element signature="e#2189#2190#0" expanded="true" />
+                <element signature="e#2459#2460#0" expanded="true" />
+                <element signature="e#2503#2504#0" expanded="true" />
+                <element signature="e#2761#2762#0" expanded="true" />
+                <element signature="e#2799#2800#0" expanded="true" />
+                <element signature="e#2831#2832#0" expanded="true" />
+                <element signature="e#2855#2856#0" expanded="true" />
+                <element signature="e#3143#3144#0" expanded="true" />
+                <element signature="e#3177#3178#0" expanded="true" />
+                <element signature="e#3361#3362#0" expanded="true" />
+                <element signature="e#3394#3395#0" expanded="true" />
+                <element signature="e#3444#3445#0" expanded="true" />
+                <element signature="e#3488#3489#0" expanded="true" />
+                <element signature="e#3525#3526#0" expanded="true" />
+                <element signature="e#3560#3561#0" expanded="true" />
+                <element signature="e#3614#3615#0" expanded="true" />
+                <element signature="e#3662#3663#0" expanded="true" />
+                <element signature="e#3716#3717#0" expanded="true" />
+                <element signature="e#3762#3763#0" expanded="true" />
+                <element signature="e#3790#3791#0" expanded="true" />
+                <element signature="e#3817#3818#0" expanded="true" />
+                <element signature="e#3854#3855#0" expanded="true" />
+                <element signature="e#3886#3887#0" expanded="true" />
+                <element signature="e#3922#3923#0" expanded="true" />
+                <element signature="e#3954#3955#0" expanded="true" />
+                <element signature="e#4005#4006#0" expanded="true" />
+                <element signature="e#4047#4048#0" expanded="true" />
+                <element signature="e#4081#4082#0" expanded="true" />
+                <element signature="e#4111#4112#0" expanded="true" />
+                <element signature="e#4158#4159#0" expanded="true" />
+                <element signature="e#4196#4197#0" expanded="true" />
+                <element signature="e#4225#4226#0" expanded="true" />
+                <element signature="e#4258#4259#0" expanded="true" />
+                <element signature="e#4297#4298#0" expanded="true" />
+                <element signature="e#4336#4337#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="ResponseModel.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ResponseModel.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="22" column="6" selection-start-line="22" selection-start-column="6" selection-end-line="22" selection-end-column="6" />
+              <folding>
+                <element signature="e#3746#3747#0" expanded="true" />
+                <element signature="e#3767#3768#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -2494,23 +2585,24 @@
         <option value="$PROJECT_DIR$/sMEP/src/main/res/values/styles.xml" />
         <option value="$PROJECT_DIR$/sMEP/src/main/res/layout/response_list_item.xml" />
         <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/ErrorReporter.java" />
-        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/BackgroundService.java" />
         <option value="$PROJECT_DIR$/sMEP/src/main/res/values/strings.xml" />
         <option value="$PROJECT_DIR$/sMEP/build.gradle" />
         <option value="$PROJECT_DIR$/sMEP/src/main/AndroidManifest.xml" />
         <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/DBExperienceMetadata.java" />
-        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/controller/MainActivity.java" />
-        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ExperienceMetaDataModel.java" />
         <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/DBExperienceDetails.java" />
-        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/POIModel.java" />
-        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/EOIModel.java" />
-        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/RouteModel.java" />
-        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ExperienceDetailsModel.java" />
         <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/SMEPAppVariable.java" />
-        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/MediaModel.java" />
+        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/AndroidWebViewInterface.java" />
+        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/BackgroundService.java" />
         <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/SharcLibrary.java" />
-        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/ExperienceDatabaseManager.java" />
+        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/EOIModel.java" />
+        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/POIModel.java" />
+        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/RouteModel.java" />
         <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ResponseModel.java" />
+        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/MediaModel.java" />
+        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ExperienceMetaDataModel.java" />
+        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/controller/MainActivity.java" />
+        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/ExperienceDatabaseManager.java" />
+        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ExperienceDetailsModel.java" />
       </list>
     </option>
   </component>
@@ -2936,7 +3028,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties" />
     <property name="FullScreen" value="false" />
     <property name="restartRequiresConfirmation" value="true" />
-    <property name="settings.editor.selected.configurable" value="Console Folding" />
+    <property name="settings.editor.selected.configurable" value="project.propVCSSupport.Mappings" />
     <property name="settings.editor.splitter.proportion" value="0.2" />
     <property name="ExportApk.ApkPath" value="C:\Users\SHARC\workspace\AndroidStudio\SMEP\sMEP" />
     <property name="ExportApk.Flavors" value="" />
@@ -3219,23 +3311,23 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32941177" sideWeight="0.49573562" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27058825" sideWeight="0.48720682" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.44313726" sideWeight="0.7990405" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.43235293" sideWeight="0.5890192" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.41568628" sideWeight="0.8507463" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.09509804" sideWeight="0.48507464" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3382353" sideWeight="0.8198294" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.21078432" sideWeight="0.52132195" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.27058825" sideWeight="0.5127932" order="7" side_tool="true" content_ui="tabs" />
-      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17697228" sideWeight="0.19489247" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3529412" sideWeight="0.37793177" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.41568628" sideWeight="0.14925373" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Build Variants" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19509594" sideWeight="0.19630873" order="2" side_tool="true" content_ui="tabs" />
+      <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3529412" sideWeight="0.37473348" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.08795309" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17697228" sideWeight="0.80510753" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.19509594" sideWeight="0.80369127" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.13725491" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
@@ -3263,56 +3355,22 @@
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/controller/MainActivity.java</url>
-          <line>1233</line>
-          <properties />
-          <option name="timeStamp" value="6" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/controller/MainActivity.java</url>
-          <line>1353</line>
-          <properties />
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/controller/MainActivity.java</url>
-          <line>1265</line>
+          <line>1266</line>
           <properties />
           <option name="timeStamp" value="12" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/ExperienceDatabaseManager.java</url>
-          <line>64</line>
+          <line>289</line>
           <properties />
-          <option name="timeStamp" value="13" />
+          <option name="timeStamp" value="26" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="14" />
+      <option name="time" value="27" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/res/values/strings.xml">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ExperienceDetailsModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="640" column="9" selection-start-line="637" selection-start-column="13" selection-end-line="640" selection-end-column="9" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/local.properties">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/gradle/wrapper/gradle-wrapper.properties">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -3441,20 +3499,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/AndroidWebViewInterface.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="11" column="13" selection-start-line="11" selection-start-column="13" selection-end-line="11" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/BackgroundService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="4.4229345">
-          <caret line="216" column="5" selection-start-line="216" selection-start-column="5" selection-end-line="216" selection-end-column="5" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sMEP/src/main/res/layout/sliding_menu.xml">
       <provider selected="true" editor-type-id="android-designer">
         <state />
@@ -3568,57 +3612,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ExperienceMetaDataModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="161" column="0" selection-start-line="161" selection-start-column="0" selection-end-line="161" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/DBExperienceMetadata.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="31.37037">
-          <caret line="26" column="91" selection-start-line="26" selection-start-column="91" selection-end-line="26" selection-end-column="91" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/controller/MainActivity.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-9.931034">
-          <caret line="1376" column="74" selection-start-line="1376" selection-start-column="74" selection-end-line="1376" selection-end-column="74" />
-          <folding>
-            <element signature="imports" expanded="true" />
-            <element signature="e#5676#5701#0" expanded="true" />
-            <element signature="e#5826#5827#0" expanded="true" />
-            <element signature="e#5864#5865#0" expanded="true" />
-            <element signature="e#6225#6234#0" expanded="true" />
-            <element signature="e#12649#12680#0" expanded="true" />
-            <element signature="e#12718#12749#0" expanded="true" />
-            <element signature="e#14615#14643#0" expanded="true" />
-            <element signature="e#14655#14686#0" expanded="true" />
-            <element signature="e#23021#23063#0" expanded="true" />
-            <element signature="e#24271#24313#0" expanded="true" />
-            <element signature="e#24931#24972#0" expanded="true" />
-            <element signature="e#27802#27842#0" expanded="true" />
-            <element signature="e#35802#35843#0" expanded="true" />
-            <element signature="e#37618#37659#0" expanded="true" />
-            <element signature="e#38641#38686#0" expanded="true" />
-            <element signature="e#38805#38847#0" expanded="true" />
-            <element signature="e#39332#39373#0" expanded="true" />
-            <element signature="e#47289#47304#0" expanded="true" />
-            <element signature="e#51878#52834#0" expanded="true" />
-            <element signature="e#52833#52834#0" expanded="true" />
-            <element signature="e#65954#65977#0" expanded="true" />
-            <element signature="e#80985#81030#0" expanded="true" />
-            <element signature="e#81167#81209#0" expanded="true" />
-            <element signature="e#89232#89272#0" expanded="true" />
-            <element signature="e#91495#91535#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-20/java/util/AbstractList.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3324937">
@@ -3632,8 +3625,8 @@
         <state vertical-scroll-proportion="0.3324937">
           <caret line="80" column="0" selection-start-line="80" selection-start-column="0" selection-end-line="80" selection-end-column="0" />
           <folding>
-            <element signature="e#3143#3144#0" expanded="true" />
-            <element signature="e#3184#3185#0" expanded="true" />
+            <element signature="e#3143#3144#0" expanded="false" />
+            <element signature="e#3184#3185#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -3659,35 +3652,234 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/EOIModel.java">
+    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/BackgroundService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-7.5555553">
-          <caret line="18" column="4" selection-start-line="18" selection-start-column="4" selection-end-line="20" selection-end-column="30" />
+        <state vertical-scroll-proportion="0.3888889">
+          <caret line="33" column="12" selection-start-line="33" selection-start-column="12" selection-end-line="33" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/AndroidWebViewInterface.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.59814817">
+          <caret line="23" column="0" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-20/org/json/JSONObject.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="518" column="0" selection-start-line="518" selection-start-column="0" selection-end-line="518" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/AppData/Local/Android/sdk/sources/android-20/android/os/AsyncTask.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.65384614">
+          <caret line="48" column="49" selection-start-line="48" selection-start-column="49" selection-end-line="48" selection-end-column="49" />
           <folding>
-            <element signature="e#1407#1408#0" expanded="true" />
-            <element signature="e#1431#1432#0" expanded="true" />
-            <element signature="e#1682#1683#0" expanded="true" />
-            <element signature="e#1709#1710#0" expanded="true" />
-            <element signature="e#1829#1830#0" expanded="true" />
-            <element signature="e#1845#1846#0" expanded="true" />
-            <element signature="e#1876#1877#0" expanded="true" />
-            <element signature="e#1895#1896#0" expanded="true" />
+            <element signature="e#10662#10899#0" expanded="false" />
+            <element signature="e#10898#10899#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/MediaListAdapter.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.33516484">
+          <caret line="92" column="19" selection-start-line="92" selection-start-column="15" selection-end-line="92" selection-end-column="19" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/POIModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-8.185185">
+          <caret line="21" column="6" selection-start-line="21" selection-start-column="6" selection-end-line="21" selection-end-column="6" />
+          <folding>
+            <element signature="e#1554#1555#0" expanded="true" />
+            <element signature="e#1570#1571#0" expanded="true" />
+            <element signature="e#1600#1601#0" expanded="true" />
+            <element signature="e#1624#1625#0" expanded="true" />
+            <element signature="e#1661#1662#0" expanded="true" />
+            <element signature="e#1692#1693#0" expanded="true" />
+            <element signature="e#1872#1880#0" expanded="true" />
+            <element signature="e#2539#2547#0" expanded="true" />
+            <element signature="e#4447#4455#0" expanded="true" />
+            <element signature="e#6761#6769#0" expanded="true" />
+            <element signature="e#7153#7161#0" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/RouteModel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-1.2592592">
-          <caret line="27" column="24" selection-start-line="27" selection-start-column="24" selection-end-line="27" selection-end-column="24" />
+        <state vertical-scroll-proportion="-2.2222223">
+          <caret line="23" column="6" selection-start-line="23" selection-start-column="6" selection-end-line="23" selection-end-column="6" />
           <folding>
-            <element signature="e#1345#1353#0" expanded="true" />
-            <element signature="e#1781#1782#0" expanded="true" />
-            <element signature="e#1812#1813#0" expanded="true" />
-            <element signature="e#1922#1923#0" expanded="true" />
-            <element signature="e#1959#1960#0" expanded="true" />
-            <element signature="e#2037#2038#0" expanded="true" />
-            <element signature="e#2055#2056#0" expanded="true" />
+            <element signature="e#1340#1348#0" expanded="true" />
+            <element signature="e#2745#2746#0" expanded="true" />
+            <element signature="e#2761#2762#0" expanded="true" />
+            <element signature="e#2793#2794#0" expanded="true" />
+            <element signature="e#2817#2818#0" expanded="true" />
+            <element signature="e#2864#2865#0" expanded="true" />
+            <element signature="e#2899#2900#0" expanded="true" />
+            <element signature="e#2933#2934#0" expanded="true" />
+            <element signature="e#2959#2960#0" expanded="true" />
+            <element signature="e#3010#3011#0" expanded="true" />
+            <element signature="e#3049#3050#0" expanded="true" />
+            <element signature="e#3081#3082#0" expanded="true" />
+            <element signature="e#3103#3104#0" expanded="true" />
+            <element signature="e#3134#3135#0" expanded="true" />
+            <element signature="e#3155#3156#0" expanded="true" />
+            <element signature="e#3198#3199#0" expanded="true" />
+            <element signature="e#3227#3228#0" expanded="true" />
+            <element signature="e#3258#3259#0" expanded="true" />
+            <element signature="e#3279#3280#0" expanded="true" />
+            <element signature="e#3322#3323#0" expanded="true" />
+            <element signature="e#3351#3352#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/EOIModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="19" column="6" selection-start-line="19" selection-start-column="6" selection-end-line="19" selection-end-column="6" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ResponseModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="22" column="6" selection-start-line="22" selection-start-column="6" selection-end-line="22" selection-end-column="6" />
+          <folding>
+            <element signature="e#3746#3747#0" expanded="true" />
+            <element signature="e#3767#3768#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/MediaModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="59" column="5" selection-start-line="59" selection-start-column="5" selection-end-line="59" selection-end-column="5" />
+          <folding>
+            <element signature="e#1972#1973#0" expanded="true" />
+            <element signature="e#1997#1998#0" expanded="true" />
+            <element signature="e#2031#2032#0" expanded="true" />
+            <element signature="e#2059#2060#0" expanded="true" />
+            <element signature="e#2157#2158#0" expanded="true" />
+            <element signature="e#2189#2190#0" expanded="true" />
+            <element signature="e#2459#2460#0" expanded="true" />
+            <element signature="e#2503#2504#0" expanded="true" />
+            <element signature="e#2761#2762#0" expanded="true" />
+            <element signature="e#2799#2800#0" expanded="true" />
+            <element signature="e#2831#2832#0" expanded="true" />
+            <element signature="e#2855#2856#0" expanded="true" />
+            <element signature="e#3143#3144#0" expanded="true" />
+            <element signature="e#3177#3178#0" expanded="true" />
+            <element signature="e#3361#3362#0" expanded="true" />
+            <element signature="e#3394#3395#0" expanded="true" />
+            <element signature="e#3444#3445#0" expanded="true" />
+            <element signature="e#3488#3489#0" expanded="true" />
+            <element signature="e#3525#3526#0" expanded="true" />
+            <element signature="e#3560#3561#0" expanded="true" />
+            <element signature="e#3614#3615#0" expanded="true" />
+            <element signature="e#3662#3663#0" expanded="true" />
+            <element signature="e#3716#3717#0" expanded="true" />
+            <element signature="e#3762#3763#0" expanded="true" />
+            <element signature="e#3790#3791#0" expanded="true" />
+            <element signature="e#3817#3818#0" expanded="true" />
+            <element signature="e#3854#3855#0" expanded="true" />
+            <element signature="e#3886#3887#0" expanded="true" />
+            <element signature="e#3922#3923#0" expanded="true" />
+            <element signature="e#3954#3955#0" expanded="true" />
+            <element signature="e#4005#4006#0" expanded="true" />
+            <element signature="e#4047#4048#0" expanded="true" />
+            <element signature="e#4081#4082#0" expanded="true" />
+            <element signature="e#4111#4112#0" expanded="true" />
+            <element signature="e#4158#4159#0" expanded="true" />
+            <element signature="e#4196#4197#0" expanded="true" />
+            <element signature="e#4225#4226#0" expanded="true" />
+            <element signature="e#4258#4259#0" expanded="true" />
+            <element signature="e#4297#4298#0" expanded="true" />
+            <element signature="e#4336#4337#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/controller/MainActivity.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-6.0">
+          <caret line="1396" column="46" selection-start-line="1396" selection-start-column="46" selection-end-line="1396" selection-end-column="46" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#5721#5746#0" expanded="true" />
+            <element signature="e#5871#5872#0" expanded="true" />
+            <element signature="e#5909#5910#0" expanded="true" />
+            <element signature="e#6214#6223#0" expanded="true" />
+            <element signature="e#12638#12669#0" expanded="true" />
+            <element signature="e#12707#12738#0" expanded="true" />
+            <element signature="e#14604#14632#0" expanded="true" />
+            <element signature="e#14676#14707#0" expanded="true" />
+            <element signature="e#23042#23084#0" expanded="true" />
+            <element signature="e#24292#24334#0" expanded="true" />
+            <element signature="e#24952#24993#0" expanded="true" />
+            <element signature="e#27823#27863#0" expanded="true" />
+            <element signature="e#35818#35859#0" expanded="true" />
+            <element signature="e#37632#37673#0" expanded="true" />
+            <element signature="e#38655#38700#0" expanded="true" />
+            <element signature="e#38819#38861#0" expanded="true" />
+            <element signature="e#39346#39387#0" expanded="true" />
+            <element signature="e#47303#47318#0" expanded="true" />
+            <element signature="e#51910#52978#0" expanded="true" />
+            <element signature="e#52977#52978#0" expanded="true" />
+            <element signature="e#57338#58263#0" expanded="true" />
+            <element signature="e#58262#58263#0" expanded="true" />
+            <element signature="e#66148#66171#0" expanded="true" />
+            <element signature="e#81241#81286#0" expanded="true" />
+            <element signature="e#81423#81465#0" expanded="true" />
+            <element signature="e#89488#89528#0" expanded="true" />
+            <element signature="e#91751#91791#0" expanded="true" />
+            <element signature="e#97216#97315#0" expanded="true" />
+            <element signature="e#97314#97315#0" expanded="true" />
+            <element signature="e#99195#101054#0" expanded="true" />
+            <element signature="e#100221#100783#0" expanded="true" />
+            <element signature="e#100508#100736#0" expanded="true" />
+            <element signature="e#100735#100736#0" expanded="true" />
+            <element signature="e#100782#100783#0" expanded="true" />
+            <element signature="e#101053#101054#0" expanded="true" />
+            <element signature="e#101845#101995#0" expanded="true" />
+            <element signature="e#101994#101995#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ExperienceMetaDataModel.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="16" column="58" selection-start-line="16" selection-start-column="58" selection-end-line="16" selection-end-column="58" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/ExperienceDatabaseManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-9.0">
+          <caret line="292" column="25" selection-start-line="292" selection-start-column="25" selection-end-line="292" selection-end-column="25" />
+          <folding>
+            <element signature="imports" expanded="true" />
+            <element signature="e#1171#1172#0" expanded="true" />
+            <element signature="e#1218#1219#0" expanded="true" />
+            <element signature="e#1277#1278#0" expanded="true" />
+            <element signature="e#1325#1326#0" expanded="true" />
+            <element signature="e#12857#12858#0" expanded="true" />
+            <element signature="e#12893#12894#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -3695,87 +3887,18 @@
     <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/SharcLibrary.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
-          <caret line="120" column="87" selection-start-line="120" selection-start-column="87" selection-end-line="120" selection-end-column="87" />
+          <caret line="221" column="25" selection-start-line="221" selection-start-column="25" selection-end-line="221" selection-end-column="25" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/MediaModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="34" column="112" selection-start-line="33" selection-start-column="11" selection-end-line="34" selection-end-column="112" />
-          <folding>
-            <element signature="e#1901#1902#0" expanded="true" />
-            <element signature="e#1926#1927#0" expanded="true" />
-            <element signature="e#1960#1961#0" expanded="true" />
-            <element signature="e#1988#1989#0" expanded="true" />
-            <element signature="e#2086#2087#0" expanded="true" />
-            <element signature="e#2118#2119#0" expanded="true" />
-            <element signature="e#2388#2389#0" expanded="true" />
-            <element signature="e#2432#2433#0" expanded="true" />
-            <element signature="e#2690#2691#0" expanded="true" />
-            <element signature="e#2728#2729#0" expanded="true" />
-            <element signature="e#2760#2761#0" expanded="true" />
-            <element signature="e#2784#2785#0" expanded="true" />
-            <element signature="e#3072#3073#0" expanded="true" />
-            <element signature="e#3106#3107#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ExperienceDetailsModel.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0">
-          <caret line="43" column="59" selection-start-line="43" selection-start-column="59" selection-end-line="43" selection-end-column="59" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/ExperienceDatabaseManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-19.0">
-          <caret line="316" column="5" selection-start-line="316" selection-start-column="5" selection-end-line="316" selection-end-column="5" />
+        <state vertical-scroll-proportion="0.5616197">
+          <caret line="115" column="12" selection-start-line="115" selection-start-column="12" selection-end-line="115" selection-end-column="12" />
           <folding>
-            <element signature="e#1237#1238#0" expanded="true" />
-            <element signature="e#1285#1286#0" expanded="true" />
-            <element signature="e#11058#11059#0" expanded="true" />
-            <element signature="e#11113#11114#0" expanded="true" />
-            <element signature="e#11159#11160#0" expanded="true" />
-            <element signature="e#11214#11215#0" expanded="true" />
-            <element signature="e#11321#11333#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/POIModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="53.814816">
-          <caret line="95" column="5" selection-start-line="95" selection-start-column="5" selection-end-line="95" selection-end-column="5" />
-          <folding>
-            <element signature="e#1103#1111#0" expanded="true" />
-            <element signature="e#2476#2477#0" expanded="true" />
-            <element signature="e#2492#2493#0" expanded="true" />
-            <element signature="e#2522#2523#0" expanded="true" />
-            <element signature="e#2546#2547#0" expanded="true" />
-            <element signature="e#2583#2584#0" expanded="true" />
-            <element signature="e#2614#2615#0" expanded="true" />
-            <element signature="e#2689#2697#0" expanded="true" />
-            <element signature="e#3203#3204#0" expanded="true" />
-            <element signature="e#3239#3240#0" expanded="true" />
-            <element signature="e#4060#4068#0" expanded="true" />
-            <element signature="e#6374#6382#0" expanded="true" />
-            <element signature="e#6766#6774#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ResponseModel.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.23512337">
-          <caret line="50" column="68" selection-start-line="50" selection-start-column="68" selection-end-line="50" selection-end-column="68" />
-          <folding>
-            <element signature="e#3496#3497#0" expanded="true" />
-            <element signature="e#3529#3530#0" expanded="true" />
+            <element signature="e#17736#17737#0" expanded="true" />
+            <element signature="e#17785#17786#0" expanded="true" />
           </folding>
         </state>
       </provider>

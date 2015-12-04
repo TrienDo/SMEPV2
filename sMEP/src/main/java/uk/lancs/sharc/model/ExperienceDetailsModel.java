@@ -36,7 +36,6 @@ public class ExperienceDetailsModel {
 	private List<EOIModel> allEOIs;				//All EOIs of the experience
 	private List<RouteModel> allRoutes;			//All Routes of the experience
 	private List<ResponseModel> myResponses;		//Responses submitted by the current user to the experience - not all responses
-	private int experienceId;		 					//Id of the current experience
 	private ExperienceMetaDataModel metaData;			//Metadata about the experience
 	private List<Marker> allPoiMarkers;			//A PoI Marker shows thumbnail of the first image of a POI
 	private List<Object> allTriggerZoneVizs;		//Visualization for a geo-fence of each PoIs (can be either circle or polygon)
@@ -47,11 +46,11 @@ public class ExperienceDetailsModel {
 	private ExperienceDatabaseManager experienceDatabaseManager;
 
 	/**
-	 * @param experienceId: id of the current experience, can use SugarORM later
+	 * @param experienceDatabaseManager: help interact with database
 	 * @param isFromOnline: true = loading the experience from server -> delete existing data to have the fresh data
 	 */
 
-	public ExperienceDetailsModel(int experienceId, ExperienceDatabaseManager experienceDatabaseManager, boolean isFromOnline)
+	public ExperienceDetailsModel(ExperienceDatabaseManager experienceDatabaseManager, boolean isFromOnline)
 	{
 		allPOIs = new ArrayList<POIModel>();
 		allEOIs = new ArrayList<EOIModel>();
@@ -65,7 +64,6 @@ public class ExperienceDetailsModel {
         //experienceDatabaseManager = mExperienceDetailsDB;
 		//if (isFromOnline)
 		//	experienceDatabaseManager.deleteAllDataInTables();
-		this.experienceId = experienceId;
 		this.experienceDatabaseManager = experienceDatabaseManager;
 	}
 
@@ -111,13 +109,13 @@ public class ExperienceDetailsModel {
 					.visible(true)
 			)).setPoints(curPOI.getPoiViz());
 		}
-		String firstImage = experienceDatabaseManager.getRepresentativePhoto(curPOI.getID(), curPOI.getMediaOrder());
+		String firstImage = curPOI.getThumbnailPath();
 
-		if(firstImage.equalsIgnoreCase(""))
+		if (firstImage.equalsIgnoreCase(""))
 			tmpMarker.setIcon(BitmapDescriptorFactory.fromResource(R.raw.poi));
 		else
 		{
-			Bitmap bitmap = SharcLibrary.getThumbnail(firstImage + ".jpg");
+			Bitmap bitmap = SharcLibrary.getThumbnail(firstImage);
 			if(bitmap != null)	//First available image		      	
 				tmpMarker.setIcon(BitmapDescriptorFactory.fromBitmap(bitmap));
 			else
@@ -160,7 +158,7 @@ public class ExperienceDetailsModel {
 		metaData.setEoiCount(allEOIs.size());
 		for (int i = 0; i < allEOIs.size(); i++)
 		{
-			List<MediaModel> mediaList = experienceDatabaseManager.getMediaForEntity(allEOIs.get(i).getId());
+			List<MediaModel> mediaList = experienceDatabaseManager.getMediaForEntity(allEOIs.get(i).getId(), "EOI");
 			String content = allEOIs.get(i).getHTMLPresentation(mediaList);
 			allEOIs.get(i).setMediaHTMLCode(content);
 		}
@@ -176,10 +174,10 @@ public class ExperienceDetailsModel {
 			routeInfo += "<div> - Route name: " + allRoutes.get(i).getName() + " (" +   String.format("%.2f", allRoutes.get(i).getDistance()) + " km). Description: " + allRoutes.get(i).getDescription() +"</div>";
 			mMap.addPolyline((new PolylineOptions()
                 .width(5)
-                .color(SharcLibrary.hex2rgb("#" + allRoutes.get(i).getColour()))
+                .color(SharcLibrary.hex2rgb(allRoutes.get(i).getColour()))
                     .visible(true)
                 )).setPoints(allRoutes.get(i).getPath());
-            if(allRoutes.get(i).getDirected().equalsIgnoreCase("true"))
+            if(allRoutes.get(i).getDirected())
             {
                 startRoute = mMap.addMarker(new MarkerOptions()
                                 .anchor(0.5f, 1.0f)
@@ -214,7 +212,7 @@ public class ExperienceDetailsModel {
     	//All routes
     	for(int k = 0; k < allRoutes.size(); k++)
     	{
-    		ArrayList<LatLng> path = allRoutes.get(k).getPath();
+    		List<LatLng> path = allRoutes.get(k).getPath();
     		for (i = 0; i < path.size(); i++)
         		boundsBuilder.include(path.get(i));
     		if(i>0)
@@ -234,7 +232,7 @@ public class ExperienceDetailsModel {
      * @param currentLocation: help identify whether the user is physically at the selected/pushed POI
      * @return a list of html items. An item can be a media item, a response, overview info. Each html item will then be rendered in a webview later
      */
-    public ArrayList<String> getPOIHtmlListItems(int index, LatLng currentLocation)//get data to display in the listview of POI Media
+    public List<String> getPOIHtmlListItems(int index, LatLng currentLocation)//get data to display in the listview of POI Media
     {
         String state = "";
         if(currentLocation == null)
@@ -247,7 +245,7 @@ public class ExperienceDetailsModel {
                 state = SMEPAppVariable.getResource().getString(R.string.location_state_outside);
         }
         if(index >=0 && index < allPOIs.size())
-            return allPOIs.get(index).getHtmlListItems(experienceDatabaseManager, state);
+            return allPOIs.get(index).getHtmlListItems(this.experienceDatabaseManager, state);
         else
             return null;
     }
@@ -271,11 +269,11 @@ public class ExperienceDetailsModel {
         return mediaList;
     }
 
-	public String[] getHTMLCodeForEOI(String id)
+	public String[] getHTMLCodeForEOI(Long id)
 	{
 		for(int i = 0; i < allEOIs.size(); i++)
 		{
-			if(allEOIs.get(i).getId().equalsIgnoreCase(id))
+			if(allEOIs.get(i).getId() == id)
 			{
 				return new String[]{allEOIs.get(i).getName(), allEOIs.get(i).getMediaHTMLCode()};
 			}
@@ -408,16 +406,16 @@ public class ExperienceDetailsModel {
 		String resName = "";
         ResponseModel res = myResponses.get(i);
         String responseForType = res.getEntityType().toUpperCase();
-        String responseType = res.getType().toUpperCase();
+        String responseType = res.getContentType().toUpperCase();
 		if(responseForType.equalsIgnoreCase(ResponseModel.FOR_POI))
 		{
-			String enName = getPOINameFromID(res.getEntityID());
+			String enName = getPOINameFromID(res.getEntityId());
 			if(enName!=null)
 				resName =  responseType + " response for POI named " + enName;
 		}
 		else if(responseForType.equalsIgnoreCase(ResponseModel.FOR_EOI))
 		{
-            String enName = getEOINameFromID(res.getEntityID());
+            String enName = getEOINameFromId(res.getEntityId());
 			if(enName!=null)
 				resName =  responseType + " response for EOI named " + enName;
 			else
@@ -439,7 +437,7 @@ public class ExperienceDetailsModel {
 		{
 			resName = responseType + " comment on a response";
 		}
-		return  resName + SharcLibrary.getResponseSize(myResponses.get(i).getType(), myResponses.get(i).getContent());
+		return  resName + SharcLibrary.getResponseSize(myResponses.get(i).getContentType(), myResponses.get(i).getContent());
 	}
 
 	public void deleteMyResponseAt(int index)
@@ -450,7 +448,7 @@ public class ExperienceDetailsModel {
 	public void addMyResponse(ResponseModel res)
 	{
 		myResponses.add(res);
-		experienceDatabaseManager.insertMyResponse(res);
+		experienceDatabaseManager.insertResponse(res);
 	}
 
     /**********************************
@@ -473,7 +471,7 @@ public class ExperienceDetailsModel {
         this.isUpdatedConsumerExperience = isUpdatedConsumerExperience;
     }
 
-    public ArrayList<ResponseModel> getMyResponses() {
+    public List<ResponseModel> getMyResponses() {
         return myResponses;
     }
 
@@ -487,14 +485,14 @@ public class ExperienceDetailsModel {
         return allPOIs.get(index).getName();
     }
 
-    public String getPOIID(int index)
+    public Long getPOIID(int index)
     {
-        return allPOIs.get(index).getID();
+        return allPOIs.get(index).getId();
     }
 
-    public List<ResponseModel> getCommentsForEntity(String ID)
+    public List<ResponseModel> getCommentsForEntity(Long id)
     {
-        return experienceDatabaseManager.getCommentsForEntity(ID);
+        return experienceDatabaseManager.getCommentsForEntity(id);
     }
 
     public ResponseModel getMyResponseAt(int index)
@@ -507,21 +505,21 @@ public class ExperienceDetailsModel {
         return myResponses.get(index).getHTMLCodeForResponse(true);
     }
 
-    public String getPOINameFromID(String id)
+    public String getPOINameFromID(Long id)
     {
         for (int i = 0; i < allPOIs.size(); i++)
         {
-            if(allPOIs.get(i).getID().equalsIgnoreCase(id))
+            if(allPOIs.get(i).getId() == id)
                 return allPOIs.get(i).getName();
         }
         return null;
     }
 
-    public String getEOINameFromID(String id)
+    public String getEOINameFromId(Long id)
     {
         for (int i = 0; i < allEOIs.size(); i++)
         {
-            if(allEOIs.get(i).getId().equalsIgnoreCase(id))
+            if(allEOIs.get(i).getId() == id)
                 return allEOIs.get(i).getName();
         }
         return null;

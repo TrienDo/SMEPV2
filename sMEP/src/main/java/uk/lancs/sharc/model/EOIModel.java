@@ -2,6 +2,7 @@ package uk.lancs.sharc.model;
 
 import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
+import com.orm.dsl.Unique;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
@@ -16,6 +17,7 @@ import java.util.List;
  * Date: Feb 2015
  **/
 public class EOIModel extends SugarRecord {
+	//@Unique
 	private Long id;
 	private Long designerId;
 	private Long experienceId;
