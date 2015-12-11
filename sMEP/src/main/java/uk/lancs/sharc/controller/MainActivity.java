@@ -1,32 +1,25 @@
 package uk.lancs.sharc.controller;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
-import org.apache.http.NameValuePair;
-import org.apache.http.message.BasicNameValuePair;
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import uk.lancs.sharc.R;
 import uk.lancs.sharc.model.MapWindowAdapter;
 import uk.lancs.sharc.model.MediaModel;
 import uk.lancs.sharc.service.BackgroundService;
+import uk.lancs.sharc.service.CloudManager;
+import uk.lancs.sharc.service.DropboxCloud;
 import uk.lancs.sharc.service.ErrorReporter;
 import uk.lancs.sharc.service.ExperienceDatabaseManager;
+import uk.lancs.sharc.service.GoogleDriveCloud;
 import uk.lancs.sharc.service.RestfulManager;
 import uk.lancs.sharc.service.SharcLibrary;
 import uk.lancs.sharc.model.ExperienceDetailsModel;
 import uk.lancs.sharc.model.ExperienceMetaDataModel;
-import uk.lancs.sharc.model.InteractionLog;
-import uk.lancs.sharc.model.JSONParser;
+import uk.lancs.sharc.service.InteractionLog;
 import uk.lancs.sharc.model.SMEPAppVariable;
 import uk.lancs.sharc.model.MediaListAdapter;
 import uk.lancs.sharc.model.ResponseListAdapter;
@@ -40,7 +33,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
@@ -85,11 +77,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.dropbox.sync.android.DbxAccountInfo;
-import com.dropbox.sync.android.DbxAccountManager;
-import com.dropbox.sync.android.DbxFile;
-import com.dropbox.sync.android.DbxFileSystem;
-import com.dropbox.sync.android.DbxPath;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.GoogleMap.OnMapClickListener;
@@ -124,6 +111,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	//Google map
 	private MapFragment mMapFragment;
 	private GoogleMap mMap;		            //Google Maps object
+
 	private Marker currentPosition;         //Mock location -> to simulate a fake current location
 	private LatLng initialLocation = null;  //Move to where the current location of the user when starting the app
 	private LatLng sessionLocation = null;  //A session of responses for a new location (one or more responses can be added at the same location. They should be treated as all media for a new POI
@@ -170,12 +158,9 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	};
 	String testingCode;
 	
-	//Dropbox
-	private static final String APP_KEY = "nz8hhultn33wlqu";        //app key genereated from Dropbox App
-    private static final String APP_SECRET = "4kldjr3m3330ytn";     //app secret genereated from Dropbox App
-    private static final int REQUEST_LINK_TO_DBX = 0;
-    private DbxAccountManager mDbxAcctMgr;
-    DbxAccountInfo dbUser = null;
+	//Cloud manager
+	CloudManager cloudManager;
+    private static final int REQUEST_LINK_TO_CLOUD = 0;
 
     //Response
     private static final int TAKE_PICTURE = 9999;                   //mark if the user is taking a picture
@@ -194,7 +179,6 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 
 	//Restful
 	RestfulManager restfulManager;
-		
 	//////////////////////////////////////////////////////////////////////////////
 	// INIT - ACTIVITY
 	//////////////////////////////////////////////////////////////////////////////	
@@ -309,7 +293,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	    if (sensor != null) {
 			sensorService.unregisterListener(mySensorEventListener);
 		}
-	    smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.EXIT_APP, "exit");
+	    smepInteractionLog.addLog(InteractionLog.EXIT_APP, "exit");
 	}
 	
     public void startBackgroundService()
@@ -325,7 +309,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	{
 		if(keyCode==KeyEvent.KEYCODE_BACK)
 		{
-			smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_BACK_BUTTON, "from tab " + currentTab);
+			smepInteractionLog.addLog(InteractionLog.SELECT_BACK_BUTTON, "from tab " + currentTab);
 			displayMapTab();			
 			return true;
 		}
@@ -418,7 +402,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 					else
 						getActionBar().setTitle("GPS is not available");
 				}
-				smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SHOW_GPS_INFO, String.valueOf(isChecked));
+				smepInteractionLog.addLog(InteractionLog.SHOW_GPS_INFO, String.valueOf(isChecked));
 			}
 		});
 
@@ -428,7 +412,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			@Override
 			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 				smepSettings.setPushingMedia(isChecked);
-				smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_PUSH, String.valueOf(isChecked));
+				smepInteractionLog.addLog(InteractionLog.SELECT_PUSH, String.valueOf(isChecked));
 			}
 		});
 
@@ -440,7 +424,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			{
                 SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
                 mySMEPAppVariable.setIsPushAgain(isChecked);
-				smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_PUSH_AGAIN, String.valueOf(isChecked));
+				smepInteractionLog.addLog(InteractionLog.SELECT_PUSH_AGAIN, String.valueOf(isChecked));
 			}
 		});
 		
@@ -453,7 +437,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			   smepSettings.setSoundNotification(isChecked);
 			   SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
 			   mySMEPAppVariable.setSoundNotification(isChecked);
-			   smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_SOUND, String.valueOf(isChecked));
+			   smepInteractionLog.addLog(InteractionLog.SELECT_SOUND, String.valueOf(isChecked));
 		   }
 		});
 		
@@ -466,7 +450,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			   smepSettings.setVibrationNotification(isChecked);
 			   SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
 			   mySMEPAppVariable.setVibrationNotification(isChecked);
-			   smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_VIBRATION, String.valueOf(isChecked));
+			   smepInteractionLog.addLog(InteractionLog.SELECT_VIBRATION, String.valueOf(isChecked));
 		   }
 		});
 		
@@ -481,7 +465,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		    		mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
 			   else
 		    		mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-			   smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_SETELLITE, String.valueOf(isChecked));
+			   smepInteractionLog.addLog(InteractionLog.SELECT_SETELLITE, String.valueOf(isChecked));
 		   }
 		});
 		
@@ -496,7 +480,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		    		sensorService.registerListener(mySensorEventListener, sensor,SensorManager.SENSOR_DELAY_NORMAL);
 			   else
 		    		sensorService.unregisterListener(mySensorEventListener);
-			   smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_ROTATION, String.valueOf(isChecked));
+			   smepInteractionLog.addLog(InteractionLog.SELECT_ROTATION, String.valueOf(isChecked));
 		   }
 		});
 		
@@ -507,7 +491,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
 		   {
 			   smepSettings.setYAHCentred(isChecked);	
-			   smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_YAH_CENTRED, String.valueOf(isChecked));
+			   smepInteractionLog.addLog(InteractionLog.SELECT_YAH_CENTRED, String.valueOf(isChecked));
 		   }
 		});	
 		
@@ -518,7 +502,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
 		   {
 			   	final boolean selection = isChecked;
-			   	smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_TEST, String.valueOf(isChecked));
+			   	smepInteractionLog.addLog(InteractionLog.SELECT_TEST, String.valueOf(isChecked));
 			   	if(isChecked)
 			   	{
 				    AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
@@ -564,7 +548,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
 		   {
 			   smepSettings.setShowingTriggers(isChecked);
-			   smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_SHOW_TRIGGER_ZONE, String.valueOf(isChecked));
+			   smepInteractionLog.addLog(InteractionLog.SELECT_SHOW_TRIGGER_ZONE, String.valueOf(isChecked));
 			   selectedExperienceDetail.showTriggerZones(isChecked);
 		   }
 		});
@@ -575,7 +559,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
 		   {
 			   smepSettings.setShowingThumbnails(isChecked);
-			   smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_SHOW_POI_THUMBS, String.valueOf(isChecked));
+			   smepInteractionLog.addLog(InteractionLog.SELECT_SHOW_POI_THUMBS, String.valueOf(isChecked));
 			   selectedExperienceDetail.showPOIThumbnails(isChecked);
 		   }
 		});
@@ -588,7 +572,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			    SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
 			    mySMEPAppVariable.setResetPOI(true);
 			    getSlidingMenu().showContent(false);
-			    smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_RESET_POI, "resetPOI");
+			    smepInteractionLog.addLog(InteractionLog.SELECT_RESET_POI, "resetPOI");
 			}
 		});
     }
@@ -612,7 +596,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 
     public void loginOrLogout()
     {
-        if(mDbxAcctMgr.hasLinkedAccount())
+        if(cloudManager != null && cloudManager.isLoggedin())
         {
             AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
             builder.setTitle("Authentication")
@@ -620,9 +604,10 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
                     .setIcon(android.R.drawable.ic_dialog_alert)
                     .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            mDbxAcctMgr.getLinkedAccount().unlink();
-                            displayDropboxUser(null);
-                            smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_LOGOUT, "logout");
+                            cloudManager.logout();
+							cloudManager = null;
+                            displayUserDetail();
+                            smepInteractionLog.addLog(InteractionLog.SELECT_LOGOUT, "logout");
                         }
                     })
                     .setNegativeButton("No", null)	//Do nothing on no
@@ -631,12 +616,41 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
         else
         {
             if(SharcLibrary.isNetworkAvailable(MainActivity.this))
-                mDbxAcctMgr.startLink(MainActivity.this, REQUEST_LINK_TO_DBX);
+				selectCloud();
             else
                 Toast.makeText(MainActivity.this, getString(R.string.message_wifiConnection), Toast.LENGTH_LONG).show();
 
         }
     }
+
+	public void selectCloud()
+	{
+		AlertDialog.Builder alert = new AlertDialog.Builder(this);
+
+		alert.setTitle("Please select a cloud service to log in");
+		//alert.setCancelable(false);
+		LayoutInflater factory = LayoutInflater.from(this);
+		alert.setPositiveButton("Login with Dropbox", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				cloudManager = new DropboxCloud(MainActivity.this);
+				if(cloudManager.checkLoginStatus())
+					cloudManager.getUserDetail();
+				else
+					cloudManager.login(REQUEST_LINK_TO_CLOUD);
+			//smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.ADD_RESPONSE_TEXT,  entity[0] + "#" + entity[1]);
+			}
+		});
+		alert.setNeutralButton("Login with Google Drive", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+			cloudManager = new GoogleDriveCloud(MainActivity.this);
+				cloudManager.login(REQUEST_LINK_TO_CLOUD);
+			//smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.ADD_RESPONSE_TEXT,  entity[0] + "#" + entity[1]);
+			}
+		});
+		//alert.setNegativeButton("Cancel", null);
+		setDialogFontSizeAndShow(alert, FONT_SIZE);
+		//alert.show();
+	}
 
     public void presentDownloadedExperiences()
     {
@@ -668,7 +682,8 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	{		
 		try
 	    {
-            restfulManager = new RestfulManager(MainActivity.this);
+			smepInteractionLog = new InteractionLog(MainActivity.this);
+			restfulManager = new RestfulManager(MainActivity.this);
 			btnResponse = (Button) findViewById(R.id.btnAddResponse);
             setBehindContentView(R.layout.sliding_menu); //https://www.youtube.com/watch?v=vmiUh0RQ7QY --> Sliding menu tutorial
 			//getSlidingMenu().setBehindWidth(630);
@@ -714,9 +729,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			params = mMapFragment.getView().getLayoutParams();
 			setupListView();
 			startBackgroundService();
-			checkDropboxLogin();
-			smepInteractionLog = new InteractionLog();
-			smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.START_APP, smepSettings.getAppVersion());
+			smepInteractionLog.addLog(InteractionLog.START_APP, smepSettings.getAppVersion());
 			//showTermsAndConditions();
 	    } 
 	    catch (Exception e) 
@@ -845,7 +858,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		adYAH.dismiss();
 		selectedLocationIcon = iconID;
 		currentPos.setIcon(BitmapDescriptorFactory.fromResource(selectedLocationIcon));
-		smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_YAH, iconText);
+		smepInteractionLog.addLog(InteractionLog.SELECT_YAH, iconText);
 		if(selectedExperienceDetail == null) {
 			downloadOrOpen();
 			getSlidingMenu().showMenu(true);
@@ -895,7 +908,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		setSelectedTabIcons(0);
 		mediaItemsPresentation.setVisibility(View.GONE);
 		showMap(true);
-		smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_MAP_TAB, mMap.getCameraPosition().target.latitude + " " + mMap.getCameraPosition().target.longitude + "#" + mMap.getCameraPosition().zoom);
+		smepInteractionLog.addLog(InteractionLog.SELECT_MAP_TAB, mMap.getCameraPosition().target.latitude + " " + mMap.getCameraPosition().target.longitude + "#" + mMap.getCameraPosition().zoom);
 	}
 	
 	public void switchToPOIMediaTab(String type)//type = 0: selected by user from tab, 1: selected by user from POI marker, 2: pushed by location service 
@@ -908,13 +921,13 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		{
             btnResponse.setVisibility(View.VISIBLE);
             displayMediaItems(selectedExperienceDetail.getPOIHtmlListItems(currentPOIIndex, initialLocation), 0);
-			smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_POI_TAB, type + "#" + selectedExperienceDetail.getPOIName(currentPOIIndex));
+			smepInteractionLog.addLog(InteractionLog.SELECT_POI_TAB, type + "#" + selectedExperienceDetail.getPOIName(currentPOIIndex));
 		}
 		else
 		{
             btnResponse.setVisibility(View.GONE);
             displayMediaItems(new ArrayList<String>(){{add("No media has been pushed/pulled yet");}}, 0);
-			smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_POI_TAB, type + "#" + "No POI selected");
+			smepInteractionLog.addLog(InteractionLog.SELECT_POI_TAB, type + "#" + "No POI selected");
 		}
 	}
 
@@ -950,12 +963,12 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
                 btnResponse.setVisibility(View.VISIBLE);
             else
                 btnResponse.setVisibility(View.GONE);
-			smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_EOI_TAB, "All EOIs info");
+			smepInteractionLog.addLog(InteractionLog.SELECT_EOI_TAB, "All EOIs info");
 		}
 		else
 		{
 			displayMediaItems(new ArrayList<String>(){{add(getString(R.string.message_no_experience));}}, 1);
-			smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_EOI_TAB, "No EOIs info");
+			smepInteractionLog.addLog(InteractionLog.SELECT_EOI_TAB, "No EOIs info");
 		}
 		
 	}
@@ -994,12 +1007,12 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		if(selectedExperienceDetail!=null)
 		{
 			displayMediaItems(selectedExperienceDetail.getSumaryInfo(),2);
-			smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_SUMMARY_TAB, "All summary info");
+			smepInteractionLog.addLog(InteractionLog.SELECT_SUMMARY_TAB, "All summary info");
 		}
 		else
 		{
 			displayMediaItems(new ArrayList<String>(){{add(getString(R.string.message_no_experience));}}, 2);
-			smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_EOI_TAB, "No summary info");
+			smepInteractionLog.addLog(InteractionLog.SELECT_EOI_TAB, "No summary info");
 		}
 		
 	}
@@ -1015,14 +1028,14 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			responseList.addAll(selectedExperienceDetail.getMyResponsesList());
 
 			String connection = "";
-			if (SharcLibrary.isNetworkAvailable(this) && dbUser != null) {
+			if (SharcLibrary.isNetworkAvailable(this) && cloudManager != null) {
 				connection = " Tap the yellow icon to view, blue icon to upload, and red icon to delete a response. You can also tap the 'Upload all responses' button at bottom of the screen to upload all of your responses.";
 				if (!selectedExperienceDetail.isUpdatedConsumerExperience())
 					keepTrackConsumerExperience();
 			}
-			if (SharcLibrary.isNetworkAvailable(this) && dbUser == null)
+			if (SharcLibrary.isNetworkAvailable(this) && cloudManager == null)
 				Toast.makeText(this, getString(R.string.message_dropboxConnection), Toast.LENGTH_LONG).show();
-			if (!SharcLibrary.isNetworkAvailable(this) && dbUser != null)
+			if (!SharcLibrary.isNetworkAvailable(this) && cloudManager != null)
 				Toast.makeText(this, getString(R.string.message_wifiConnection), Toast.LENGTH_LONG).show();
 			String htmlCode = "Here you can review and upload your reponses for the experience: '" + selectedExperienceDetail.getMetaData().getProName() + "'.";
 			if (responseList.size() > 0) {
@@ -1036,7 +1049,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		}
 		else
 			responseList.add(0, getString(R.string.message_no_experience));
-		smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_RESPONSE_TAB, TextUtils.join("#", responseList));
+		smepInteractionLog.addLog(InteractionLog.SELECT_RESPONSE_TAB, TextUtils.join("#", responseList));
 	  	ResponseListAdapter adapter = new ResponseListAdapter(MainActivity.this, responseList);
 		ListView mLv = (ListView)findViewById(R.id.responseTab);				
 		mLv.setAdapter(adapter);
@@ -1106,7 +1119,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     	clearMap();
 		allExperienceMetaData = experienceDatabaseManager.getExperiences();
 		String logData = allExperienceMetaData.toString();
-    	smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.VIEW_CACHED_EXPERIENCES, logData);
+    	smepInteractionLog.addLog(InteractionLog.VIEW_CACHED_EXPERIENCES, logData);
     	displayAllExperienceMetaData(false);
     }
     
@@ -1199,14 +1212,14 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 					experienceDatabaseManager.setSelectedExperience(selectedExperienceMeta.getId());
                     selectedExperienceDetail = new ExperienceDetailsModel(experienceDatabaseManager, true);
 					selectedExperienceDetail.setMetaData(selectedExperienceMeta);
-					smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.DOWNLOAD_ONLINE_EXPERIENCE, selectedExperienceMeta.getProName());
+					smepInteractionLog.addLog(InteractionLog.DOWNLOAD_ONLINE_EXPERIENCE, selectedExperienceMeta.getProName());
 					restfulManager.downloadExperience(selectedExperienceMeta.getId());
 					setSelectedTabIcons(0);
 	    	    }
 	    	})
 	    	.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 	    	    public void onClick(DialogInterface dialog, int which) {
-	    	    	smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.CANCEL_DOWNLOAD_EXPERIENCE, selectedExperienceMeta.getProName());
+	    	    	smepInteractionLog.addLog(InteractionLog.CANCEL_DOWNLOAD_EXPERIENCE, selectedExperienceMeta.getProName());
 	    	    }
 	    	})
 	    	.show();
@@ -1225,18 +1238,18 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 					selectedExperienceDetail.setMetaData(selectedExperienceMeta);
 					presentExperience();
 					setSelectedTabIcons(0);
-					smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.PLAY_EXPERIENCE, selectedExperienceMeta.getProName());
+					smepInteractionLog.addLog(InteractionLog.PLAY_EXPERIENCE, selectedExperienceMeta.getProName());
 	    	    }
 	    	})
 	    	.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
-					smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.CANCEL_PLAY_EXPERIENCE, selectedExperienceMeta.getProName());
+					smepInteractionLog.addLog(InteractionLog.CANCEL_PLAY_EXPERIENCE, selectedExperienceMeta.getProName());
 				}
 	    	})
 	    	.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					//Delete db
-					smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.DELETE_EXPERIENCE, selectedExperienceMeta.getProName());
+					smepInteractionLog.addLog(InteractionLog.DELETE_EXPERIENCE, selectedExperienceMeta.getProName());
 					//Delete entry
 					experienceDatabaseManager.deleteExperience(selectedExperienceMeta.getId());
 					//Reload map
@@ -1293,7 +1306,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     		mMap.moveCamera(CameraUpdateFactory.newLatLngBounds(bounds, 100));//50 = margin ~ geofence
     	if(mMap.getCameraPosition().zoom > 19)// && allPOIs.size() < 3)
     		mMap.animateCamera(CameraUpdateFactory.zoomTo(19), 2000, null);
-		if(dbUser != null)
+		if(cloudManager != null && cloudManager.isLoggedin())
 		{
 			keepTrackConsumerExperience();
 		}
@@ -1420,7 +1433,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			}
 			
 			if (smepSettings.isTestMode()) {
-				new MockLocationService().execute();				
+				restfulManager.startMockLocationService(testingCode);
 			}
 		} catch (Exception e) {
             e.printStackTrace();
@@ -1447,78 +1460,6 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	        Log.d(TAG, "gps provider does not exist " + ex.getMessage());
 	    }
 	}
-
-    /**
-     * <p>This class is another background thread which simulates the fake current location</p>
-     **/
-    class MockLocationService extends AsyncTask<String, String, String>
-    { 
-        //Before starting background thread Show Progress Dialog        
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();            
-        }
- 
-        protected String doInBackground(String... args) 
-        {        	             
-            try 
-            {
-            	JSONParser jParser = new JSONParser();
-            	// Building Parameters
-                List<NameValuePair> params = new ArrayList<NameValuePair>();
-                params.add(new BasicNameValuePair("locationID",testingCode));
-                // getting JSON string from URL
-                JSONObject json = jParser.makeHttpRequest(SharcLibrary.url_mockLocation, "POST", params);
-     
-                // Check your log cat for JSON reponse
-                Log.d("Mock Location:", json.toString());
-            	// Checking for SUCCESS TAG
-                int success = json.getInt("success"); 
-                if (success == 1) 
-                {
-                	JSONArray mockLocations = json.getJSONArray("location");
-                    // looping through All files
-                    for (int i = 0; i < mockLocations.length(); i++) 
-                    {
-                        JSONObject c = mockLocations.getJSONObject(i);
-                        double lat = c.getDouble("lat");
-                        double lng = c.getDouble("lng");
-                        SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
-                        Location mockLoc = new Location("");//provider name is necessary
-                        mockLoc.setLatitude(lat);//your coords of course
-                        mockLoc.setLongitude(lng);
-        		    	mySMEPAppVariable.setMockLocation(mockLoc);
-        		    	System.out.println("Lat x Lng:" + lat + " x " + lng);
-                    }
-                } 
-                else 
-                {
-                    // no file found
-                    Toast.makeText(getApplicationContext(), "No mock location found",Toast.LENGTH_LONG).show();                  
-                }
-            } 
-            catch (JSONException e) 
-            {
-                e.printStackTrace();
-            } 
-            return null;
-        }
- 
-        //After completing background task Dismiss the progress dialog         
-        protected void onPostExecute(String file_url) 
-        {
-            // updating UI from Background Thread
-            runOnUiThread(new Runnable() 
-            {
-                public void run() 
-                {
-                	//Updating parsed JSON data into ListView      
-                	SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
-                	currentPosition.setPosition(new LatLng(mySMEPAppVariable.getMockLocation().getLatitude(), mySMEPAppVariable.getMockLocation().getLongitude()));
-                }
-            }); 
-        } 
-    }
 
 	public void gotoCurrentLocation(View v)
 	{
@@ -1571,7 +1512,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				String[] entity = getAssociatedEntity();
 				ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1),
 						MediaModel.TYPE_IMAGE, outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, (new Date()).toString());
-				smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.ADD_RESPONSE_IMAGE, entity[0] + "#" + entity[1]);
+				smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_IMAGE, entity[0] + "#" + entity[1]);
 				//res.setFileUri(fileUri);
 				addDescription(res);
 			}
@@ -1581,22 +1522,21 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				String[] entity = getAssociatedEntity();
 				ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1),
 						MediaModel.TYPE_VIDEO, outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, (new Date()).toString());
-				smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.ADD_RESPONSE_VIDEO, entity[0] + "#" + entity[1]);
+				smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_VIDEO, entity[0] + "#" + entity[1]);
 				addDescription(res);
 			}
 	    }		
- 	   	else if (requestCode == REQUEST_LINK_TO_DBX) 
+ 	   	else if (requestCode == REQUEST_LINK_TO_CLOUD)
  	   	{
  	   		if (resultCode == RESULT_OK) {
- 	   			if(mDbxAcctMgr.hasLinkedAccount())
+ 	   			if(cloudManager != null && cloudManager.isLoggedin())
 		    	{
- 				   	dbUser = null;
-					new GetUserDetailsService().execute();
+					cloudManager.getUserDetail();
 		    	}
  	   		}
  	   		else {
  			   //... Link failed or was cancelled by the user.
- 	   			smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_LOGIN, "failed");
+ 	   			smepInteractionLog.addLog(InteractionLog.SELECT_LOGIN, "failed");
  	   			Toast.makeText(this, "Link to Dropbox failed.", Toast.LENGTH_LONG).show();
  	   		}
  	   	} 
@@ -1604,58 +1544,6 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
  		   super.onActivityResult(requestCode, resultCode, data);
  	   	}
  	}
-	/**
-	 * <p>This class is another background thread which get user details when logging into SMEP</p>
-	 **/
-	class GetUserDetailsService extends AsyncTask<String, String, String>
-	{
-		//Before starting background thread Show Progress Dialog
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			pDialog = new ProgressDialog(MainActivity.this);
-			pDialog.setMessage("Getting user information. Please wait...");
-			pDialog.setIndeterminate(false);
-			pDialog.setCancelable(false);
-			pDialog.show();
-		}
-
-		protected String doInBackground(String... args)
-		{
-			try
-			{
-				while (dbUser == null)
-				{
-					if(mDbxAcctMgr.hasLinkedAccount())
-					{
-						dbUser = mDbxAcctMgr.getLinkedAccount().getAccountInfo();
-					}
-				}
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-			return null;
-		}
-
-		//After completing background task Dismiss the progress dialog
-		protected void onPostExecute(String file_url)
-		{
-			// updating UI from Background Thread
-			runOnUiThread(new Runnable()
-			{
-				public void run()
-				{
-					pDialog.dismiss();
-					if(dbUser != null ) {
-						smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_LOGIN, mDbxAcctMgr.getLinkedAccount().getUserId());
-					}
-					displayDropboxUser(dbUser);
-				}
-			});
-		}
-	}
 
     public void addResponse(View v)
 	{
@@ -1671,7 +1559,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			alert.setNegativeButton("Close", null);	//Do nothing on no
             setDialogFontSizeAndShow(alert, FONT_SIZE);
 			//alert.show();
-			smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.OPEN_RESPONSE_DIALOG, String.valueOf(currentTab));
+			smepInteractionLog.addLog(InteractionLog.OPEN_RESPONSE_DIALOG, String.valueOf(currentTab));
     	}
 		else
 		{			
@@ -1709,7 +1597,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 						content.getText().toString(), title.getText().toString(), entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, (new Date()).toString());
                 selectedExperienceDetail.addMyResponse(res);
                 showResponseDone(res);
-                smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.ADD_RESPONSE_TEXT, entity[0] + "#" + entity[1]);
+                smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_TEXT, entity[0] + "#" + entity[1]);
             }
         });
 
@@ -1790,7 +1678,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		public void onClick(DialogInterface dialog, int whichButton) {
 			curRes.setDescription(input.getText().toString());
 			selectedExperienceDetail.addMyResponse(curRes);
-			smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.ADD_RESPONSE_DESC, curRes.getDescription());
+			smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_DESC, curRes.getDescription());
 			showResponseDone(curRes);
 		  }
 		});
@@ -1832,7 +1720,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 					String[] entity = getAssociatedEntity();
 					ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1), MediaModel.TYPE_AUDIO,
 							outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, (new Date()).toString());
-					smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.ADD_RESPONSE_AUDIO, entity[0] + "#" + entity[1]);
+					smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_AUDIO, entity[0] + "#" + entity[1]);
 					addDescription(res);
 				}
 			}
@@ -1954,7 +1842,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 
     public void uploadResponse(int index)
     {    	
-    	if(dbUser == null)
+    	if(cloudManager == null || !cloudManager.isLoggedin())
     	{
     		Toast.makeText(this, getString(R.string.message_dropboxConnection), Toast.LENGTH_LONG).show();
     		return;
@@ -1964,8 +1852,8 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     		Toast.makeText(this, getString(R.string.message_wifiConnection), Toast.LENGTH_LONG).show();
     		return;
     	}  
-    	smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_UPLOAD_RESPONSE, index + "#" + selectedExperienceDetail.getMyResponsePresentationName(index));
-    	new UploadToDropboxThread().execute(String.valueOf(index));
+    	smepInteractionLog.addLog(InteractionLog.SELECT_UPLOAD_RESPONSE, index + "#" + selectedExperienceDetail.getMyResponsePresentationName(index));
+    	new UploadToCloudThread().execute(String.valueOf(index));
     }
     
     public void viewResponse(final int index)
@@ -1987,7 +1875,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     	//});
         setDialogFontSizeAndShow(alert, FONT_SIZE);
         //alert.show();
-		smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_VIEW_RESPONSE, index + "#" + selectedExperienceDetail.getMyResponsePresentationName(index));
+		smepInteractionLog.addLog(InteractionLog.SELECT_VIEW_RESPONSE, index + "#" + selectedExperienceDetail.getMyResponsePresentationName(index));
     }
     
     public void deleteResponse(final int index)
@@ -1999,7 +1887,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 selectedExperienceDetail.deleteMyResponseAt(index);
-                smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.SELECT_UPLOAD_RESPONSE, index + "#" + selectedExperienceDetail.getMyResponsePresentationName(index));
+                smepInteractionLog.addLog(InteractionLog.SELECT_UPLOAD_RESPONSE, index + "#" + selectedExperienceDetail.getMyResponsePresentationName(index));
                 displayResponseTab();
             }
         });
@@ -2014,43 +1902,35 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	//////////////////////////////////////////////////////////////////////////////
 	// RESPONSE - DROPBOX
 	//////////////////////////////////////////////////////////////////////////////
-    public void checkDropboxLogin()
+    public boolean checkCloudLogin()
     {
-    	mDbxAcctMgr = DbxAccountManager.getInstance(getApplicationContext(), APP_KEY, APP_SECRET);
-    	if(mDbxAcctMgr.hasLinkedAccount())
-    	{
-    		dbUser = mDbxAcctMgr.getLinkedAccount().getAccountInfo();
-    	}
-    	displayDropboxUser(dbUser);    	    	
+    	boolean ret = cloudManager.checkLoginStatus();
+    	displayUserDetail();
+		return ret;
     }
     
-    public void displayDropboxUser(DbxAccountInfo dbUser)
+    public void displayUserDetail()
     {    	
     	TextView txtUsername = (TextView) findViewById(R.id.txtUsername);
     	TextView txtUseremail = (TextView) findViewById(R.id.txtUseremail);
 
-		if(dbUser!=null)
+		if(cloudManager != null && cloudManager.isLoggedin())
 		{
-			//Log.d(TAG, dbUser.toString());
-			try {
-				JSONObject jsonUser = new JSONObject(dbUser.toString());
-				JSONObject jsonUserInfo = new JSONObject(jsonUser.getString("rawJson"));
-				txtUseremail.setText(jsonUserInfo.getString("email"));
-				txtUsername.setText(dbUser.displayName);
-				//track which users consume which experiences
-				if(selectedExperienceDetail != null)
-				{
-					keepTrackConsumerExperience();
-				}
-			} catch (JSONException e) {
-				e.printStackTrace();
+			txtUseremail.setText(cloudManager.getUserEmail());
+			txtUsername.setText(cloudManager.getUserName());
+			cloudManager.setUserId(Long.valueOf(1));
+			restfulManager.setCloudManager(cloudManager);
+			//track which users consume which experiences
+			if(selectedExperienceDetail != null)
+			{
+				keepTrackConsumerExperience();
 			}
 		}
 		else
 		{
 			//Prompt to login
 			txtUsername.setText("Log in to submit responses");
-			txtUseremail.setText("(Dropbox account is required)");
+			txtUseremail.setText("(With Dropbox/Google Drive acc)");
 		}
     }
 
@@ -2058,66 +1938,11 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	{
 		//Only do when internet is available
 		if(SharcLibrary.isNetworkAvailable(this))
-			new UpdateConsumersExperiencesThread().execute();
-	}
-
-	/*
-		This inner class helps
-			- Submit info about which users consume which experiences
-		Note this class needs retrieve information from server so it has to run in background
-	*/
-	class UpdateConsumersExperiencesThread extends AsyncTask<String, String, String>
-	{
-		//Before starting the background thread -> Show Progress Dialog
-		@Override
-		protected void onPreExecute() {
-			super.onPreExecute();
-			pDialog = new ProgressDialog(MainActivity.this);
-			pDialog.setMessage("Tracking consumer vs. experiences. Please wait...");
-			pDialog.setIndeterminate(false);
-			pDialog.setCancelable(false);
-			pDialog.show();
-		}
-
-		//Update designer and experience info
-		protected String doInBackground(String... args)
-		{
-			try
-			{
-				JSONParser jParser = new JSONParser();
-				List<NameValuePair> params = new ArrayList<NameValuePair>();
-				//User info
-				params.add(new BasicNameValuePair("userID", mDbxAcctMgr.getLinkedAccount().getUserId()));
-				params.add(new BasicNameValuePair("projectID",selectedExperienceDetail.getMetaData().getId().toString()));
-				//update MySQL data
-				JSONObject json = jParser.makeHttpRequest(SharcLibrary.url_updateConsumerExperience, "POST", params);
-				selectedExperienceDetail.setIsUpdatedConsumerExperience(true);
-				//smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.VIEW_ONLINE_EXPERIENCES, logData);
-			}
-			catch (Exception e)
-			{
-				e.printStackTrace();
-			}
-			return null;
-		}
-		//After completing background task ->Dismiss the progress dialog
-		protected void onPostExecute(String file_url)
-		{
-			// dismiss the dialog after getting all files
-			pDialog.dismiss();
-			// updating UI from Background Thread
-			runOnUiThread(new Runnable()
-			{
-				public void run()
-				{
-					//
-				}
-			});
-		}
+			restfulManager.updateUserExperience(selectedExperienceDetail.getMetaData().getId());
 	}
 
     //This inner class (thread) enable uploading a media file and get public URL
-    class UploadToDropboxThread extends AsyncTask<String, String, String>
+    class UploadToCloudThread extends AsyncTask<String, String, String>
     {
         private boolean isError = false;
         //Before starting background thread Show Progress Dialog
@@ -2138,7 +1963,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				int index = Integer.parseInt(args[0]);
         		ResponseModel response = selectedExperienceDetail.getMyResponseAt(index);
 				uploadOneResponse(response);
-				selectedExperienceDetail.deleteMyResponseAt(index);
+				//selectedExperienceDetail.deleteMyResponseAt(index);
 				//displayResponseTab();
             } 
             catch (Exception e) 
@@ -2191,7 +2016,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				for(int index = 0; index < selectedExperienceDetail.getMyResponses().size(); index++) {
 					ResponseModel response = selectedExperienceDetail.getMyResponseAt(index);
 					uploadOneResponse(response);
-					selectedExperienceDetail.deleteMyResponseAt(index);
+					//selectedExperienceDetail.deleteMyResponseAt(index);
 				}
 				//displayResponseTab();
 			}
@@ -2224,40 +2049,29 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	}
 
 	public void uploadOneResponse(ResponseModel response) throws Exception {
-		String[] ret = new String[]{"0",""};
-		String publicURL = "";
+		String[] ret;
+		String filename = response.getMyId();
 		if (response.getContentType().equalsIgnoreCase(MediaModel.TYPE_TEXT))
-			ret[0] = String.valueOf(response.getContent().length());
+			filename = filename.concat(".html");
 		else if (response.getContentType().equalsIgnoreCase(MediaModel.TYPE_IMAGE))
-		{
-			//Get file and upload
-			ret = uploadAndShareFile(response.getId().toString().concat(".jpg"), response.getFileUri(), true);
-			publicURL = ret[1];
-			//Get direct link
-			publicURL = publicURL.replace("https://www.drop","https://dl.drop");
-			publicURL = publicURL.substring(0,publicURL.indexOf("?"));
-			response.setContent(publicURL);
-		}
+			filename = filename.concat(".jpg");
 		else if(response.getContentType().equalsIgnoreCase(MediaModel.TYPE_VIDEO))
-		{
-			//Get file and upload
-			ret = uploadAndShareFile(response.getId().toString().concat(".mp4"), response.getFileUri(), false);
-			publicURL = ret[1];
-			//Get direct link
-			publicURL = publicURL.replace("https://www.drop","https://dl.drop");
-			publicURL = publicURL.substring(0,publicURL.indexOf("?"));
-			response.setContent(publicURL);
+			filename = filename.concat(".mp4");
+		else if(response.getContentType().equalsIgnoreCase(MediaModel.TYPE_AUDIO)) {
+			filename = filename.concat(".mp3");
 		}
-		else if(response.getContentType().equalsIgnoreCase(MediaModel.TYPE_AUDIO))
-		{
-			//Get file and upload
-			ret = uploadAndShareFile(response.getId().toString().concat(".mp3"), response.getFileUri(), false);
-			publicURL = ret[1];
-			//Get direct link
-			publicURL = publicURL.replace("https://www.drop","https://dl.drop");
-			publicURL = publicURL.substring(0,publicURL.indexOf("?"));
-			response.setContent(publicURL);
+
+		if (response.getContentType().equalsIgnoreCase(MediaModel.TYPE_TEXT)) {
+			String content = "<h3>" + response.getDescription() + "</h3><p>"  + response.getContent() + "</p";
+			ret = cloudManager.uploadAndShareFile(filename, null, content, MediaModel.TYPE_TEXT);
 		}
+		else
+			ret = cloudManager.uploadAndShareFile(filename, response.getFileUri(), response.getContent(), response.getContentType());
+		response.setContent(ret[1]);
+		response.setSize(Integer.parseInt(ret[0]));
+		response.setUserId(cloudManager.getUserId());
+		//restfulManager.
+
 		//Prepare info for a new response
 		//String consumerName = dbUser.displayName;
 		//response.setConName(consumerName);
@@ -2279,61 +2093,6 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		*/
 	}
 
-	public String[] uploadAndShareFile(String fName, Uri fileUri, boolean isImage) throws Exception {
-		//Dropbox file
-		DbxFile mFile = null;
-		FileOutputStream out = null;
-		FileInputStream in = null;
-		try {
-
-			DbxPath path = new DbxPath("/" + fName);
-			DbxFileSystem dbxFs = DbxFileSystem.forAccount(mDbxAcctMgr.getLinkedAccount());
-
-			if(dbxFs.isFile(path))
-				mFile = dbxFs.open(path);
-			else
-				mFile = dbxFs.create(path);
-			//mFile = dbxFs.create(path);//normally try to open before creating //mFile = dbxFs.open(path);
-			String fileSize = "0";
-			out = mFile.getWriteStream();
-			if(isImage)
-			{
-				//Bitmap bmp = BitmapFactory.decodeFile(fileUri.getPath());
-				Bitmap bmp = MediaStore.Images.Media.getBitmap(this.getContentResolver(), fileUri);
-				ByteArrayOutputStream bos = new ByteArrayOutputStream();
-				bmp.compress(Bitmap.CompressFormat.JPEG, 70, bos);
-				FileOutputStream fos = new FileOutputStream (new File(SharcLibrary.SHARC_MEDIA_FOLDER + "/sharc.tmp"));
-				bos.writeTo(fos);
-				fos.flush();
-				fos.close();
-				fileSize = String.valueOf(bos.size());
-				in = new FileInputStream(SharcLibrary.SHARC_MEDIA_FOLDER + "/sharc.tmp");
-			}
-			else {
-				in = (FileInputStream) getContentResolver().openInputStream(fileUri);
-				fileSize = String.valueOf(in.available());
-			}
-			SharcLibrary.copyFile(in, out);
-			out.close();
-			in.close();
-			mFile.close();
-			//Share and get public link
-			return new String[]{fileSize, dbxFs.fetchShareLink(path, false).toString()};
-		}
-		catch (Exception e) {
-			e.printStackTrace();
-			try {
-				out.close();
-				in.close();
-				mFile.close();
-				throw e;
-			}
-			catch (Exception ex)
-			{
-				throw ex;
-			}
-		}
-	}
 	//////////////////////////////////////////////////////////////////////////////
 	// COMMENTS - DROPBOX
 	//////////////////////////////////////////////////////////////////////////////
@@ -2447,5 +2206,17 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 
 	public List<ExperienceMetaDataModel> getAllExperienceMetaData(){
 		return allExperienceMetaData;
+	}
+
+	public Marker getCurrentPosition() {
+		return currentPosition;
+	}
+
+	public LatLng getInitialLocation() {
+		return initialLocation;
+	}
+
+	public CloudManager getCloudManager() {
+		return cloudManager;
 	}
 }

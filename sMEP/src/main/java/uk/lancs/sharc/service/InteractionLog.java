@@ -1,4 +1,4 @@
-package uk.lancs.sharc.model;
+package uk.lancs.sharc.service;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -12,9 +12,11 @@ import java.util.Hashtable;
 import com.dropbox.sync.android.DbxAccountManager;
 import com.google.android.gms.maps.model.LatLng;
 
+import android.app.Activity;
 import android.os.Build;
 import android.text.TextUtils;
 
+import uk.lancs.sharc.controller.MainActivity;
 import uk.lancs.sharc.service.SharcLibrary;
 
 /**
@@ -29,9 +31,10 @@ public class InteractionLog {
 	private OutputStreamWriter oswLogWriter; 			//Store log file in the Sharc folder of the External Storage of the device
 	private String deviceID;							//An unique ID for each device = Build.SERIAL;
 	private Hashtable<String, String> actionNames; 		//A map of ActionID - Action name (human readable format)
-	
-	public InteractionLog()
+	private Activity activity;
+	public InteractionLog(Activity activity)
 	{
+		this.activity = activity;
 		actionNames = new Hashtable<String, String>();
 		createActionNameHashtable();					//Fill in the map of ActionID - Action name
 		
@@ -50,7 +53,7 @@ public class InteractionLog {
 		deviceID = Build.SERIAL;
 	}
 	
-	public void addLog(LatLng location, DbxAccountManager userInfo, String actionID, String actionData)
+	public void addLog(String actionID, String actionData)
 	{
 		//Add a log line to the log file
 		//A log line format: DateAndTime,LatLng,DeviceID,UserID,ActionID,ActionName,ActionData
@@ -60,7 +63,9 @@ public class InteractionLog {
 		// - ActionID and ActionName: see the table below
 		// - ActionData: depends on the ActionID		
 		//Example of a log line: Thu May 07 13:44:29 BST 2015,54.00594448 -2.78566378,0a282ca7,387643271,02,SELECT_YAH,SmallRed
-		
+		LatLng location = ((MainActivity)activity).getInitialLocation();
+		CloudManager cloudManager = ((MainActivity)activity).getCloudManager();
+
 		ArrayList<String> logData = new ArrayList<String>();
 		String timeStamp = (new Date()).toString();
 		
@@ -73,10 +78,10 @@ public class InteractionLog {
 		
 		logData.add(deviceID);
 		
-		if(userInfo == null || !userInfo.hasLinkedAccount())
+		if(cloudManager == null)
 			logData.add("anonymous");
 		else
-			logData.add(userInfo.getLinkedAccount().getUserId());
+			logData.add(cloudManager.getUserId().toString());
 			
 		
 		logData.add(actionID);

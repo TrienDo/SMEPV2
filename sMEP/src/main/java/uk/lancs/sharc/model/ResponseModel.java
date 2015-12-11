@@ -153,4 +153,39 @@ public class ResponseModel extends SugarRecord {
 		return  userId;
 	}
 
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
+	}
+
+	public void setUserId(Long userId) {
+		this.userId = userId;
+	}
+
+	public void setEntityId(String entityId) {
+		this.entityId = entityId;
+	}
+
+	public String getMid() {
+		return mid;
+	}
+
+	public void setMid(String mid) {
+		this.mid = mid;
+	}
+
+	public Long getExperienceId() {
+		return experienceId;
+	}
+
+	public void setExperienceId(Long experienceId) {
+		this.experienceId = experienceId;
+	}
+
+	public void setSubmittedDate(String submittedDate) {
+		this.submittedDate = submittedDate;
+	}
 }

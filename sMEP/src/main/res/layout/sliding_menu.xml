@@ -47,7 +47,7 @@
 					    android:layout_height="wrap_content"
 					    android:layout_toRightOf="@+id/imgBtnUser"
 					    android:paddingTop="15dp"
-					    android:text="Mary Smith"
+					    android:text="Log in to submit responses"
 					    android:textAppearance="?android:attr/textAppearanceMedium"
 					    android:textStyle="bold" />
 			
@@ -58,7 +58,7 @@
 					    android:layout_below="@+id/txtUsername"
 					    android:layout_toRightOf="@+id/imgBtnUser"
 					    android:paddingTop="3dp"
-					    android:text="mary.smith@gmail.com"
+					    android:text="(With your Dropbox/Google Drive)"
 					    android:textAppearance="?android:attr/textAppearanceMedium"
 					    android:textSize="16sp" />
 			        

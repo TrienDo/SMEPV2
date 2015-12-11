@@ -2,12 +2,17 @@ package uk.lancs.sharc.service;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
-import android.content.Context;
+import android.location.Location;
 import android.os.AsyncTask;
+import android.util.Log;
 import android.widget.Toast;
 
+import com.google.android.gms.maps.model.LatLng;
+
 import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -15,8 +20,8 @@ import java.util.List;
 
 import uk.lancs.sharc.controller.MainActivity;
 import uk.lancs.sharc.model.ExperienceMetaDataModel;
-import uk.lancs.sharc.model.InteractionLog;
 import uk.lancs.sharc.model.JSONParser;
+import uk.lancs.sharc.model.SMEPAppVariable;
 
 /**
  * Created by SHARC on 11/12/2015.
@@ -26,15 +31,25 @@ public class RestfulManager {
     public static final String api_path = "http://wraydisplay.lancs.ac.uk/SHARC20/api/v1/";
     public static final String api_get_all_published_experiences = api_path + "experiences";
     public static final String api_get_experience_snapshot = api_path + "experienceSnapshot/";
-    public static final String url_mockLocation = api_path + "locations/";
-    public static final String url_emailDesigner = api_path + "emailDesigner";
-    public static final String url_updateConsumerExperience = api_path + "consumerExperience";
+    public static final String api_get_mock_location = api_path + "locations/";
+    //public static final String url_emailDesigner = api_path + "emailDesigner";
+    public static final String api_update_consumer_experience = api_path + "consumerExperience";
 
     public static final String STATUS_SUCCESS = "success";
 
     private Activity activity;
+    private CloudManager cloudManager;
+
     public RestfulManager(Activity activity){
         this.activity = activity;
+    }
+
+    public CloudManager getCloudManager() {
+        return cloudManager;
+    }
+
+    public void setCloudManager(CloudManager cloudManager) {
+        this.cloudManager = cloudManager;
     }
 
     public void getPublishedExperience(){
@@ -45,7 +60,13 @@ public class RestfulManager {
         new ExperienceDetailsThread().execute(exprienceId.toString());
     }
 
+    public void updateUserExperience(Long experienceId){
+        new UpdateConsumersExperiencesThread().execute(cloudManager.getUserId().toString(), experienceId.toString());
+    }
 
+    public void startMockLocationService(String locationId){
+        new MockLocationService().execute(locationId);
+    }
     /*
         This inner class helps
             - Get information of all available online experiences
@@ -195,6 +216,135 @@ public class RestfulManager {
                 public void run() {
                     //Render the experience
                     ((MainActivity) activity).presentExperience();
+                }
+            });
+        }
+    }
+
+    /*
+		This inner class helps
+			- Submit info about which users consume which experiences
+		Note this class needs retrieve information from server so it has to run in background
+	*/
+    class UpdateConsumersExperiencesThread extends AsyncTask<String, String, String>
+    {
+        //Before starting the background thread -> Show Progress Dialog
+        private ProgressDialog pDialog;
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pDialog = new ProgressDialog(activity);
+            pDialog.setMessage("Tracking consumer vs. experiences. Please wait...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+        }
+
+        //Update designer and experience info
+        protected String doInBackground(String... args)
+        {
+            try
+            {
+                String userId = args[0];
+                String experienceId = args[1];
+                JSONParser jParser = new JSONParser();
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                //User info
+                params.add(new BasicNameValuePair("userID", userId));
+                params.add(new BasicNameValuePair("projectID",experienceId));
+                //params.add(new BasicNameValuePair("userID", mDbxAcctMgr.getLinkedAccount().getUserId()));
+                //params.add(new BasicNameValuePair("projectID",selectedExperienceDetail.getMetaData().getId().toString()));
+                //update MySQL data
+                JSONObject json = jParser.makeHttpRequest(RestfulManager.api_update_consumer_experience, "POST", params);
+                ((MainActivity)activity).getSelectedExperienceDetail().setIsUpdatedConsumerExperience(true);
+                //smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.VIEW_ONLINE_EXPERIENCES, logData);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        //After completing background task ->Dismiss the progress dialog
+        protected void onPostExecute(String file_url)
+        {
+            // dismiss the dialog after getting all files
+            pDialog.dismiss();
+            // updating UI from Background Thread
+            activity.runOnUiThread(new Runnable() {
+                public void run() {
+                    //
+                }
+            });
+        }
+    }
+
+    /**
+     * <p>This class is another background thread which simulates the fake current location</p>
+     **/
+    class MockLocationService extends AsyncTask<String, String, String>
+    {
+        //Before starting background thread Show Progress Dialog
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+        }
+
+        protected String doInBackground(String... args)
+        {
+            try
+            {
+                String testingCode = args[0];
+                JSONParser jParser = new JSONParser();
+                // Building Parameters
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                params.add(new BasicNameValuePair("locationID",testingCode));
+                // getting JSON string from URL
+                JSONObject json = jParser.makeHttpRequest(RestfulManager.api_get_mock_location, "POST", params);
+
+                // Check your log cat for JSON reponse
+                Log.d("Mock Location:", json.toString());
+                // Checking for SUCCESS TAG
+                int success = json.getInt("success");
+                if (success == 1)
+                {
+                    JSONArray mockLocations = json.getJSONArray("location");
+                    // looping through All files
+                    for (int i = 0; i < mockLocations.length(); i++)
+                    {
+                        JSONObject c = mockLocations.getJSONObject(i);
+                        double lat = c.getDouble("lat");
+                        double lng = c.getDouble("lng");
+                        SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) activity.getApplicationContext();
+                        Location mockLoc = new Location("");//provider name is necessary
+                        mockLoc.setLatitude(lat);//your coords of course
+                        mockLoc.setLongitude(lng);
+                        mySMEPAppVariable.setMockLocation(mockLoc);
+                        System.out.println("Lat x Lng:" + lat + " x " + lng);
+                    }
+                }
+                else
+                {
+                    // no file found
+                    Toast.makeText(activity.getApplicationContext(), "No mock location found",Toast.LENGTH_LONG).show();
+                }
+            }
+            catch (JSONException e)
+            {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        //After completing background task Dismiss the progress dialog
+        protected void onPostExecute(String file_url)
+        {
+            // updating UI from Background Thread
+            activity.runOnUiThread(new Runnable() {
+                public void run() {
+                    //Updating parsed JSON data into ListView
+                    SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) activity.getApplicationContext();
+                    ((MainActivity)activity).getCurrentPosition().setPosition(new LatLng(mySMEPAppVariable.getMockLocation().getLatitude(), mySMEPAppVariable.getMockLocation().getLongitude()));
                 }
             });
         }
