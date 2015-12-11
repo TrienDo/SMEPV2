@@ -2,11 +2,7 @@ package uk.lancs.sharc.model;
 
 import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
-import com.orm.dsl.Unique;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.Hashtable;
 import java.util.List;
 
 /**
@@ -18,7 +14,7 @@ import java.util.List;
  **/
 public class EOIModel extends SugarRecord {
 	//@Unique
-	private Long id;
+	private Long mid;
 	private Long designerId;
 	private Long experienceId;
 	private String name;
@@ -33,7 +29,7 @@ public class EOIModel extends SugarRecord {
 	}
 
 	public EOIModel(Long id, Long designerId, Long experienceId, String name, String description, String poiList, String routeList){
-		this.id = id;
+		this.mid = id;
 		this.designerId = designerId;
 		this.experienceId = experienceId;
 		this.name = name;
@@ -83,10 +79,10 @@ public class EOIModel extends SugarRecord {
 	}
 
 	public Long getId() {
-		return id;
+		return mid;
 	}
 
 	public void setId(Long id) {
-		this.id = id;
+		this.mid = id;
 	}
 }

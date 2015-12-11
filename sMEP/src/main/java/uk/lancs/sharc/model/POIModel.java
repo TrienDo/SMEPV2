@@ -7,8 +7,6 @@ import uk.lancs.sharc.service.ExperienceDatabaseManager;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.orm.SugarRecord;
-import com.orm.dsl.Ignore;
-import com.orm.dsl.Unique;
 
 /**
  * <p>This class is a model of the POI entity</p>
@@ -20,7 +18,7 @@ import com.orm.dsl.Unique;
 
 public class POIModel extends SugarRecord{
 	//@Unique
-	private Long id;
+	private Long mid;
 	private Long designerId;
 	private Long experienceId;
 
@@ -40,7 +38,7 @@ public class POIModel extends SugarRecord{
 	}
 	public POIModel(Long id, String name, String description, String coordinate, String triggerZone, Long designerId, Long experienceId, String typeList, String eoiList, String routeList, String thumbnailPath, int mediaCount, int responseCount)
 	{
-		this.id = id;
+		this.mid = id;
 		this.name = name;
 		this.description = description;
 		this.coordinate = coordinate;
@@ -56,7 +54,7 @@ public class POIModel extends SugarRecord{
 	}	 
 	
 	public Long getId(){
-		return id;
+		return mid;
 	}
 	
 	public String getName()
@@ -159,10 +157,10 @@ public class POIModel extends SugarRecord{
 		//header = "<h3>" + this.getName() + "</h3><div style='color:gray;'>["  + state + "]</div><br/>";
 		header = "<h3>" + this.getName() + "</h3>";
 		//Get media
-		List<MediaModel> mediaList = db.getMediaForEntity(this.id, "POI");
+		List<MediaModel> mediaList = db.getMediaForEntity(this.mid, "POI");
 		int totalMedia = mediaList.size();
 		//Get responses
-		List<ResponseModel> responseList = db.getResponsesForEntity(this.id,"POI");
+		List<ResponseModel> responseList = db.getResponsesForEntity(this.mid,"POI");
 		//Get EOIs
 		//responseList = null;
 		String[] relatedEOIs;

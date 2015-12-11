@@ -1,16 +1,12 @@
 package uk.lancs.sharc.model;
 
 import java.io.File;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.Date;
 
 import uk.lancs.sharc.service.SharcLibrary;
 import android.net.Uri;
 
 import com.orm.SugarRecord;
 import com.orm.dsl.Ignore;
-import com.orm.dsl.Unique;
 
 /**
  * <p>This class is a model of the response entity</p>
@@ -20,15 +16,14 @@ import com.orm.dsl.Unique;
  */
 
 public class ResponseModel extends SugarRecord {
-	//@Unique
-	private Long id;
+	private String mid;//file ID for Google Drive and time for Dropbox ~ media ID
 	private Long experienceId;
 	private Long userId;
 	private String contentType;
 	private String content;
 	private String description;
 	private String entityType;
-	private Long entityId;
+	private String entityId;//should be Long but need this Id to store LatLng of new POI
 	private String status;
 	private int size;
 	private String submittedDate;
@@ -49,10 +44,10 @@ public class ResponseModel extends SugarRecord {
 	public ResponseModel(){
 
 	}
-	public ResponseModel(Long id, Long experienceId, Long userId, String contentType, String content, String description,
-						 String entityType, Long entityId, String status, int size, String submittedDate)
+	public ResponseModel(String mid, Long experienceId, Long userId, String contentType, String content, String description,
+						 String entityType, String entityId, String status, int size, String submittedDate)
 	{
-		this.id = id;
+		this.mid = mid;
 		this.experienceId = experienceId;
 		this.userId = userId;
 	    this.contentType = contentType;//(Text/Image/Audio/Video)
@@ -65,11 +60,11 @@ public class ResponseModel extends SugarRecord {
 	    this.submittedDate = submittedDate;
 	}
 
-	public Long getEntityId() {
+	public String getEntityId() {
 		return entityId;
 	}
 
-	public void setEntityID(Long entityId) {
+	public void setEntityID(String entityId) {
 		this.entityId = entityId;
 	}
 
@@ -113,12 +108,12 @@ public class ResponseModel extends SugarRecord {
 		this.status = status;
 	}
 
-	public Long getId() {
-		return id;
+	public String getMyId () {
+		return mid;
 	}
 
-	public void setId(Long id) {
-		this.id = id;
+	public void setMyId(String id) {
+		this.mid = id;
 	}
 
 	public String getContentType() {

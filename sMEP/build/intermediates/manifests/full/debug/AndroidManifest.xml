@@ -56,7 +56,7 @@
             android:value="AIzaSyDJW119nUlQk7l_vZBNjYVcHJZluy_Wja8" />
         <meta-data
             android:name="DATABASE"
-            android:value="sharc20.db" />
+            android:value="/storage/emulated/0/Sharc/Databases/sharc20.db" />
         <meta-data
             android:name="VERSION"
             android:value="2" />

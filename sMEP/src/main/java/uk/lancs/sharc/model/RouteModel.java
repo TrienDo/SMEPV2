@@ -2,15 +2,11 @@ package uk.lancs.sharc.model;
 
 import android.location.Location;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.orm.SugarRecord;
-import com.orm.dsl.Ignore;
-import com.orm.dsl.Unique;
 
 /**
  * <p>This class is a reduced model of the route entity</p>
@@ -22,7 +18,7 @@ import com.orm.dsl.Unique;
 
 public class RouteModel extends SugarRecord {
 	//@Unique
-	private Long id;
+	private Long mid;
 	private Long designerId;
 	private Long experienceId;
 	private String name;
@@ -38,7 +34,7 @@ public class RouteModel extends SugarRecord {
 	}
 
 	public RouteModel(Long id, Long designerId, Long experienceId, String name, String description, boolean directed, String colour, String path, String poiList, String eoiList){
-		this.id = id;
+		this.mid = id;
 		this.designerId = designerId;
 		this.experienceId = experienceId;
 		this.name = name;
@@ -90,7 +86,7 @@ public class RouteModel extends SugarRecord {
 	}
 
 	public void setId(Long id) {
-		this.id = id;
+		this.mid = id;
 	}
 
 	public String getName() {
@@ -119,7 +115,7 @@ public class RouteModel extends SugarRecord {
 
 	@Override
 	public Long getId() {
-		return id;
+		return mid;
 	}
 
 	public Long getDesignerId() {

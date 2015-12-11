@@ -409,13 +409,13 @@ public class ExperienceDetailsModel {
         String responseType = res.getContentType().toUpperCase();
 		if(responseForType.equalsIgnoreCase(ResponseModel.FOR_POI))
 		{
-			String enName = getPOINameFromID(res.getEntityId());
+			String enName = getPOINameFromID(Long.valueOf(res.getEntityId()));
 			if(enName!=null)
 				resName =  responseType + " response for POI named " + enName;
 		}
 		else if(responseForType.equalsIgnoreCase(ResponseModel.FOR_EOI))
 		{
-            String enName = getEOINameFromId(res.getEntityId());
+            String enName = getEOINameFromId(Long.valueOf(res.getEntityId()));
 			if(enName!=null)
 				resName =  responseType + " response for EOI named " + enName;
 			else

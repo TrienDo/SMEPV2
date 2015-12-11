@@ -1,10 +1,6 @@
 package uk.lancs.sharc.model;
 import com.google.android.gms.maps.model.LatLng;
 import com.orm.SugarRecord;
-import com.orm.dsl.Unique;
-
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
 
 /**
  * <p>This class stores meta data about an experience</p>
@@ -15,7 +11,7 @@ import java.net.URLDecoder;
  * Date: Feb 2015
  **/
 public class ExperienceMetaDataModel extends SugarRecord {
-	private Long id;
+	private Long mid;//note: dont use id because SugarORM already uses this id
 	private String name;
 	String description;
 	String createdDate;
@@ -47,13 +43,13 @@ public class ExperienceMetaDataModel extends SugarRecord {
 
 	@Override
 	public Long getId() {
-		return id;
+		return mid;
 	}
 
 	public ExperienceMetaDataModel(int id, String name, String description, String createdDate, String lastPublishedDate, int designerId, boolean isPublished,
 								   int moderationMode, String latLng, String summary, String snapshotPath, String thumbnailPath, int size, String theme)
 	{
-		this.id = Long.valueOf(id);
+		this.mid = Long.valueOf(id);
 		this.name = name;
 		this.description = description;
 		this.createdDate = createdDate;

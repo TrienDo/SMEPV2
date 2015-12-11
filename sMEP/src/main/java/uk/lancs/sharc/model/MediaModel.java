@@ -1,7 +1,6 @@
 package uk.lancs.sharc.model;
 
 import com.orm.SugarRecord;
-import com.orm.dsl.Unique;
 
 import uk.lancs.sharc.service.SharcLibrary;
 
@@ -12,7 +11,7 @@ import uk.lancs.sharc.service.SharcLibrary;
  * Date: May 2015.
  */
 public class MediaModel extends SugarRecord {
-    private Long id;
+    private Long mid;
     private Long designerId;
     private Long experienceId;
     private String contentType;
@@ -36,7 +35,7 @@ public class MediaModel extends SugarRecord {
     }
     public MediaModel(Long id, Long designerId, Long experienceId, String contentType, String content, String context, String name, String caption,
                       String entityType, Long entityID, int size, boolean mainMedia, boolean visible, int order) {
-        this.id = id;
+        this.mid = id;
         this.designerId = designerId;
         this.experienceId = experienceId;
         this.contentType = contentType;
@@ -59,11 +58,11 @@ public class MediaModel extends SugarRecord {
         return SharcLibrary.getHTMLCodeForMedia(this.getId().toString(), "media", this.getNoOfLike(), this.getNoOfComment(),this.getContentType(), this.getContent(), this.getCaption(),false);
     }
     public Long getId() {
-        return id;
+        return mid;
     }
 
     public void setId(Long id) {
-        this.id = id;
+        this.mid = id;
     }
 
     public String getName() {

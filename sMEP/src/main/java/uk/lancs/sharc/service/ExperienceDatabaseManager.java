@@ -256,10 +256,10 @@ public class ExperienceDatabaseManager
         objMedia.save();
 	}
 	
-	public void insertResponse(Long id, Long experienceId, Long userId, String contentType, String content, String description,
-                               String entityType, Long entityId, String status, int size, String submittedDate)
+	public void insertResponse(String mid, Long experienceId, Long userId, String contentType, String content, String description,
+                               String entityType, String entityId, String status, int size, String submittedDate)
 	{
-        ResponseModel objResponse = new ResponseModel(id, experienceId, userId, contentType, content, description, entityType, entityId, status, size, submittedDate);
+        ResponseModel objResponse = new ResponseModel(mid, experienceId, userId, contentType, content, description, entityType, entityId, status, size, submittedDate);
         objResponse.save();
 	}
 
