@@ -30,9 +30,9 @@ public abstract class CloudManager {
     public abstract boolean checkLoginStatus();
     public abstract void getUserDetail();
     public abstract void logout();
-
+    public abstract boolean isCloudServiceReady();
+    public abstract void setDefaultUser(String user);
     public abstract boolean isLoggedin();
-
     public Long getUserId() {
         return userId;
     }

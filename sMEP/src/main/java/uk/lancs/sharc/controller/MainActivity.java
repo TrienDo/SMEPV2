@@ -26,6 +26,7 @@ import uk.lancs.sharc.model.ResponseListAdapter;
 import uk.lancs.sharc.model.SMEPSettings;
 import uk.lancs.sharc.model.ResponseModel;
 
+import android.accounts.AccountManager;
 import android.app.ActionBar;
 import android.app.AlertDialog;
 import android.app.FragmentTransaction;
@@ -33,6 +34,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
@@ -160,7 +162,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	
 	//Cloud manager
 	CloudManager cloudManager;
-    private static final int REQUEST_LINK_TO_CLOUD = 0;
+
 
     //Response
     private static final int TAKE_PICTURE = 9999;                   //mark if the user is taking a picture
@@ -636,14 +638,17 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				if(cloudManager.checkLoginStatus())
 					cloudManager.getUserDetail();
 				else
-					cloudManager.login(REQUEST_LINK_TO_CLOUD);
+					cloudManager.login(DropboxCloud.REQUEST_LINK_TO_DROPBOX);
 			//smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.ADD_RESPONSE_TEXT,  entity[0] + "#" + entity[1]);
 			}
 		});
 		alert.setNeutralButton("Login with Google Drive", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
-			cloudManager = new GoogleDriveCloud(MainActivity.this);
-				cloudManager.login(REQUEST_LINK_TO_CLOUD);
+				cloudManager = new GoogleDriveCloud(MainActivity.this);
+				if(cloudManager.checkLoginStatus())
+					cloudManager.getUserDetail();
+				else
+					cloudManager.login(GoogleDriveCloud.REQUEST_AUTHORIZATION);
 			//smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.ADD_RESPONSE_TEXT,  entity[0] + "#" + entity[1]);
 			}
 		});
@@ -1506,43 +1511,62 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	// RESPONSE
 	//////////////////////////////////////////////////////////////////////////////
     protected void onActivityResult(int requestCode, int resultCode, Intent data){
-    	if(requestCode == TAKE_PICTURE)
-    	{
-			if (resultCode == RESULT_OK) {
-				String[] entity = getAssociatedEntity();
-				ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1),
-						MediaModel.TYPE_IMAGE, outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, (new Date()).toString());
-				smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_IMAGE, entity[0] + "#" + entity[1]);
-				//res.setFileUri(fileUri);
-				addDescription(res);
-			}
-		}
-		else if(requestCode == CAPTURE_VIDEO) {
-			if (resultCode == RESULT_OK) {
-				String[] entity = getAssociatedEntity();
-				ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1),
-						MediaModel.TYPE_VIDEO, outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, (new Date()).toString());
-				smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_VIDEO, entity[0] + "#" + entity[1]);
-				addDescription(res);
-			}
-	    }		
- 	   	else if (requestCode == REQUEST_LINK_TO_CLOUD)
- 	   	{
- 	   		if (resultCode == RESULT_OK) {
- 	   			if(cloudManager != null && cloudManager.isLoggedin())
-		    	{
+    	switch (requestCode){
+			case TAKE_PICTURE:
+				if (resultCode == RESULT_OK) {
+					String[] entity = getAssociatedEntity();
+					ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1),
+							MediaModel.TYPE_IMAGE, outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, (new Date()).toString());
+					smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_IMAGE, entity[0] + "#" + entity[1]);
+					//res.setFileUri(fileUri);
+					addDescription(res);
+				}
+				break;
+			case CAPTURE_VIDEO:
+				if (resultCode == RESULT_OK) {
+					String[] entity = getAssociatedEntity();
+					ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1),
+							MediaModel.TYPE_VIDEO, outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, (new Date()).toString());
+					smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_VIDEO, entity[0] + "#" + entity[1]);
+					addDescription(res);
+				}
+				break;
+			case DropboxCloud.REQUEST_LINK_TO_DROPBOX:
+				if (resultCode == RESULT_OK) {
+					if(cloudManager != null && cloudManager.isLoggedin())
+					{
+						cloudManager.getUserDetail();
+					}
+				}
+				else {
+				   //... Link failed or was cancelled by the user.
+					smepInteractionLog.addLog(InteractionLog.SELECT_LOGIN, "failed");
+					Toast.makeText(this, "Link to Dropbox failed.", Toast.LENGTH_LONG).show();
+				}
+				break;
+			case GoogleDriveCloud.REQUEST_GOOGLE_PLAY_SERVICES:
+				if (resultCode != RESULT_OK)
+					cloudManager.isCloudServiceReady();
+				break;
+			case GoogleDriveCloud.REQUEST_ACCOUNT_PICKER:
+				if (resultCode == RESULT_OK && data != null && data.getExtras() != null) {
+					cloudManager.setDefaultUser(data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME));
 					cloudManager.getUserDetail();
-		    	}
- 	   		}
- 	   		else {
- 			   //... Link failed or was cancelled by the user.
- 	   			smepInteractionLog.addLog(InteractionLog.SELECT_LOGIN, "failed");
- 	   			Toast.makeText(this, "Link to Dropbox failed.", Toast.LENGTH_LONG).show();
- 	   		}
+				}
+				else if (resultCode == RESULT_CANCELED) {
+					Toast.makeText(this, "Account unspecified.", Toast.LENGTH_LONG).show();
+				}
+				break;
+			case GoogleDriveCloud.REQUEST_AUTHORIZATION:
+				if (resultCode != RESULT_OK) {
+					//chooseAccount();
+					cloudManager.login(GoogleDriveCloud.REQUEST_AUTHORIZATION);
+				}
+				break;
+			default:
+				super.onActivityResult(requestCode, resultCode, data);
  	   	} 
- 	   	else {
- 		   super.onActivityResult(requestCode, resultCode, data);
- 	   	}
+
  	}
 
     public void addResponse(View v)
@@ -1902,13 +1926,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	//////////////////////////////////////////////////////////////////////////////
 	// RESPONSE - DROPBOX
 	//////////////////////////////////////////////////////////////////////////////
-    public boolean checkCloudLogin()
-    {
-    	boolean ret = cloudManager.checkLoginStatus();
-    	displayUserDetail();
-		return ret;
-    }
-    
+
     public void displayUserDetail()
     {    	
     	TextView txtUsername = (TextView) findViewById(R.id.txtUsername);

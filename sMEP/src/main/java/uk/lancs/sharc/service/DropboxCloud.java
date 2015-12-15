@@ -28,7 +28,7 @@ import uk.lancs.sharc.model.MediaModel;
  * Created by SHARC on 11/12/2015.
  */
 public class DropboxCloud extends CloudManager{
-    //Dropbox
+    public static final int REQUEST_LINK_TO_DROPBOX = 0;
     private static final String APP_KEY = "ggludz9cg3xq1lq";        //app key genereated from Dropbox App
     private static final String APP_SECRET = "9zeykvpdfuwlzo7";     //app secret genereated from Dropbox App
     private DbxAccountManager mDbxAcctMgr;
@@ -36,6 +36,7 @@ public class DropboxCloud extends CloudManager{
 
     public DropboxCloud(Activity activity) {
         super(activity);
+        setCloudType("Dropbox");
     }
 
     @Override
@@ -64,6 +65,16 @@ public class DropboxCloud extends CloudManager{
         {
             mDbxAcctMgr.getLinkedAccount().unlink();
         }
+    }
+
+    @Override
+    public boolean isCloudServiceReady() {
+        return true;
+    }
+
+    @Override
+    public void setDefaultUser(String user) {
+
     }
 
     @Override
@@ -121,6 +132,7 @@ public class DropboxCloud extends CloudManager{
                            JSONObject jsonUserInfo = new JSONObject(jsonUser.getString("rawJson"));
                            setUserEmail(jsonUserInfo.getString("email"));
                            setUserName(dbUser.displayName);
+                           setCloudAccountId(mDbxAcctMgr.getLinkedAccount().getUserId());
                        } catch (JSONException e) {
                            e.printStackTrace();
                        }

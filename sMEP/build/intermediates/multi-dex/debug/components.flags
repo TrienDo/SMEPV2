@@ -1,0 +1,50 @@
+-injars 'C:\Users\SHARC\workspace\AndroidStudio\SMEP\sMEP\build\intermediates\multi-dex\debug\allclasses.jar'
+-outjars 'C:\Users\SHARC\workspace\AndroidStudio\SMEP\sMEP\build\intermediates\multi-dex\debug\componentClasses.jar'
+
+-libraryjars 'C:\Users\SHARC\AppData\Local\Android\sdk\build-tools\22.0.1\lib\shrinkedAndroid.jar'
+
+-forceprocessing
+-dontoptimize
+-dontobfuscate
+-dontpreverify
+-dontwarn
+-printconfiguration 'C:\Users\SHARC\workspace\AndroidStudio\SMEP\sMEP\build\intermediates\multi-dex\debug\components.flags'
+
+
+-keep class uk.lancs.sharc.model.SMEPAppVariable {
+    <init>();
+    void attachBaseContext(android.content.Context);
+}
+
+-keep class uk.lancs.sharc.controller.MainActivity {
+    <init>();
+}
+
+-keep class uk.lancs.sharc.service.BackgroundService {
+    <init>();
+}
+
+-keep class com.dropbox.sync.android.DbxAuthActivity {
+    <init>();
+}
+
+-keep class com.dropbox.client2.android.AuthActivity {
+    <init>();
+}
+
+-keep class com.dropbox.sync.android.DbxSyncService {
+    <init>();
+}
+
+-keep class uk.lancs.sharc.controller.Usermanual {
+    <init>();
+}
+
+-keep public class * extends android.app.backup.BackupAgent {
+    <init>();
+}
+
+-keep public class * extends java.lang.annotation.Annotation {
+    <fields>;
+    <methods>;
+}
