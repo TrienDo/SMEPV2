@@ -9,11 +9,9 @@ import android.net.Uri;
 public abstract class CloudManager {
     public static final String TYPE_DROPBOX = "Dropbox";
     public static final String TYPE_GOOGLE_DRIVE = "Google Drive";
-    private Long userId;
     private String userName;
     private String userEmail;
     private String cloudType;
-    private String apiKey;
     private String cloudAccountId;
 
 
@@ -33,13 +31,6 @@ public abstract class CloudManager {
     public abstract boolean isCloudServiceReady();
     public abstract void setDefaultUser(String user);
     public abstract boolean isLoggedin();
-    public Long getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Long userId) {
-        this.userId = userId;
-    }
 
     public String getUserName() {
         return userName;
@@ -65,13 +56,6 @@ public abstract class CloudManager {
         this.cloudType = cloudType;
     }
 
-    public String getApiKey() {
-        return apiKey;
-    }
-
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
-    }
 
     public String getCloudAccountId() {
         return cloudAccountId;

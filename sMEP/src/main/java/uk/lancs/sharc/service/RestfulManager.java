@@ -21,6 +21,7 @@ import java.util.List;
 import uk.lancs.sharc.controller.MainActivity;
 import uk.lancs.sharc.model.ExperienceMetaDataModel;
 import uk.lancs.sharc.model.JSONParser;
+import uk.lancs.sharc.model.ResponseModel;
 import uk.lancs.sharc.model.SMEPAppVariable;
 
 /**
@@ -32,13 +33,30 @@ public class RestfulManager {
     public static final String api_get_all_published_experiences = api_path + "experiences";
     public static final String api_get_experience_snapshot = api_path + "experienceSnapshot/";
     public static final String api_get_mock_location = api_path + "locations/";
-    //public static final String url_emailDesigner = api_path + "emailDesigner";
+    public static final String api_submit_response = api_path + "responses";
     public static final String api_update_consumer_experience = api_path + "consumerExperience";
 
     public static final String STATUS_SUCCESS = "success";
 
     private Activity activity;
     private CloudManager cloudManager;
+    private Long userId;
+    private String apiKey;
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
+    }
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
 
     public RestfulManager(Activity activity){
         this.activity = activity;
@@ -61,7 +79,11 @@ public class RestfulManager {
     }
 
     public void updateUserExperience(Long experienceId){
-        new UpdateConsumersExperiencesThread().execute(cloudManager.getUserId().toString(), experienceId.toString());
+        new UpdateConsumersExperiencesThread().execute(experienceId.toString());
+    }
+
+    public void submitResponse(ResponseModel res){
+        new SubmitResponseThread(res).execute();
     }
 
     public void startMockLocationService(String locationId){
@@ -245,17 +267,24 @@ public class RestfulManager {
         {
             try
             {
-                String userId = args[0];
-                String experienceId = args[1];
                 JSONParser jParser = new JSONParser();
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
                 //User info
-                params.add(new BasicNameValuePair("userID", userId));
-                params.add(new BasicNameValuePair("projectID",experienceId));
-                //params.add(new BasicNameValuePair("userID", mDbxAcctMgr.getLinkedAccount().getUserId()));
-                //params.add(new BasicNameValuePair("projectID",selectedExperienceDetail.getMetaData().getId().toString()));
+                String experienceId = args[0];
+                params.add(new BasicNameValuePair("experienceId", experienceId));
+                params.add(new BasicNameValuePair("cloudAccountId", cloudManager.getCloudAccountId()));
+                params.add(new BasicNameValuePair("username", cloudManager.getUserName()));
+                params.add(new BasicNameValuePair("useremail", cloudManager.getUserEmail()));
+                params.add(new BasicNameValuePair("cloudType",cloudManager.getCloudType()));
                 //update MySQL data
                 JSONObject json = jParser.makeHttpRequest(RestfulManager.api_update_consumer_experience, "POST", params);
+                String ret = json.getString("status");
+                if (ret.equalsIgnoreCase(RestfulManager.STATUS_SUCCESS)) {
+                    JSONObject objUser = json.getJSONObject("data");
+                    setUserId(Long.valueOf(objUser.getString("id")));
+                    setApiKey(objUser.getString("apiKey"));
+                    ((MainActivity)activity).getRestfulManager().setUserId(Long.valueOf(objUser.getString("id")));
+                }
                 ((MainActivity)activity).getSelectedExperienceDetail().setIsUpdatedConsumerExperience(true);
                 //smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.VIEW_ONLINE_EXPERIENCES, logData);
             }
@@ -270,6 +299,86 @@ public class RestfulManager {
         {
             // dismiss the dialog after getting all files
             pDialog.dismiss();
+            // updating UI from Background Thread
+            activity.runOnUiThread(new Runnable() {
+                public void run() {
+                    //
+                }
+            });
+        }
+    }
+
+
+    /*
+		This inner class helps
+			- Submit a response to MySQL database
+		Note this class needs retrieve information from server so it has to run in background
+	*/
+    class SubmitResponseThread extends AsyncTask<String, String, String>
+    {
+        //Before starting the background thread -> Show Progress Dialog
+        //private ProgressDialog pDialog;
+        private ResponseModel response;
+
+        public SubmitResponseThread(ResponseModel response){
+            this.response = response;
+        }
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            /*pDialog = new ProgressDialog(activity);
+            pDialog.setMessage("Tracking consumer vs. experiences. Please wait...");
+            pDialog.setIndeterminate(false);
+            pDialog.setCancelable(false);
+            pDialog.show();
+            */
+        }
+
+        //Update designer and experience info
+        protected String doInBackground(String... args)
+        {
+            try
+            {
+                JSONParser jParser = new JSONParser();
+                List<NameValuePair> params = new ArrayList<NameValuePair>();
+                //Response info
+                params.add(new BasicNameValuePair("apiKey", getApiKey()));
+                params.add(new BasicNameValuePair("userId", getUserId().toString()));
+
+                params.add(new BasicNameValuePair("id", response.getMid()));
+                params.add(new BasicNameValuePair("experienceId", response.getExperienceId().toString()));
+
+                params.add(new BasicNameValuePair("contentType", response.getContentType()));
+                params.add(new BasicNameValuePair("content", response.getContent()));
+                params.add(new BasicNameValuePair("description", response.getDescription()));
+
+                params.add(new BasicNameValuePair("entityType", response.getEntityType()));
+                params.add(new BasicNameValuePair("entityId", response.getEntityId()));
+                params.add(new BasicNameValuePair("status", response.getStatus()));
+
+                params.add(new BasicNameValuePair("size", "" + response.getSize()));
+                params.add(new BasicNameValuePair("submittedDate", response.getSubmittedDate()));
+                //insert MySQL data
+                JSONObject json = jParser.makeHttpRequest(RestfulManager.api_submit_response, "POST", params);
+                String ret = json.getString("status");
+                if (ret.equalsIgnoreCase(RestfulManager.STATUS_SUCCESS)) {
+                    //((MainActivity)activity).getSelectedExperienceDetail().setIsUpdatedConsumerExperience(true);
+                    //Delete response here
+                }
+
+                //smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.VIEW_ONLINE_EXPERIENCES, logData);
+            }
+            catch (Exception e)
+            {
+                e.printStackTrace();
+            }
+            return null;
+        }
+        //After completing background task ->Dismiss the progress dialog
+        protected void onPostExecute(String file_url)
+        {
+            // dismiss the dialog after getting all files
+            //pDialog.dismiss();
             // updating UI from Background Thread
             activity.runOnUiThread(new Runnable() {
                 public void run() {

@@ -125,12 +125,14 @@ public class SharcLibrary
         String path = "";
         if(isLocal)
             path = content;     //string for text media else path to the local media (photo, audio, video)
-        if(!isLocal && !type.equalsIgnoreCase("text"))
+        //if(!isLocal && !type.equalsIgnoreCase("text"))
+		if(!isLocal)
             path = SharcLibrary.SHARC_MEDIA_FOLDER + content.substring(content.lastIndexOf("/"));//media cached locally
         //Show text media in form of Title + Content, else Content + title
         if(type.equalsIgnoreCase("text"))
         {
-            strMedia += "<p style='margin-left:20px'>" +  content.replaceAll("(\r\n|\n)", "<br />") + "</p>";
+            //strMedia += "<p style='margin-left:20px'>" +  content.replaceAll("(\r\n|\n)", "<br />") + "</p>";
+			strMedia += "<div><object type='text/html' data='" + path + "' ></object></div>";
         }
         else if(type.equalsIgnoreCase("image"))
         {
@@ -154,6 +156,13 @@ public class SharcLibrary
 
 	public static String getReadableTimeStamp()	{
 		DateFormat dateFormat = new SimpleDateFormat("ddMMyyyy_HHmmss");
+		//get current date time with Date()
+		Date date = new Date();
+		return dateFormat.format(date).toString();
+	}
+
+	public static String getMySQLDateStamp()	{
+		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 		//get current date time with Date()
 		Date date = new Date();
 		return dateFormat.format(date).toString();

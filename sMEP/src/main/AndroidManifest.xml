@@ -59,7 +59,13 @@
 
         <meta-data
             android:name="com.google.android.maps.v2.API_KEY"
+            android:value="AIzaSyC8k4QJBubNf-ygwllVLHt1O-YY0xsByH0" />
+
+        <!-- old key
+        <meta-data
+            android:name="com.google.android.maps.v2.API_KEY"
             android:value="AIzaSyDJW119nUlQk7l_vZBNjYVcHJZluy_Wja8" />
+        -->
 
         <meta-data android:name="DATABASE" android:value="/storage/emulated/0/Sharc/Databases/sharc20.db" />
         <meta-data android:name="VERSION" android:value="2" />

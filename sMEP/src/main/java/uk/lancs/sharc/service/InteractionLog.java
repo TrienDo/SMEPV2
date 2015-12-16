@@ -81,7 +81,7 @@ public class InteractionLog {
 		if(cloudManager == null)
 			logData.add("anonymous");
 		else
-			logData.add(cloudManager.getUserId().toString());
+			logData.add(cloudManager.getCloudAccountId());
 			
 		
 		logData.add(actionID);

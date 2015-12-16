@@ -1516,7 +1516,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				if (resultCode == RESULT_OK) {
 					String[] entity = getAssociatedEntity();
 					ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1),
-							MediaModel.TYPE_IMAGE, outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, (new Date()).toString());
+							MediaModel.TYPE_IMAGE, outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, SharcLibrary.getMySQLDateStamp());
 					smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_IMAGE, entity[0] + "#" + entity[1]);
 					//res.setFileUri(fileUri);
 					addDescription(res);
@@ -1526,7 +1526,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				if (resultCode == RESULT_OK) {
 					String[] entity = getAssociatedEntity();
 					ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1),
-							MediaModel.TYPE_VIDEO, outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, (new Date()).toString());
+							MediaModel.TYPE_VIDEO, outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, SharcLibrary.getMySQLDateStamp());
 					smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_VIDEO, entity[0] + "#" + entity[1]);
 					addDescription(res);
 				}
@@ -1618,7 +1618,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
                 String id = String.valueOf((new Date()).getTime());
                 String[] entity = getAssociatedEntity();
                 ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1), MediaModel.TYPE_TEXT,
-						content.getText().toString(), title.getText().toString(), entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, (new Date()).toString());
+						content.getText().toString(), title.getText().toString(), entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, SharcLibrary.getMySQLDateStamp());
                 selectedExperienceDetail.addMyResponse(res);
                 showResponseDone(res);
                 smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_TEXT, entity[0] + "#" + entity[1]);
@@ -1743,7 +1743,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 					String id = outputFile.substring(outputFile.lastIndexOf(File.separator) + 1, outputFile.lastIndexOf("."));
 					String[] entity = getAssociatedEntity();
 					ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1), MediaModel.TYPE_AUDIO,
-							outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, (new Date()).toString());
+							outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, SharcLibrary.getMySQLDateStamp());
 					smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_AUDIO, entity[0] + "#" + entity[1]);
 					addDescription(res);
 				}
@@ -1936,7 +1936,6 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		{
 			txtUseremail.setText(cloudManager.getUserEmail());
 			txtUsername.setText(cloudManager.getUserName());
-			cloudManager.setUserId(Long.valueOf(1));
 			restfulManager.setCloudManager(cloudManager);
 			//track which users consume which experiences
 			if(selectedExperienceDetail != null)
@@ -2087,28 +2086,8 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			ret = cloudManager.uploadAndShareFile(filename, response.getFileUri(), response.getContent(), response.getContentType());
 		response.setContent(ret[1]);
 		response.setSize(Integer.parseInt(ret[0]));
-		response.setUserId(cloudManager.getUserId());
-		//restfulManager.
-
-		//Prepare info for a new response
-		//String consumerName = dbUser.displayName;
-		//response.setConName(consumerName);
-		//TextView txtUseremail = (TextView) findViewById(R.id.txtUseremail);
-		//String consumerEmail = txtUseremail.getText().toString();
-		//response.setConEmail(consumerEmail);
-
-		//Insert a new row for the new response to the Responses table and send email to both
-		/*
-		JSONParser jParser = new JSONParser();
-		List<NameValuePair> params = new ArrayList<NameValuePair>();
-		params.add(new BasicNameValuePair("authName",selectedExperienceDetail.getMetaData().getProAuthName()));
-		params.add(new BasicNameValuePair("proName",selectedExperienceDetail.getMetaData().getProName()));
-		params.add(new BasicNameValuePair("conName",dbUser.displayName));
-		params.add(new BasicNameValuePair("conEmail",consumerEmail));
-		params.add(new BasicNameValuePair("proAuthID",mDbxAcctMgr.getLinkedAccount().getUserId()));
-		// getting JSON string from URL
-		JSONObject json = jParser.makeHttpRequest(SharcLibrary.url_emailDesigner, "POST", params);
-		*/
+		response.setUserId(restfulManager.getUserId());
+		restfulManager.submitResponse(response);
 	}
 
 	//////////////////////////////////////////////////////////////////////////////
@@ -2169,7 +2148,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
             @Override
             public void onClick(View v) {
                 ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()), selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1),
-						MediaModel.TYPE_TEXT,  etComment.getText().toString(), "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, etComment.getText().toString().length(), (new Date()).toString());
+						MediaModel.TYPE_TEXT,  etComment.getText().toString(), "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, etComment.getText().toString().length(), SharcLibrary.getMySQLDateStamp());
                 selectedExperienceDetail.addMyResponse(res);
                 String newContent = newHTMLContent;
                 newContent += "<div style='text-align:left;margin-left:10;font-weight:bold;'>Your comment is pending moderation by the creator of this experience</div>";
@@ -2236,5 +2215,9 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 
 	public CloudManager getCloudManager() {
 		return cloudManager;
+	}
+
+	public RestfulManager getRestfulManager() {
+		return restfulManager;
 	}
 }
