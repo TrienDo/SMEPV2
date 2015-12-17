@@ -83,7 +83,7 @@ public class ExperienceDatabaseManager
                 JSONObject jsonEntity = jsonEntityList.getJSONObject(i);
                 JSONObject jsonEntityDesigner = jsonEntity.getJSONObject("routeDesigner");
                 this.insertROUTE(jsonEntity.getLong("id"), jsonEntityDesigner.getLong("designerId"), jsonEntity.getLong("experienceId"), jsonEntityDesigner.getString("name"),
-                        jsonEntity.getString("description"), jsonEntityDesigner.getInt("directed")  == 1 ? true: false, jsonEntityDesigner.getString("colour"), jsonEntityDesigner.getString("path"),
+                        jsonEntity.getString("description"), jsonEntityDesigner.getInt("directed") == 1 ? true : false, jsonEntityDesigner.getString("colour"), jsonEntityDesigner.getString("path"),
                         jsonEntity.getString("poiList"), jsonEntity.getString("eoiList"));
             }
 
@@ -97,7 +97,18 @@ public class ExperienceDatabaseManager
                         jsonEntity.getString("caption"), jsonEntity.getString("entityType"), jsonEntity.getLong("entityId"),
                         jsonEntityDesigner.getInt("size"), jsonEntity.getInt("mainMedia") == 1 ? true: false, jsonEntity.getInt("visible") == 1 ? true : false, jsonEntity.getInt("order"));
                 //Download media
-                donwloadMediaFile(jsonEntityDesigner.getString("content") );
+                donwloadMediaFile(jsonEntityDesigner.getString("content"));
+            }
+
+            jsonEntityList = jsonExperience.getJSONArray("allResponses");
+            for(int i = 0; i < jsonEntityList.length(); i++){
+                JSONObject jsonEntity = jsonEntityList.getJSONObject(i);
+
+                this.insertResponse(jsonEntity.getString("id"), jsonEntity.getLong("experienceId"), jsonEntity.getLong("userId"), jsonEntity.getString("contentType"),
+                        jsonEntity.getString("content"), jsonEntity.getString("description"), jsonEntity.getString("entityType"), jsonEntity.getString("entityId"),
+                        jsonEntity.getString("status"), jsonEntity.getInt("size"), jsonEntity.getString("submittedDate"));
+                //Download media
+                donwloadMediaFile(jsonEntity.getString("content"));
             }
         }
         catch(Exception e)
@@ -287,10 +298,10 @@ public class ExperienceDatabaseManager
 	}
 	
 	public void addOrUpdateExperience(ExperienceMetaDataModel experienceMetaDataModel){
-        ExperienceMetaDataModel tmp = ExperienceMetaDataModel.findById(ExperienceMetaDataModel.class, experienceMetaDataModel.getId());
-        if(tmp != null) {//already there -> delete all data
+        List<ExperienceMetaDataModel> tmp = ExperienceMetaDataModel.find(ExperienceMetaDataModel.class, "mid = ?", experienceMetaDataModel.getId().toString());
+        if(tmp.size() > 0) {//already there -> delete all data
             this.deleteExperience(experienceMetaDataModel.getId());
-            tmp.delete();
+            tmp.get(0).delete();
         }
         experienceMetaDataModel.save();
     }
@@ -301,8 +312,6 @@ public class ExperienceDatabaseManager
         RouteModel.deleteAll(RouteModel.class, "experience_Id = ?", experienceId.toString());
         MediaModel.deleteAll(MediaModel.class, "experience_Id = ?", experienceId.toString());
         ResponseModel.deleteAll(ResponseModel.class, "experience_Id = ?", experienceId.toString());
-        ExperienceMetaDataModel experienceMetaDataModel = ExperienceMetaDataModel.findById(ExperienceMetaDataModel.class, experienceId);
-        if(experienceMetaDataModel != null)
-            experienceMetaDataModel.delete();
+        ExperienceMetaDataModel.deleteAll(ExperienceMetaDataModel.class, "mid = ?", experienceId.toString());
 	}
 }

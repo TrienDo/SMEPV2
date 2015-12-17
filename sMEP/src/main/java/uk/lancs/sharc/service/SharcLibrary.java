@@ -2,6 +2,8 @@ package uk.lancs.sharc.service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -132,8 +134,13 @@ public class SharcLibrary
         if(type.equalsIgnoreCase("text"))
         {
             //strMedia += "<p style='margin-left:20px'>" +  content.replaceAll("(\r\n|\n)", "<br />") + "</p>";
-			strMedia += "<div><object type='text/html' data='" + path + "' ></object></div>";
-        }
+			//strMedia += "<div><object style='width: 100%; height: 300px; overflow: auto' type='text/html' data='" + path + "' ></object></div>";
+			try {
+				strMedia += "<div style='margin-left:20px'>" +  SharcLibrary.readTextFile(new FileInputStream(path))+  "</div>";
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
+		}
         else if(type.equalsIgnoreCase("image"))
         {
             strMedia += "<div align='center'><img hspace='20' width='90%' src='" +  path + "' /></div>";
@@ -147,9 +154,7 @@ public class SharcLibrary
             strMedia += "<div align='center'><video style='margin-left:20px;' width='90%' poster controls><source src='" + path + "'></video></div>";
         }
 
-        if(type.equalsIgnoreCase("text"))
-            strMedia = "<p style='margin-left:20px;font-weight: bold;'>" +  name + "</p>" + strMedia;
-        else
+        if(!type.equalsIgnoreCase("text"))
             strMedia += "<p style='margin-left:20px;font-weight: bold;'>" +  name + "</p>";
         return strMedia;
 	}

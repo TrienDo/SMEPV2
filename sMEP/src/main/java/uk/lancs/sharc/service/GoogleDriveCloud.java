@@ -30,7 +30,6 @@ import com.google.api.services.drive.model.Permission;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -45,6 +44,7 @@ import uk.lancs.sharc.model.MediaModel;
  */
 public class GoogleDriveCloud extends CloudManager{
     //Google Drive
+    private static final Long MAX_FILE_SIZE = Long.valueOf(5120 * 1024);//in MB
     public static final int REQUEST_ACCOUNT_PICKER = 1000;
     public static final int REQUEST_AUTHORIZATION = 1001;
     public static final int REQUEST_GOOGLE_PLAY_SERVICES = 1002;
@@ -52,8 +52,8 @@ public class GoogleDriveCloud extends CloudManager{
     private static final String[] SCOPES = { DriveScopes.DRIVE_FILE };
     private com.google.api.services.drive.Drive mService;
     private About about;
-    private String SharcWebViewLink;
-    private String SharcFolderId;
+    private String sharcWebViewLink;
+    private String sharcFolderId;
     private GoogleAccountCredential mCredential;
 
     public GoogleDriveCloud(Activity activity) {
@@ -73,7 +73,7 @@ public class GoogleDriveCloud extends CloudManager{
         body.setTitle(fName);
         String mimeType = "application/octet-stream";
         body.setMimeType(mimeType);
-        body.setParents(Arrays.asList(new ParentReference().setId(SharcFolderId)));
+        body.setParents(Arrays.asList(new ParentReference().setId(sharcFolderId)));
 
         String fileSize = "0";
         java.io.File fileContent = null;
@@ -106,7 +106,7 @@ public class GoogleDriveCloud extends CloudManager{
         try {
             File file = mService.files().insert(body, mediaContent).execute();
             fileSize = file.getFileSize().toString();
-            return new String[]{fileSize, SharcWebViewLink.concat(file.getTitle())};
+            return new String[]{fileSize, sharcWebViewLink.concat(file.getTitle())};
         } catch (IOException e) {
             e.printStackTrace();//System.out.println("An error occured: " + e);
             throw  e;
@@ -119,7 +119,7 @@ public class GoogleDriveCloud extends CloudManager{
     }
 
     @Override
-    public boolean checkLoginStatus() {
+    public boolean isLoginRemembered() {
         if (mCredential.getSelectedAccountName() == null)
             return false;
         else
@@ -156,7 +156,12 @@ public class GoogleDriveCloud extends CloudManager{
 
     @Override
     public boolean isLoggedin() {
-        return checkLoginStatus();
+        return isLoginRemembered();
+    }
+
+    @Override
+    public Long getMaxFileSize() {
+        return MAX_FILE_SIZE;
     }
 
     /**
@@ -229,8 +234,8 @@ public class GoogleDriveCloud extends CloudManager{
                 FileList sharcFolder = mService.files().list().setQ("mimeType='application/vnd.google-apps.folder' and trashed=false and title='SHARC20' and 'root' in parents").execute();
                 List<File> mfiles = sharcFolder.getItems();
                 if(mfiles.size() > 0) {//SHARC20 has been created previously
-                    SharcFolderId = mfiles.get(0).getId();
-                    SharcWebViewLink = mfiles.get(0).getWebViewLink();
+                    sharcFolderId = mfiles.get(0).getId();
+                    sharcWebViewLink = mfiles.get(0).getWebViewLink();
                 }
                 else {//not created yet
                     //Create new folder
@@ -246,8 +251,8 @@ public class GoogleDriveCloud extends CloudManager{
                     mService.permissions().insert(folder.getId(), newPermission1).execute();
                     //Get public link
                     File f = mService.files().get(folder.getId()).execute();
-                    SharcWebViewLink = f.getWebViewLink();
-                    SharcFolderId = f.getId();
+                    sharcWebViewLink = f.getWebViewLink();
+                    sharcFolderId = f.getId();
                 }
             }
             catch (Exception e)

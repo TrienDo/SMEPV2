@@ -28,6 +28,7 @@ import uk.lancs.sharc.model.MediaModel;
  * Created by SHARC on 11/12/2015.
  */
 public class DropboxCloud extends CloudManager{
+    private static final Long MAX_FILE_SIZE = Long.valueOf(150);//in MB
     public static final int REQUEST_LINK_TO_DROPBOX = 0;
     private static final String APP_KEY = "ggludz9cg3xq1lq";        //app key genereated from Dropbox App
     private static final String APP_SECRET = "9zeykvpdfuwlzo7";     //app secret genereated from Dropbox App
@@ -45,7 +46,7 @@ public class DropboxCloud extends CloudManager{
     }
 
     @Override
-    public boolean checkLoginStatus() {
+    public boolean isLoginRemembered() {
         mDbxAcctMgr = DbxAccountManager.getInstance(activity.getApplicationContext(), APP_KEY, APP_SECRET);
         if(mDbxAcctMgr.hasLinkedAccount())
         {
@@ -80,6 +81,11 @@ public class DropboxCloud extends CloudManager{
     @Override
     public boolean isLoggedin() {
         return mDbxAcctMgr.hasLinkedAccount();
+    }
+
+    @Override
+    public Long getMaxFileSize() {
+        return MAX_FILE_SIZE;
     }
 
     /**

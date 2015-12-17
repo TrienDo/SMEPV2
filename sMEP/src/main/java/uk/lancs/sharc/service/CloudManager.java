@@ -25,12 +25,13 @@ public abstract class CloudManager {
 
     public abstract String[] uploadAndShareFile(String fName, Uri fileUri, String textContent, String mediaType) throws Exception;
     public abstract void login(int actionCode);
-    public abstract boolean checkLoginStatus();
+    public abstract boolean isLoginRemembered();
     public abstract void getUserDetail();
     public abstract void logout();
     public abstract boolean isCloudServiceReady();
     public abstract void setDefaultUser(String user);
     public abstract boolean isLoggedin();
+    public abstract Long getMaxFileSize();
 
     public String getUserName() {
         return userName;

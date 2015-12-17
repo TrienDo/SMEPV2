@@ -34,7 +34,6 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
@@ -635,7 +634,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		alert.setPositiveButton("Login with Dropbox", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				cloudManager = new DropboxCloud(MainActivity.this);
-				if(cloudManager.checkLoginStatus())
+				if(cloudManager.isLoginRemembered())
 					cloudManager.getUserDetail();
 				else
 					cloudManager.login(DropboxCloud.REQUEST_LINK_TO_DROPBOX);
@@ -645,7 +644,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		alert.setNeutralButton("Login with Google Drive", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				cloudManager = new GoogleDriveCloud(MainActivity.this);
-				if(cloudManager.checkLoginStatus())
+				if(cloudManager.isLoginRemembered())
 					cloudManager.getUserDetail();
 				else
 					cloudManager.login(GoogleDriveCloud.REQUEST_AUTHORIZATION);
@@ -1587,7 +1586,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     	}
 		else
 		{			
-			new UploadAllToDropboxThread().execute();
+			new UploadAllToCloudThread().execute();
 			/*File mPath = new File("/data/data/uk.lancs.sharc/databases");
 		    if(mPath.exists()) 
 		    {
@@ -1980,8 +1979,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				int index = Integer.parseInt(args[0]);
         		ResponseModel response = selectedExperienceDetail.getMyResponseAt(index);
 				uploadOneResponse(response);
-				//selectedExperienceDetail.deleteMyResponseAt(index);
-				//displayResponseTab();
+				selectedExperienceDetail.deleteMyResponseAt(index);
             } 
             catch (Exception e) 
             {
@@ -2012,7 +2010,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     }
 
 	//This inner class (thread) enable uploading all responses
-	class UploadAllToDropboxThread extends AsyncTask<String, String, String>
+	class UploadAllToCloudThread extends AsyncTask<String, String, String>
 	{
 		//Before starting background thread Show Progress Dialog
         private boolean isError = false;
@@ -2033,9 +2031,8 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				for(int index = 0; index < selectedExperienceDetail.getMyResponses().size(); index++) {
 					ResponseModel response = selectedExperienceDetail.getMyResponseAt(index);
 					uploadOneResponse(response);
-					//selectedExperienceDetail.deleteMyResponseAt(index);
+					selectedExperienceDetail.deleteMyResponseAt(index);
 				}
-				//displayResponseTab();
 			}
 			catch (Exception e)
 			{
