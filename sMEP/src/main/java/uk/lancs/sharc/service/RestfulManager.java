@@ -29,8 +29,8 @@ import uk.lancs.sharc.model.SMEPAppVariable;
  */
 public class RestfulManager {
     //RESTful APIs
-    //public static final String api_path = "http://wraydisplay.lancs.ac.uk/SHARC20/api/v1/";
-    public static final String api_path = "http://148.88.227.222/SHARC20/api/v1/";
+    public static final String api_path = "http://wraydisplay.lancs.ac.uk/SHARC20/api/v1/";
+    //public static final String api_path = "http://148.88.227.222/SHARC20/api/v1/";
     public static final String api_get_all_published_experiences = api_path + "experiences";
     public static final String api_get_experience_snapshot = api_path + "experienceSnapshot/";
     public static final String api_get_mock_location = api_path + "locations/";
@@ -408,9 +408,8 @@ public class RestfulManager {
                 JSONParser jParser = new JSONParser();
                 // Building Parameters
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
-                params.add(new BasicNameValuePair("locationID",testingCode));
                 // getting JSON string from URL
-                JSONObject json = jParser.makeHttpRequest(RestfulManager.api_get_mock_location, "POST", params);
+                JSONObject json = jParser.makeHttpRequest(RestfulManager.api_get_mock_location.concat(testingCode), "GET", params);
 
                 // Check your log cat for JSON reponse
                 Log.d("Mock Location:", json.toString());
