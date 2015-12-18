@@ -65,6 +65,14 @@ public class ExperienceMetaDataModel extends SugarRecord {
 		this.theme = theme;
 	}
 
+	public String getSummary() {
+		return summary;
+	}
+
+	public void setSummary(String summary) {
+		this.summary = summary;
+	}
+
 	public int getProSize() {
 		return size;
 	}
@@ -177,7 +185,7 @@ public class ExperienceMetaDataModel extends SugarRecord {
 	public void setDifficultLevel(String difficultLevel) {
 		this.difficultLevel = difficultLevel;
 	} 
-	public String getSumaryInfo()
+	public String getExperienceStats()
 	{
 		String htmlCode = "<div><b>The current experience is '" + this.getProName()+ "'. It comprises: </b></div>";
 		htmlCode += "<div>" + this.getRouteCount() + (this.getRouteCount()  > 1 ? " routes </div>" : " route </div>") + this.getRouteInfo();

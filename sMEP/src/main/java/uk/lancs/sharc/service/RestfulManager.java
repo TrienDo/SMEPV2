@@ -29,7 +29,8 @@ import uk.lancs.sharc.model.SMEPAppVariable;
  */
 public class RestfulManager {
     //RESTful APIs
-    public static final String api_path = "http://wraydisplay.lancs.ac.uk/SHARC20/api/v1/";
+    //public static final String api_path = "http://wraydisplay.lancs.ac.uk/SHARC20/api/v1/";
+    public static final String api_path = "http://148.88.227.222/SHARC20/api/v1/";
     public static final String api_get_all_published_experiences = api_path + "experiences";
     public static final String api_get_experience_snapshot = api_path + "experienceSnapshot/";
     public static final String api_get_mock_location = api_path + "locations/";
@@ -217,7 +218,7 @@ public class RestfulManager {
                 JSONObject json = jParser.makeHttpRequest(RestfulManager.api_get_experience_snapshot.concat(experienceId[0]), "GET", params);
                 String ret = json.getString("status");
                 if (ret.equalsIgnoreCase(RestfulManager.STATUS_SUCCESS)) {
-                    ((MainActivity)activity).getSelectedExperienceDetail().getExperienceFromSnapshotOnDropbox(json.getJSONObject("data"));
+                    ((MainActivity)activity).getSelectedExperienceDetail().getExperienceFromSnapshotOnCloud(json.getJSONObject("data"));
                     System.out.println("Experience json:" + json.getJSONObject("data"));
                 }
             }

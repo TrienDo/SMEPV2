@@ -25,6 +25,7 @@ public class MediaModel extends SugarRecord {
     private boolean mainMedia;
     private boolean visible;
     private int mediaOrder;
+    private int commentCount;
 
     public static final String TYPE_TEXT = "text";
     public static final String TYPE_IMAGE = "image";
@@ -34,7 +35,7 @@ public class MediaModel extends SugarRecord {
     public MediaModel(){
     }
     public MediaModel(Long id, Long designerId, Long experienceId, String contentType, String content, String context, String name, String caption,
-                      String entityType, Long entityID, int size, boolean mainMedia, boolean visible, int order) {
+                      String entityType, Long entityID, int size, boolean mainMedia, boolean visible, int order, int commentCount) {
         this.mid = id;
         this.designerId = designerId;
         this.experienceId = experienceId;
@@ -51,11 +52,12 @@ public class MediaModel extends SugarRecord {
         this.mainMedia = mainMedia;
         this.visible = visible;
         this.mediaOrder = order;
+        this.commentCount = commentCount;
     }
 
     public String getHTMLPresentation()
     {
-        return SharcLibrary.getHTMLCodeForMedia(this.getId().toString(), "media", this.getNoOfLike(), this.getNoOfComment(),this.getContentType(), this.getContent(), this.getCaption(),false);
+        return SharcLibrary.getHTMLCodeForMedia(this.getId().toString(), "media", this.getNoOfLike(), this.commentCount,this.getContentType(), this.getContent(), this.getCaption(),false);
     }
     public Long getId() {
         return mid;
@@ -106,10 +108,6 @@ public class MediaModel extends SugarRecord {
     }
 
     public int getNoOfLike() {
-        return 0;
-    }
-
-    public int getNoOfComment() {
         return 0;
     }
 
@@ -183,4 +181,6 @@ public class MediaModel extends SugarRecord {
     public void setOrder(int order) {
         this.mediaOrder = order;
     }
+
+
 }

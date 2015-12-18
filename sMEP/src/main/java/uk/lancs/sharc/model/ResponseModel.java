@@ -18,7 +18,7 @@ import com.orm.dsl.Ignore;
 public class ResponseModel extends SugarRecord {
 	private String mid;//file ID for Google Drive and time for Dropbox ~ media ID
 	private Long experienceId;
-	private Long userId;
+	private String userId;
 	private String contentType;
 	private String content;
 	private String description;
@@ -44,7 +44,7 @@ public class ResponseModel extends SugarRecord {
 	public ResponseModel(){
 
 	}
-	public ResponseModel(String mid, Long experienceId, Long userId, String contentType, String content, String description,
+	public ResponseModel(String mid, Long experienceId, String userId, String contentType, String content, String description,
 						 String entityType, String entityId, String status, int size, String submittedDate)
 	{
 		this.mid = mid;
@@ -138,9 +138,9 @@ public class ResponseModel extends SugarRecord {
 	{
 		String responseHeader = "<div style='background-color:#AAEEFF;'><p style='margin-left:30px;font-weight:bold;'> A response added by ";
 		if(isLocal)
-			responseHeader += "you at " + this.submittedDate + "</p>";
+			responseHeader += "you on " + this.submittedDate + "</p>";
 		else
-			responseHeader += this.userId + " at " + this.submittedDate + "</p>";
+			responseHeader += this.userId + " on " + this.submittedDate + "</p>";
 		return responseHeader + SharcLibrary.getHTMLCodeForMedia(this.getId().toString(),"Responses", this.getNoOfLike(), this.getNoOfComment(), this.getContentType(),
 				this.getContent(), this.getDescription(), isLocal) + "</div>";
 	}
@@ -149,7 +149,7 @@ public class ResponseModel extends SugarRecord {
 		return submittedDate;
 	}
 
-	public Long getUserId(){
+	public String getUserId(){
 		return  userId;
 	}
 
@@ -161,7 +161,7 @@ public class ResponseModel extends SugarRecord {
 		this.size = size;
 	}
 
-	public void setUserId(Long userId) {
+	public void setUserId(String userId) {
 		this.userId = userId;
 	}
 

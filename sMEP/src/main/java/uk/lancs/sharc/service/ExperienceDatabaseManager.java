@@ -95,7 +95,7 @@ public class ExperienceDatabaseManager
                 this.insertMEDIA(jsonEntity.getLong("id"), jsonEntityDesigner.getLong("designerId"), jsonEntity.getLong("experienceId"), jsonEntityDesigner.getString("contentType"),
                         jsonEntityDesigner.getString("content"), jsonEntity.getString("context"), jsonEntityDesigner.getString("name"),
                         jsonEntity.getString("caption"), jsonEntity.getString("entityType"), jsonEntity.getLong("entityId"),
-                        jsonEntityDesigner.getInt("size"), jsonEntity.getInt("mainMedia") == 1 ? true: false, jsonEntity.getInt("visible") == 1 ? true : false, jsonEntity.getInt("order"));
+                        jsonEntityDesigner.getInt("size"), jsonEntity.getInt("mainMedia") == 1 ? true: false, jsonEntity.getInt("visible") == 1 ? true : false, jsonEntity.getInt("order"), jsonEntity.getInt("commentCount"));
                 //Download media
                 donwloadMediaFile(jsonEntityDesigner.getString("content"));
             }
@@ -104,7 +104,7 @@ public class ExperienceDatabaseManager
             for(int i = 0; i < jsonEntityList.length(); i++){
                 JSONObject jsonEntity = jsonEntityList.getJSONObject(i);
 
-                this.insertResponse(jsonEntity.getString("id"), jsonEntity.getLong("experienceId"), jsonEntity.getLong("userId"), jsonEntity.getString("contentType"),
+                this.insertResponse(jsonEntity.getString("id"), jsonEntity.getLong("experienceId"), jsonEntity.getString("userId"), jsonEntity.getString("contentType"),
                         jsonEntity.getString("content"), jsonEntity.getString("description"), jsonEntity.getString("entityType"), jsonEntity.getString("entityId"),
                         jsonEntity.getString("status"), jsonEntity.getInt("size"), jsonEntity.getString("submittedDate"));
                 //Download media
@@ -175,7 +175,7 @@ public class ExperienceDatabaseManager
 
 	public List<ResponseModel> getCommentsForEntity(Long entityId)
 	{
-		return ResponseModel.find(ResponseModel.class, "experience_Id = ? and entity_Id = ? and entity_Type = 'MEDIA' and status = ?",
+		return ResponseModel.find(ResponseModel.class, "experience_Id = ? and entity_Id = ? and entity_Type = 'media' and status = ?",
                 String.valueOf(this.experienceId), entityId.toString(), ResponseModel.STATUS_ACCEPTED);
 	}
 
@@ -261,13 +261,13 @@ public class ExperienceDatabaseManager
 	}
 	
 	public void insertMEDIA(Long id, Long designerId, Long experienceId, String contentType, String content, String context, String name, String caption,
-                                      String entityType, Long entityID, int size, boolean mainMedia, boolean visible, int order)
+                                      String entityType, Long entityID, int size, boolean mainMedia, boolean visible, int order, int commentCount)
 	{
-        MediaModel objMedia = new MediaModel(id, designerId, experienceId, contentType, content, context, name, caption, entityType, entityID, size, mainMedia, visible, order);
+        MediaModel objMedia = new MediaModel(id, designerId, experienceId, contentType, content, context, name, caption, entityType, entityID, size, mainMedia, visible, order, commentCount);
         objMedia.save();
 	}
 	
-	public void insertResponse(String mid, Long experienceId, Long userId, String contentType, String content, String description,
+	public void insertResponse(String mid, Long experienceId, String userId, String contentType, String content, String description,
                                String entityType, String entityId, String status, int size, String submittedDate)
 	{
         ResponseModel objResponse = new ResponseModel(mid, experienceId, userId, contentType, content, description, entityType, entityId, status, size, submittedDate);

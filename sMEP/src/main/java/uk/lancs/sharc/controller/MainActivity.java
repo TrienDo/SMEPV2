@@ -1,5 +1,7 @@
 package uk.lancs.sharc.controller;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -1206,7 +1208,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				proSize = 1;
 			AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
 	    	builder.setTitle(selectedExperienceMeta.getProName()  + " (" + proSize + " MB)")
-	    	.setMessage(selectedExperienceMeta.getProDesc() + " This experience is designed by " + selectedExperienceMeta.getProAuthID() + " on " + selectedExperienceMeta.getProDate() + ".")
+	    	.setMessage(selectedExperienceMeta.getProDesc() + selectedExperienceMeta.getSummary())
 					.setIcon(android.R.drawable.ic_dialog_alert)
 	    	.setPositiveButton("Download", new DialogInterface.OnClickListener() {
 	    	    public void onClick(DialogInterface dialog, int which) {			      	
@@ -1222,17 +1224,17 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	    	    }
 	    	})
 	    	.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-	    	    public void onClick(DialogInterface dialog, int which) {
-	    	    	smepInteractionLog.addLog(InteractionLog.CANCEL_DOWNLOAD_EXPERIENCE, selectedExperienceMeta.getProName());
-	    	    }
-	    	})
+				public void onClick(DialogInterface dialog, int which) {
+					smepInteractionLog.addLog(InteractionLog.CANCEL_DOWNLOAD_EXPERIENCE, selectedExperienceMeta.getProName());
+				}
+			})
 	    	.show();
     	}
     	else
     	{
 			AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
             alert.setTitle(selectedExperienceMeta.getProName())
-	    	.setMessage(selectedExperienceMeta.getProDesc() + " This experience is designed by " + selectedExperienceMeta.getProAuthName() + " on " + selectedExperienceMeta.getProDate() + ".")
+	    	.setMessage(selectedExperienceMeta.getProDesc() + selectedExperienceMeta.getSummary())
 	    	.setIcon(android.R.drawable.ic_dialog_alert)
 	    	.setPositiveButton("Play", new DialogInterface.OnClickListener() {
 	    	    public void onClick(DialogInterface dialog, int which) {			      	
@@ -1249,7 +1251,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				public void onClick(DialogInterface dialog, int which) {
 					smepInteractionLog.addLog(InteractionLog.CANCEL_PLAY_EXPERIENCE, selectedExperienceMeta.getProName());
 				}
-	    	})
+			})
 	    	.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					//Delete db
@@ -1514,7 +1516,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			case TAKE_PICTURE:
 				if (resultCode == RESULT_OK) {
 					String[] entity = getAssociatedEntity();
-					ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1),
+					ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), "-1",
 							MediaModel.TYPE_IMAGE, outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, SharcLibrary.getMySQLDateStamp());
 					smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_IMAGE, entity[0] + "#" + entity[1]);
 					//res.setFileUri(fileUri);
@@ -1524,7 +1526,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			case CAPTURE_VIDEO:
 				if (resultCode == RESULT_OK) {
 					String[] entity = getAssociatedEntity();
-					ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1),
+					ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), "-1",
 							MediaModel.TYPE_VIDEO, outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, SharcLibrary.getMySQLDateStamp());
 					smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_VIDEO, entity[0] + "#" + entity[1]);
 					addDescription(res);
@@ -1616,7 +1618,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
                 EditText title = (EditText) textEntryView.findViewById(R.id.editTextTitleD);
                 String id = String.valueOf((new Date()).getTime());
                 String[] entity = getAssociatedEntity();
-                ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1), MediaModel.TYPE_TEXT,
+                ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), "-1", MediaModel.TYPE_TEXT,
 						content.getText().toString(), title.getText().toString(), entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, SharcLibrary.getMySQLDateStamp());
                 selectedExperienceDetail.addMyResponse(res);
                 showResponseDone(res);
@@ -1741,7 +1743,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 					stopRecording();
 					String id = outputFile.substring(outputFile.lastIndexOf(File.separator) + 1, outputFile.lastIndexOf("."));
 					String[] entity = getAssociatedEntity();
-					ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1), MediaModel.TYPE_AUDIO,
+					ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), "-1", MediaModel.TYPE_AUDIO,
 							outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, SharcLibrary.getMySQLDateStamp());
 					smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_AUDIO, entity[0] + "#" + entity[1]);
 					addDescription(res);
@@ -2083,7 +2085,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			ret = cloudManager.uploadAndShareFile(filename, response.getFileUri(), response.getContent(), response.getContentType());
 		response.setContent(ret[1]);
 		response.setSize(Integer.parseInt(ret[0]));
-		response.setUserId(restfulManager.getUserId());
+		response.setUserId(String.valueOf(restfulManager.getUserId()));
 		restfulManager.submitResponse(response);
 	}
 
@@ -2117,7 +2119,13 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		for(int i = 0; i < mediaComment.size(); i++)
 		{
 			htmlMediaItem += "<div style='text-align:left;margin-left:10;font-weight:bold;'>" + mediaComment.get(i).getUserId() + "</div>";
-			htmlMediaItem += "<div style='text-align:left;margin-left:10;'>" + mediaComment.get(i).getContent() + "</div>";
+			String path = mediaComment.get(i).getContent();
+			path = SharcLibrary.SHARC_MEDIA_FOLDER + path.substring(path.lastIndexOf("/"));//media cached locally
+			try {
+				htmlMediaItem += "<div style='text-align:left;margin-left:10;'>" + SharcLibrary.readTextFile(new FileInputStream(path)) + "</div>";
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			}
 			htmlMediaItem += "<div style='text-align:right;margin-right:10;color:gray;'>" + mediaComment.get(i).getSubmittedDate() + "</div>";
 		}
 		final String newHTMLContent = htmlMediaItem;
@@ -2144,7 +2152,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
         btnPost.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()), selectedExperienceDetail.getMetaData().getId(), Long.valueOf(-1),
+                ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()), selectedExperienceDetail.getMetaData().getId(), "-1",
 						MediaModel.TYPE_TEXT,  etComment.getText().toString(), "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, etComment.getText().toString().length(), SharcLibrary.getMySQLDateStamp());
                 selectedExperienceDetail.addMyResponse(res);
                 String newContent = newHTMLContent;
@@ -2216,5 +2224,9 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 
 	public RestfulManager getRestfulManager() {
 		return restfulManager;
+	}
+
+	public ExperienceDatabaseManager getExperienceDatabaseManager(){
+		return experienceDatabaseManager;
 	}
 }

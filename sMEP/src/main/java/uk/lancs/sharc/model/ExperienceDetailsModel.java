@@ -72,7 +72,7 @@ public class ExperienceDetailsModel {
      * This function parse a json file to extract info of an experience and store this info in an SQLite db
      * @param jsonExperience
      */
-	public void getExperienceFromSnapshotOnDropbox(JSONObject jsonExperience) //parse content of an experience from JSON file and download media files
+	public void getExperienceFromSnapshotOnCloud(JSONObject jsonExperience) //parse content of an experience from JSON file and download media files
 	{
 		experienceDatabaseManager.parseJsonAndSaveToDB(jsonExperience);
 	}
@@ -290,7 +290,7 @@ public class ExperienceDetailsModel {
     {
 		ArrayList<String> mediaList = new ArrayList<String>();
 		if(metaData!=null)
-			mediaList.add(metaData.getSumaryInfo());
+			mediaList.add(metaData.getExperienceStats());
     	else
 			mediaList.add(SMEPAppVariable.getResource().getString(R.string.message_no_experience));
 		//Get responses
