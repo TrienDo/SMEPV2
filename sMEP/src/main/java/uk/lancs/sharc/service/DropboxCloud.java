@@ -37,7 +37,7 @@ public class DropboxCloud extends CloudManager{
 
     public DropboxCloud(Activity activity) {
         super(activity);
-        setCloudType("Dropbox");
+        setCloudType(CloudManager.TYPE_DROPBOX);
     }
 
     @Override

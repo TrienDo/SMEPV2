@@ -163,41 +163,41 @@ public class ExperienceDetailsModel {
 			allEOIs.get(i).setMediaHTMLCode(content);
 		}
 	}
-	
-    public void renderAllRoutes(GoogleMap mMap)
-    {
-    	allRoutes = experienceDatabaseManager.getAllRoutes();
-        metaData.setRouteCount(allRoutes.size());
+
+	public void renderAllRoutes(GoogleMap mMap)
+	{
+		allRoutes = experienceDatabaseManager.getAllRoutes();
+		metaData.setRouteCount(allRoutes.size());
 		String routeInfo = "";
-    	for (int i = 0; i < allRoutes.size(); i++)
-    	{
+		for (int i = 0; i < allRoutes.size(); i++)
+		{
 			routeInfo += "<div> - Route name: " + allRoutes.get(i).getName() + " (" +   String.format("%.2f", allRoutes.get(i).getDistance()) + " km). Description: " + allRoutes.get(i).getDescription() +"</div>";
 			mMap.addPolyline((new PolylineOptions()
-                .width(5)
-                .color(SharcLibrary.hex2rgb(allRoutes.get(i).getColour()))
-                    .visible(true)
-                )).setPoints(allRoutes.get(i).getPath());
-            if(allRoutes.get(i).getDirected())
-            {
-                startRoute = mMap.addMarker(new MarkerOptions()
-                                .anchor(0.5f, 1.0f)
-                                .title("START")
-                                .position(allRoutes.get(i).getPath().get(0))
-                                .icon(BitmapDescriptorFactory.fromResource(R.raw.start))
-                                .visible(true)
-                );
-                endRoute = mMap.addMarker(new MarkerOptions()
-                                .title("END")
-                                .anchor(0.5f, 0.0f)
-                                .position(allRoutes.get(i).getPath().get(allRoutes.get(i).getPath().size()-1))
-                                .icon(BitmapDescriptorFactory.fromResource(R.raw.end))
-                                .visible(true)
-                );
-            }
-            //metaData.setDifficultLevel(tmpRoute.getDescription());
-    	}
+					.width(5)
+					.color(SharcLibrary.hex2rgb(allRoutes.get(i).getColour()))
+					.visible(true)
+			)).setPoints(allRoutes.get(i).getPath());
+			if(allRoutes.get(i).getDirected())
+			{
+				startRoute = mMap.addMarker(new MarkerOptions()
+								.anchor(0.5f, 1.0f)
+								.title("START")
+								.position(allRoutes.get(i).getPath().get(0))
+								.icon(BitmapDescriptorFactory.fromResource(R.raw.start))
+								.visible(true)
+				);
+				endRoute = mMap.addMarker(new MarkerOptions()
+								.title("END")
+								.anchor(0.5f, 0.0f)
+								.position(allRoutes.get(i).getPath().get(allRoutes.get(i).getPath().size()-1))
+								.icon(BitmapDescriptorFactory.fromResource(R.raw.end))
+								.visible(true)
+				);
+			}
+			//metaData.setDifficultLevel(tmpRoute.getDescription());
+		}
 		metaData.setRouteInfo(routeInfo);
-    }
+	}
     
     public LatLngBounds getGeographicalBoundary()//Get boundary of an experience to move and zoom to suitable location on maps
     {
@@ -252,7 +252,7 @@ public class ExperienceDetailsModel {
 
     public List<String> getAllEOIMediaListItems() //get data to display in the listview of EOI tab
     {
-        ArrayList<String> mediaList = new ArrayList<String>();
+        List<String> mediaList = new ArrayList<String>();
         mediaList.add("<h3>This experience comprises " + allEOIs.size() + " Events of Interest </h3>");
         for (int i = 0; i < allEOIs.size(); i++)
         {

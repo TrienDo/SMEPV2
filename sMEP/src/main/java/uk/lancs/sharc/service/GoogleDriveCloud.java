@@ -58,7 +58,7 @@ public class GoogleDriveCloud extends CloudManager{
 
     public GoogleDriveCloud(Activity activity) {
         super(activity);
-        setCloudType("Google Drive");
+        setCloudType(CloudManager.TYPE_GOOGLE_DRIVE);
         SharedPreferences settings = activity.getPreferences(Context.MODE_PRIVATE);
         mCredential = GoogleAccountCredential.usingOAuth2(
                 activity.getApplicationContext(), Arrays.asList(SCOPES))

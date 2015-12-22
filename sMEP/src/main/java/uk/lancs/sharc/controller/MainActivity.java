@@ -2226,7 +2226,4 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		return restfulManager;
 	}
 
-	public ExperienceDatabaseManager getExperienceDatabaseManager(){
-		return experienceDatabaseManager;
-	}
 }
