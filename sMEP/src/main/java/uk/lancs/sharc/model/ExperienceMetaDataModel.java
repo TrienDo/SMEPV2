@@ -11,12 +11,12 @@ import com.orm.SugarRecord;
  * Date: Feb 2015
  **/
 public class ExperienceMetaDataModel extends SugarRecord {
-	private Long mid;//note: dont use id because SugarORM already uses this id
+	private String mid;//note: dont use id because SugarORM already uses this id
 	private String name;
 	String description;
 	String createdDate;
 	String lastPublishedDate;
-	int designerId;
+	String designerId;
 	boolean isPublished;
 	int moderationMode;
 	String latLng;
@@ -41,15 +41,14 @@ public class ExperienceMetaDataModel extends SugarRecord {
 
 	}
 
-	@Override
-	public Long getId() {
+	public String getExperienceId() {
 		return mid;
 	}
 
-	public ExperienceMetaDataModel(int id, String name, String description, String createdDate, String lastPublishedDate, int designerId, boolean isPublished,
+	public ExperienceMetaDataModel(String id, String name, String description, String createdDate, String lastPublishedDate, String designerId, boolean isPublished,
 								   int moderationMode, String latLng, String summary, String snapshotPath, String thumbnailPath, int size, String theme)
 	{
-		this.mid = Long.valueOf(id);
+		this.mid = id;
 		this.name = name;
 		this.description = description;
 		this.createdDate = createdDate;
@@ -152,7 +151,7 @@ public class ExperienceMetaDataModel extends SugarRecord {
 		return createdDate;
 	}
 
-	public int getProAuthID() {
+	public String getProAuthID() {
 		return designerId;
 	}
 

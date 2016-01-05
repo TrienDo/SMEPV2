@@ -14,9 +14,9 @@ import java.util.List;
  **/
 public class EOIModel extends SugarRecord {
 	//@Unique
-	private Long mid;
-	private Long designerId;
-	private Long experienceId;
+	private String mid;
+	private String designerId;
+	private String experienceId;
 	private String name;
 	private String description;
 	private String poiList;
@@ -28,7 +28,7 @@ public class EOIModel extends SugarRecord {
 	public EOIModel(){
 	}
 
-	public EOIModel(Long id, Long designerId, Long experienceId, String name, String description, String poiList, String routeList){
+	public EOIModel(String id, String designerId, String experienceId, String name, String description, String poiList, String routeList){
 		this.mid = id;
 		this.designerId = designerId;
 		this.experienceId = experienceId;
@@ -78,11 +78,11 @@ public class EOIModel extends SugarRecord {
 		this.mediaHTMLCode = mediaHTMLCode;
 	}
 
-	public Long getId() {
+	public String getEoiId() {
 		return mid;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.mid = id;
 	}
 }

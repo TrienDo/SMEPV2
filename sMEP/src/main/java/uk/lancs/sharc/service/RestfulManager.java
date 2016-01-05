@@ -41,14 +41,14 @@ public class RestfulManager {
 
     private Activity activity;
     private CloudManager cloudManager;
-    private Long userId;
+    private String userId;
     private String apiKey;
 
-    public Long getUserId() {
+    public String getUserId() {
         return userId;
     }
 
-    public void setUserId(Long userId) {
+    public void setUserId(String userId) {
         this.userId = userId;
     }
     public String getApiKey() {
@@ -75,12 +75,12 @@ public class RestfulManager {
         new GetAllOnlineExperiencesThread().execute();
     }
 
-    public void downloadExperience(Long exprienceId){
-        new ExperienceDetailsThread().execute(exprienceId.toString());
+    public void downloadExperience(String exprienceId){
+        new ExperienceDetailsThread().execute(exprienceId);
     }
 
-    public void updateUserExperience(Long experienceId){
-        new UpdateConsumersExperiencesThread().execute(experienceId.toString());
+    public void updateUserExperience(String experienceId){
+        new UpdateConsumersExperiencesThread().execute(experienceId);
     }
 
     public void submitResponse(ResponseModel res){
@@ -135,14 +135,14 @@ public class RestfulManager {
                     {
                         JSONObject objExperience = publishedExperiences.getJSONObject(i);
                         // Storing each json item in variable
-                        int id = objExperience.getInt("id");
+                        String id = objExperience.getString("id");
                         String name = objExperience.getString("name");
                         String description = objExperience.getString("description");
                         if(description.length() > 0 && description.charAt(description.length()-1) != '.')
                             description.concat(".");
                         String createdDate = objExperience.getString("createdDate");
                         String lastPublishedDate = objExperience.getString("lastPublishedDate");
-                        int designerId = objExperience.getInt("designerId");
+                        String designerId = objExperience.getString("designerId");
                         boolean isPublished = true;
                         int moderationMode = objExperience.getInt("moderationMode");
                         String latLng = objExperience.getString("latLng");
@@ -272,6 +272,7 @@ public class RestfulManager {
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
                 //User info
                 String experienceId = args[0];
+                params.add(new BasicNameValuePair("userId", SharcLibrary.getIdString(cloudManager.getCloudAccountId())));
                 params.add(new BasicNameValuePair("experienceId", experienceId));
                 params.add(new BasicNameValuePair("cloudAccountId", cloudManager.getCloudAccountId()));
                 params.add(new BasicNameValuePair("username", cloudManager.getUserName()));
@@ -282,10 +283,12 @@ public class RestfulManager {
                 String ret = json.getString("status");
                 if (ret.equalsIgnoreCase(RestfulManager.STATUS_SUCCESS)) {
                     JSONObject objUser = json.getJSONObject("data");
-                    setUserId(Long.valueOf(objUser.getString("id")));
+                    setUserId(objUser.getString("id"));
                     setApiKey(objUser.getString("apiKey"));
-                    ((MainActivity)activity).getRestfulManager().setUserId(Long.valueOf(objUser.getString("id")));
+                    ((MainActivity)activity).getRestfulManager().setUserId(objUser.getString("id"));
                 }
+                else
+                    Toast.makeText(activity, json.getString("data"), Toast.LENGTH_LONG).show();
                 ((MainActivity)activity).getSelectedExperienceDetail().setIsUpdatedConsumerExperience(true);
                 //smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.VIEW_ONLINE_EXPERIENCES, logData);
             }
@@ -344,10 +347,10 @@ public class RestfulManager {
                 List<NameValuePair> params = new ArrayList<NameValuePair>();
                 //Response info
                 params.add(new BasicNameValuePair("apiKey", getApiKey()));
-                params.add(new BasicNameValuePair("userId", getUserId().toString()));
+                params.add(new BasicNameValuePair("userId", getUserId()));
 
                 params.add(new BasicNameValuePair("id", response.getMid()));
-                params.add(new BasicNameValuePair("experienceId", response.getExperienceId().toString()));
+                params.add(new BasicNameValuePair("experienceId", response.getExperienceId()));
 
                 params.add(new BasicNameValuePair("contentType", response.getContentType()));
                 params.add(new BasicNameValuePair("content", response.getContent()));
@@ -359,6 +362,7 @@ public class RestfulManager {
 
                 params.add(new BasicNameValuePair("size", "" + response.getSize()));
                 params.add(new BasicNameValuePair("submittedDate", response.getSubmittedDate()));
+                params.add(new BasicNameValuePair("fileId", response.getFileId()));
                 //insert MySQL data
                 JSONObject json = jParser.makeHttpRequest(RestfulManager.api_submit_response, "POST", params);
                 String ret = json.getString("status");

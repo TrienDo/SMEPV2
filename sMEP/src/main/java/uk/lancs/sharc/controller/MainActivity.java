@@ -36,6 +36,7 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
@@ -163,6 +164,8 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	
 	//Cloud manager
 	CloudManager cloudManager;
+	String pref_cloudAccId;//remember the previously logged in account
+	String pref_cloudAccType;//remember the previously logged in account -> can auto log in with this later
 
 
     //Response
@@ -590,7 +593,9 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     {
         if(SharcLibrary.isNetworkAvailable(this))
         {
-            gotoExperiencesBrowsingMapMode();
+			if(pref_cloudAccId.equalsIgnoreCase(""))
+				Toast.makeText(this, "Please to log into this app with your cloud account now if you want to submit responses later.", Toast.LENGTH_LONG).show();
+			gotoExperiencesBrowsingMapMode();
 			restfulManager.getPublishedExperience();
         }
         else
@@ -713,13 +718,18 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	        SharcLibrary.createFolder(SharcLibrary.SHARC_MEDIA_FOLDER);
 			//Create log folder
 			SharcLibrary.createFolder(SharcLibrary.SHARC_LOG_FOLDER);
-	       
+			//Get prefernces
+			//remember last logged in cloud accountId and type
+			final SharedPreferences settings = getSharedPreferences(SharcLibrary.APP_PREFERENCES, 0);
+			pref_cloudAccId = settings.getString(SharcLibrary.PREFERENCES_ACCOUNTID, "");
+			pref_cloudAccType = settings.getString(SharcLibrary.PREFERENCES_ACCOUNTTYPE, "");
+
 	        //Current mock position
 	        currentPosition = mMap.addMarker(new MarkerOptions()
-	        	.position(new LatLng(0,0))	        
-	        	.icon(BitmapDescriptorFactory.fromResource(R.raw.location)) 
-	        	.anchor(0.5f, 0.5f)
-	        );
+							.position(new LatLng(0, 0))
+							.icon(BitmapDescriptorFactory.fromResource(R.raw.location))
+							.anchor(0.5f, 0.5f)
+			);
 	        currentPosition.setVisible(false);
 	        
 	        //Current real position
@@ -980,7 +990,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	}
 
 	//Show info of an EOI when the user clicks on a button in the Point of Interest's media tab
-	public void showSelectedEOI(final Long eoiId)
+	public void showSelectedEOI(final String eoiId)
 	{
 		//Work around error "Calling View methods on another thread than the UI thread"
 		runOnUiThread(new Runnable() {
@@ -1215,11 +1225,11 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	    	    	//experienceMetaDB.insertExperience(selectedExperienceMeta.getProName(), selectedExperienceMeta.getProPath(), selectedExperienceMeta.getProDesc(), selectedExperienceMeta.getProDate(), selectedExperienceMeta.getProAuthID(), selectedExperienceMeta.getProPublicURL(), selectedExperienceMeta.getProLocation());
 					experienceDatabaseManager.addOrUpdateExperience(selectedExperienceMeta);
 					clearMap();
-					experienceDatabaseManager.setSelectedExperience(selectedExperienceMeta.getId());
+					experienceDatabaseManager.setSelectedExperience(selectedExperienceMeta.getExperienceId());
                     selectedExperienceDetail = new ExperienceDetailsModel(experienceDatabaseManager, true);
 					selectedExperienceDetail.setMetaData(selectedExperienceMeta);
 					smepInteractionLog.addLog(InteractionLog.DOWNLOAD_ONLINE_EXPERIENCE, selectedExperienceMeta.getProName());
-					restfulManager.downloadExperience(selectedExperienceMeta.getId());
+					restfulManager.downloadExperience(selectedExperienceMeta.getExperienceId());
 					setSelectedTabIcons(0);
 	    	    }
 	    	})
@@ -1239,7 +1249,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	    	.setPositiveButton("Play", new DialogInterface.OnClickListener() {
 	    	    public void onClick(DialogInterface dialog, int which) {			      	
 	    	    	clearMap();
-					experienceDatabaseManager.setSelectedExperience(selectedExperienceMeta.getId());
+					experienceDatabaseManager.setSelectedExperience(selectedExperienceMeta.getExperienceId());
 					selectedExperienceDetail = new ExperienceDetailsModel(experienceDatabaseManager, false);
 					selectedExperienceDetail.setMetaData(selectedExperienceMeta);
 					presentExperience();
@@ -1257,7 +1267,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 					//Delete db
 					smepInteractionLog.addLog(InteractionLog.DELETE_EXPERIENCE, selectedExperienceMeta.getProName());
 					//Delete entry
-					experienceDatabaseManager.deleteExperience(selectedExperienceMeta.getId());
+					experienceDatabaseManager.deleteExperience(selectedExperienceMeta.getExperienceId());
 					//Reload map
 					presentDownloadedExperiences();
 				}
@@ -1516,7 +1526,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			case TAKE_PICTURE:
 				if (resultCode == RESULT_OK) {
 					String[] entity = getAssociatedEntity();
-					ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), "-1",
+					ResponseModel res = new ResponseModel(SharcLibrary.getIdString(pref_cloudAccId),selectedExperienceDetail.getMetaData().getExperienceId(), "-1",
 							MediaModel.TYPE_IMAGE, outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, SharcLibrary.getMySQLDateStamp());
 					smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_IMAGE, entity[0] + "#" + entity[1]);
 					//res.setFileUri(fileUri);
@@ -1526,7 +1536,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			case CAPTURE_VIDEO:
 				if (resultCode == RESULT_OK) {
 					String[] entity = getAssociatedEntity();
-					ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), "-1",
+					ResponseModel res = new ResponseModel(SharcLibrary.getIdString(pref_cloudAccId),selectedExperienceDetail.getMetaData().getExperienceId(), "-1",
 							MediaModel.TYPE_VIDEO, outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, SharcLibrary.getMySQLDateStamp());
 					smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_VIDEO, entity[0] + "#" + entity[1]);
 					addDescription(res);
@@ -1574,6 +1584,10 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	{
 		if(currentTab != 4)
     	{
+			if(pref_cloudAccId.equalsIgnoreCase("")) {
+				Toast.makeText(this, "Please to log into this app with your cloud account now if you want to submit responses.", Toast.LENGTH_LONG).show();
+				return;
+			}
 			AlertDialog.Builder alert = new AlertDialog.Builder(this);
 			alert.setTitle("Add a response");
 			//alert.setCancelable(false);
@@ -1618,7 +1632,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
                 EditText title = (EditText) textEntryView.findViewById(R.id.editTextTitleD);
                 String id = String.valueOf((new Date()).getTime());
                 String[] entity = getAssociatedEntity();
-                ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), "-1", MediaModel.TYPE_TEXT,
+                ResponseModel res = new ResponseModel(SharcLibrary.getIdString(pref_cloudAccId),selectedExperienceDetail.getMetaData().getExperienceId(), "-1", MediaModel.TYPE_TEXT,
 						content.getText().toString(), title.getText().toString(), entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, SharcLibrary.getMySQLDateStamp());
                 selectedExperienceDetail.addMyResponse(res);
                 showResponseDone(res);
@@ -1743,7 +1757,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 					stopRecording();
 					String id = outputFile.substring(outputFile.lastIndexOf(File.separator) + 1, outputFile.lastIndexOf("."));
 					String[] entity = getAssociatedEntity();
-					ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()),selectedExperienceDetail.getMetaData().getId(), "-1", MediaModel.TYPE_AUDIO,
+					ResponseModel res = new ResponseModel(SharcLibrary.getIdString(pref_cloudAccId),selectedExperienceDetail.getMetaData().getExperienceId(), "-1", MediaModel.TYPE_AUDIO,
 							outputFile, "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, SharcLibrary.getMySQLDateStamp());
 					smepInteractionLog.addLog(InteractionLog.ADD_RESPONSE_AUDIO, entity[0] + "#" + entity[1]);
 					addDescription(res);
@@ -1938,6 +1952,14 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			txtUseremail.setText(cloudManager.getUserEmail());
 			txtUsername.setText(cloudManager.getUserName());
 			restfulManager.setCloudManager(cloudManager);
+			//remember last logged in cloud accountId and type
+			final SharedPreferences settings = getSharedPreferences(SharcLibrary.APP_PREFERENCES, 0);
+			SharedPreferences.Editor editor = settings.edit();
+			pref_cloudAccId = cloudManager.getCloudAccountId();
+			pref_cloudAccType = cloudManager.getCloudType();
+			editor.putString(SharcLibrary.PREFERENCES_ACCOUNTID, cloudManager.getCloudAccountId());
+			editor.putString(SharcLibrary.PREFERENCES_ACCOUNTTYPE, cloudManager.getCloudType());
+			editor.commit();
 			//track which users consume which experiences
 			if(selectedExperienceDetail != null)
 			{
@@ -1956,7 +1978,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	{
 		//Only do when internet is available
 		if(SharcLibrary.isNetworkAvailable(this))
-			restfulManager.updateUserExperience(selectedExperienceDetail.getMetaData().getId());
+			restfulManager.updateUserExperience(selectedExperienceDetail.getMetaData().getExperienceId());
 	}
 
     //This inner class (thread) enable uploading a media file and get public URL
@@ -2083,8 +2105,9 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		}
 		else
 			ret = cloudManager.uploadAndShareFile(filename, response.getFileUri(), response.getContent(), response.getContentType());
-		response.setContent(ret[1]);
 		response.setSize(Integer.parseInt(ret[0]));
+		response.setContent(ret[1]);
+		response.setFileId(ret[2]);
 		response.setUserId(String.valueOf(restfulManager.getUserId()));
 		restfulManager.submitResponse(response);
 	}
@@ -2115,7 +2138,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		final WebView webviewMedia = (WebView)commentView.findViewById(R.id.mediaItemContent);
 		//get  comments info
 		htmlMediaItem += "<hr/>";
-		List<ResponseModel> mediaComment = selectedExperienceDetail.getCommentsForEntity(Long.valueOf(entity[1]));
+		List<ResponseModel> mediaComment = selectedExperienceDetail.getCommentsForEntity(entity[1]);
 		for(int i = 0; i < mediaComment.size(); i++)
 		{
 			htmlMediaItem += "<div style='text-align:left;margin-left:10;font-weight:bold;'>" + mediaComment.get(i).getUserId() + "</div>";
@@ -2152,7 +2175,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
         btnPost.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                ResponseModel res = new ResponseModel(String.valueOf((new Date()).getTime()), selectedExperienceDetail.getMetaData().getId(), "-1",
+                ResponseModel res = new ResponseModel(SharcLibrary.getIdString(pref_cloudAccId), selectedExperienceDetail.getMetaData().getExperienceId(), "-1",
 						MediaModel.TYPE_TEXT,  etComment.getText().toString(), "", entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, etComment.getText().toString().length(), SharcLibrary.getMySQLDateStamp());
                 selectedExperienceDetail.addMyResponse(res);
                 String newContent = newHTMLContent;

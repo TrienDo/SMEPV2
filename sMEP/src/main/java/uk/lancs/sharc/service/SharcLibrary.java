@@ -83,6 +83,10 @@ public class SharcLibrary
 	public static final String SHARC_LOG_FOLDER = Environment.getExternalStorageDirectory().getAbsolutePath() + "/Sharc/Logs";
 	public static final String SHARC_POI_NORMAL = "normal";
 	public static final String SHARC_POI_ACCESSIBILITY = "accessibility";
+	public static String APP_PREFERENCES = "SmepPreferences";
+	public static String PREFERENCES_ACCOUNTID = "accountId";
+	public static String PREFERENCES_ACCOUNTTYPE = "accountType";
+
 
 	@SuppressLint("SetJavaScriptEnabled")//allow interacting with Android code
 	public static void setupWebView(WebView mWebview, Activity context, AndroidWebViewInterface interfaceObj)
@@ -117,6 +121,10 @@ public class SharcLibrary
 					+ WindowManager.LayoutParams.FLAG_SHOW_WHEN_LOCKED|
 					+ WindowManager.LayoutParams.FLAG_TURN_SCREEN_ON);
 
+	}
+
+	public static String getIdString(String accountId){
+		return String.valueOf((new Date()).getTime()) + "_" + accountId;
 	}
 
 	//id + itemType are used to identify which media or response is commented

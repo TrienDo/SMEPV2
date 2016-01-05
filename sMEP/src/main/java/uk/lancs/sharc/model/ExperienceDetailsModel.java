@@ -158,7 +158,7 @@ public class ExperienceDetailsModel {
 		metaData.setEoiCount(allEOIs.size());
 		for (int i = 0; i < allEOIs.size(); i++)
 		{
-			List<MediaModel> mediaList = experienceDatabaseManager.getMediaForEntity(allEOIs.get(i).getId(), "EOI");
+			List<MediaModel> mediaList = experienceDatabaseManager.getMediaForEntity(allEOIs.get(i).getEoiId(), "EOI");
 			String content = allEOIs.get(i).getHTMLPresentation(mediaList);
 			allEOIs.get(i).setMediaHTMLCode(content);
 		}
@@ -269,11 +269,11 @@ public class ExperienceDetailsModel {
         return mediaList;
     }
 
-	public String[] getHTMLCodeForEOI(Long id)
+	public String[] getHTMLCodeForEOI(String id)
 	{
 		for(int i = 0; i < allEOIs.size(); i++)
 		{
-			if(allEOIs.get(i).getId() == id)
+			if(allEOIs.get(i).getEoiId().equalsIgnoreCase(id))
 			{
 				return new String[]{allEOIs.get(i).getName(), allEOIs.get(i).getMediaHTMLCode()};
 			}
@@ -409,13 +409,13 @@ public class ExperienceDetailsModel {
         String responseType = res.getContentType().toUpperCase();
 		if(responseForType.equalsIgnoreCase(ResponseModel.FOR_POI))
 		{
-			String enName = getPOINameFromID(Long.valueOf(res.getEntityId()));
+			String enName = getPOINameFromID(res.getEntityId());
 			if(enName!=null)
 				resName =  responseType + " response for POI named " + enName;
 		}
 		else if(responseForType.equalsIgnoreCase(ResponseModel.FOR_EOI))
 		{
-            String enName = getEOINameFromId(Long.valueOf(res.getEntityId()));
+            String enName = getEOINameFromId(res.getEntityId());
 			if(enName!=null)
 				resName =  responseType + " response for EOI named " + enName;
 			else
@@ -485,12 +485,12 @@ public class ExperienceDetailsModel {
         return allPOIs.get(index).getName();
     }
 
-    public Long getPOIID(int index)
+    public String getPOIID(int index)
     {
-        return allPOIs.get(index).getId();
+        return allPOIs.get(index).getPoiId();
     }
 
-    public List<ResponseModel> getCommentsForEntity(Long id)
+    public List<ResponseModel> getCommentsForEntity(String id)
     {
         return experienceDatabaseManager.getCommentsForEntity(id);
     }
@@ -505,21 +505,21 @@ public class ExperienceDetailsModel {
         return myResponses.get(index).getHTMLCodeForResponse(true);
     }
 
-    public String getPOINameFromID(Long id)
+    public String getPOINameFromID(String id)
     {
         for (int i = 0; i < allPOIs.size(); i++)
         {
-            if(allPOIs.get(i).getId() == id)
+            if(allPOIs.get(i).getPoiId().equalsIgnoreCase(id))
                 return allPOIs.get(i).getName();
         }
         return null;
     }
 
-    public String getEOINameFromId(Long id)
+    public String getEOINameFromId(String id)
     {
         for (int i = 0; i < allEOIs.size(); i++)
         {
-            if(allEOIs.get(i).getId() == id)
+            if(allEOIs.get(i).getEoiId().equalsIgnoreCase(id))
                 return allEOIs.get(i).getName();
         }
         return null;

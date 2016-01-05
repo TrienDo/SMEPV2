@@ -18,9 +18,9 @@ import com.orm.SugarRecord;
 
 public class RouteModel extends SugarRecord {
 	//@Unique
-	private Long mid;
-	private Long designerId;
-	private Long experienceId;
+	private String mid;
+	private String designerId;
+	private String experienceId;
 	private String name;
 	private String description;
 	private boolean directed;
@@ -33,7 +33,7 @@ public class RouteModel extends SugarRecord {
 
 	}
 
-	public RouteModel(Long id, Long designerId, Long experienceId, String name, String description, boolean directed, String colour, String path, String poiList, String eoiList){
+	public RouteModel(String id, String designerId, String experienceId, String name, String description, boolean directed, String colour, String path, String poiList, String eoiList){
 		this.mid = id;
 		this.designerId = designerId;
 		this.experienceId = experienceId;
@@ -85,7 +85,7 @@ public class RouteModel extends SugarRecord {
 		this.description = description;
 	}
 
-	public void setId(Long id) {
+	public void setId(String id) {
 		this.mid = id;
 	}
 
@@ -113,24 +113,23 @@ public class RouteModel extends SugarRecord {
 		this.directed = directed;
 	}
 
-	@Override
-	public Long getId() {
+	public String getRouteId() {
 		return mid;
 	}
 
-	public Long getDesignerId() {
+	public String getDesignerId() {
 		return designerId;
 	}
 
-	public void setDesignerId(Long designerId) {
+	public void setDesignerId(String designerId) {
 		this.designerId = designerId;
 	}
 
-	public Long getExperienceId() {
+	public String getExperienceId() {
 		return experienceId;
 	}
 
-	public void setExperienceId(Long experienceId) {
+	public void setExperienceId(String experienceId) {
 		this.experienceId = experienceId;
 	}
 

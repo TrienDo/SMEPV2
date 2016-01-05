@@ -18,6 +18,6 @@ public class AndroidWebViewInterface {
 
     @JavascriptInterface
     public void showEOIInfo(String EoiID) {
-        ((MainActivity)mContext).showSelectedEOI(Long.valueOf(EoiID));
+        ((MainActivity)mContext).showSelectedEOI(EoiID);
     }
 }
