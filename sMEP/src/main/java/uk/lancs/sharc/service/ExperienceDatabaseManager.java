@@ -27,7 +27,7 @@ public class ExperienceDatabaseManager
 {
 	private String experienceId;
 	public ExperienceDatabaseManager() {
-        experienceId = "-";
+        experienceId = "-1";
     }
 
     public void setSelectedExperience(String experienceId){
@@ -205,22 +205,10 @@ public class ExperienceDatabaseManager
 		return responseList;
 	}
 
-	/*
-	public String getRepresentativePhoto(Long id)
-    {
-        List<MediaModel> mainMedia =  MediaModel.find(MediaModel.class, "experienceID = ? and entityId = ? and entityType = ? and mainMedia = 1",
-                String.valueOf(this.experienceId), id.toString(), "POI");
-        if(mainMedia != null && mainMedia.size() > 0)
-            return mainMedia.get(0).getContent();
-        else
-            return "";
-    }
-    */
-
 
 	public String[] getEOIFromID(String eoiId)
     {
-        List<EOIModel> objEoi =  EOIModel.find(EOIModel.class, "experience_Id = ? and id = ?", this.experienceId, eoiId);
+        List<EOIModel> objEoi =  EOIModel.find(EOIModel.class, "experience_Id = ? and mid = ?", this.experienceId, eoiId);
         if(objEoi != null && objEoi.size() > 0){
             return new String[]{objEoi.get(0).getName(), objEoi.get(0).getDescription()};
     	}

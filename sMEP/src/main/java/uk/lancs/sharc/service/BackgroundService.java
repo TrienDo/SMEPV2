@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
+
+import uk.lancs.sharc.model.GpsLocationSource;
+import uk.lancs.sharc.model.LocationSource;
 import uk.lancs.sharc.model.SMEPAppVariable;
 import uk.lancs.sharc.model.POIModel;
 import com.google.android.gms.maps.model.LatLng;
@@ -74,86 +77,12 @@ public class BackgroundService extends Service
 			    	if(location.getAccuracy() < 10)//Only use GPS with high accuracy as GPS may jump
 					{
 						mCurrentLocation.set(location);
-						findTriggerZone(location);
+						LocationSource source = new GpsLocationSource(location, allPOIs);
+						source.generateContent();
 					}
 			    }
 		    }
 	    }
-
-		/**
-		 *This method identify whether the current location is within any trigger zone to push media to the user
-		 * @param L1: current location
-		 */
-		private void findTriggerZone(Location L1)
-	    {
-			if(allPOIs.size()>0)
-			{
-				boolean isWithin = false;
-				LatLng tmpPoint;
-				for (int i = 0; i < allPOIs.size(); i++)
-				{
-					isWithin = false;
-										
-					if(allPOIs.get(i).getTriggerType().equalsIgnoreCase("circle"))
-					{
-						float[] results = new float[1];
-						tmpPoint = allPOIs.get(i).getTriggerZoneCoordinates().get(0);
-						Location.distanceBetween(L1.getLatitude(),L1.getLongitude(), tmpPoint.latitude,tmpPoint.longitude, results);
-						if(results[0] < allPOIs.get(i).getTriggerZoneRadius())//radius of circle
-							isWithin = true;
-					}
-					else if(allPOIs.get(i).getTriggerType().equalsIgnoreCase("polygon"))
-					{						
-						List<LatLng> polyPath = allPOIs.get(i).getTriggerZoneCoordinates();
-						isWithin = SharcLibrary.isCurrentPointInsideRegion(new LatLng(L1.getLatitude(), L1.getLongitude()), polyPath);
-					}					
-					
-					if(isWithin)
-					{
-                        SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
-                        if(shownLocation.get(i) == null)//If the user has not visited this POI
-						{	
-							shownLocation.put(i, new Date().getTime());       //push id in the hashmap to record ID and time that a POI is visited
-                            pushMediaForPOI(i);
-
-						}
-                        else if(mySMEPAppVariable.isPushAgain())//The user has already visited this POI but wants media to be push again when revisiting
-                        {
-							long period = new Date().getTime() - shownLocation.get(i);//Get milliseconds between last push and current time
-							if(period >= mySMEPAppVariable.getTimeThreshold())        //only push again if the user comes back after time threshold - converted to millisecond
-                            {
-                                shownLocation.put(i,new Date().getTime());
-                                pushMediaForPOI(i);
-                            }
-                        }
-					}
-				}
-			}
-	    }
-	   
-        private void pushMediaForPOI(int i)
-        {
-            SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
-            mySMEPAppVariable.setNewMedia(true);//Mark that there are new media so Main UI can render them
-            mySMEPAppVariable.setNewMediaIndex(i);
-            if(mySMEPAppVariable.isVibrationNotification())
-            {
-                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                v.vibrate(1000);
-            }
-            if(mySMEPAppVariable.isSoundNotification())
-            {
-                try {
-                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                    r.play();
-                }
-                catch (Exception e) {
-                    Log.e(TAG, "Can't play sound: " + e.getLocalizedMessage());
-                    e.printStackTrace();
-                }
-            }
-        }
 	    @Override
 	    public void onProviderDisabled(String provider)
 	    {
