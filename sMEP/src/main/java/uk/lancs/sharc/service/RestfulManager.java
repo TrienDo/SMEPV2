@@ -289,7 +289,7 @@ public class RestfulManager {
                 }
                 else
                     Toast.makeText(activity, json.getString("data"), Toast.LENGTH_LONG).show();
-                ((MainActivity)activity).getSelectedExperienceDetail().setIsUpdatedConsumerExperience(true);
+                //((MainActivity)activity).getSelectedExperienceDetail().setIsUpdatedConsumerExperience(true);
                 //smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.VIEW_ONLINE_EXPERIENCES, logData);
             }
             catch (Exception e)

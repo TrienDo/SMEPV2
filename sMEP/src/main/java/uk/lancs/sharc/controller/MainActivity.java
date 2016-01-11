@@ -9,8 +9,11 @@ import java.util.List;
 import java.util.Locale;
 
 import uk.lancs.sharc.R;
+import uk.lancs.sharc.model.LocationSource;
 import uk.lancs.sharc.model.MapWindowAdapter;
+import uk.lancs.sharc.model.MediaContentManager;
 import uk.lancs.sharc.model.MediaModel;
+import uk.lancs.sharc.model.TapLocationSource;
 import uk.lancs.sharc.service.BackgroundService;
 import uk.lancs.sharc.service.CloudManager;
 import uk.lancs.sharc.service.DropboxCloud;
@@ -693,6 +696,8 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	{		
 		try
 	    {
+			SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
+			mySMEPAppVariable.setActivity(this);
 			smepInteractionLog = new InteractionLog(MainActivity.this);
 			restfulManager = new RestfulManager(MainActivity.this);
 			btnResponse = (Button) findViewById(R.id.btnAddResponse);
@@ -1046,8 +1051,8 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			String connection = "";
 			if (SharcLibrary.isNetworkAvailable(this) && cloudManager != null) {
 				connection = " Tap the yellow icon to view, blue icon to upload, and red icon to delete a response. You can also tap the 'Upload all responses' button at bottom of the screen to upload all of your responses.";
-				if (!selectedExperienceDetail.isUpdatedConsumerExperience())
-					keepTrackConsumerExperience();
+				//if (!selectedExperienceDetail.isUpdatedConsumerExperience())
+				//	keepTrackConsumerExperience();
 			}
 			if (SharcLibrary.isNetworkAvailable(this) && cloudManager == null)
 				Toast.makeText(this, getString(R.string.message_dropboxConnection), Toast.LENGTH_LONG).show();
@@ -1331,33 +1336,40 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     public void addPOIMarkerListener()
     {
     	
-    	mMap.setOnMarkerClickListener(new OnMarkerClickListener() 
-        {				
+    	mMap.setOnMarkerClickListener(new OnMarkerClickListener() {
 			@Override
-			public boolean onMarkerClick(Marker arg0) 
-			{				
-				if(arg0.getTitle().equalsIgnoreCase("START"))
+			public boolean onMarkerClick(Marker arg0) {
+				if (arg0.getTitle().equalsIgnoreCase("START"))
 					Toast.makeText(getApplicationContext(), "This marker indicates the starting point of the route", Toast.LENGTH_LONG).show();
-				else if(arg0.getTitle().equalsIgnoreCase("END"))
+				else if (arg0.getTitle().equalsIgnoreCase("END"))
 					Toast.makeText(getApplicationContext(), "This marker indicates the end point of the route", Toast.LENGTH_LONG).show();
-				else if(arg0.getTitle().equalsIgnoreCase("YAH"))//current location marker
-                {
-                    Toast.makeText(getApplicationContext(), "This circle shows your current location", Toast.LENGTH_LONG).show();
-                }
-                else
-					pushMediaToUser(Integer.valueOf(arg0.getTitle()));
-                if(currentPos != null)
-                    currentPos.showInfoWindow();
-            	return true;
-            }
-        });
+				else if (arg0.getTitle().equalsIgnoreCase("YAH"))//current location marker
+				{
+					Toast.makeText(getApplicationContext(), "This circle shows your current location", Toast.LENGTH_LONG).show();
+				} else {
+					currentPOIIndex = Integer.valueOf(arg0.getTitle());
+					//pushMediaToUser(Integer.valueOf(arg0.getTitle()));
+					LocationSource locationSource = new TapLocationSource(currentPOIIndex, getApplicationContext(), LocationSource.LOCATION_SOURCE_POI_TAP);
+					MediaContentManager mediaContentManager = new MediaContentManager(locationSource, MainActivity.this, null);
+					mediaContentManager.renderContent();
+				}
+				if (currentPos != null)
+					currentPos.showInfoWindow();
+				return true;
+			}
+		});
     }
 	
     @Override
 	public void onMapClick(LatLng arg0) {
 		// Click on a trigger zone 
-    	if(selectedExperienceDetail != null)
-    		pushMediaToUser(selectedExperienceDetail.getTriggerZoneIndexFromLocation(arg0));
+    	if(selectedExperienceDetail != null) {
+			//pushMediaToUser(selectedExperienceDetail.getTriggerZoneIndexFromLocation(arg0));
+			currentPOIIndex = selectedExperienceDetail.getTriggerZoneIndexFromLocation(arg0);
+			LocationSource locationSource = new TapLocationSource(currentPOIIndex, getApplicationContext(), LocationSource.LOCATION_SOURCE_MAP_TOUCH);
+			MediaContentManager mediaContentManager = new MediaContentManager(locationSource, MainActivity.this, null);
+			mediaContentManager.renderContent();
+		}
 	}
     
     public void pushMediaToUser(int poiID)
@@ -1440,13 +1452,14 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentPos.getPosition(), mMap.getCameraPosition().zoom));
 			}
 			
-			SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
+			/*SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
 			if(mySMEPAppVariable.isNewMedia())
 			{
 				mySMEPAppVariable.setNewMedia(false);
 				currentPOIIndex = mySMEPAppVariable.getNewMediaIndex();
 				displayMediaTab(currentPOIIndex, "FROM_LOCATION_SERVICE");
 			}
+			*/
 			
 			if (smepSettings.isTestMode()) {
 				restfulManager.startMockLocationService(testingCode);
@@ -2249,4 +2262,40 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		return restfulManager;
 	}
 
+	/*public void renderMedia(final int displayMode, int poiIndex, int mediaIndex){//may need to change later for Commander scenario as only one media is shown not all media of a POI
+		runOnUiThread(new Runnable() {
+			@Override public void run() {
+				SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
+				if(mySMEPAppVariable.isNewMedia())
+				{
+					mySMEPAppVariable.setNewMedia(false);
+					currentPOIIndex = mySMEPAppVariable.getNewMediaIndex();
+					displayMediaTab(currentPOIIndex, "FROM_LOCATION_SERVICE");
+					if(displayMode == MediaContentManager.RENDER_MODE_MEDIA){
+						displayOneMedia();
+					}
+				}
+			}
+		});
+	}*/
+
+	public void renderMedia(final int displayMode, final int mediaIndex){//may need to change later for Commander scenario as only one media is shown not all media of a POI
+		runOnUiThread(new Runnable() {
+			@Override public void run() {
+				SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
+				if(mySMEPAppVariable.isNewMedia())
+				{
+					mySMEPAppVariable.setNewMedia(false);
+					displayMediaTab(mySMEPAppVariable.getNewMediaIndex(), "FROM_LOCATION_SERVICE");
+					if(displayMode == MediaContentManager.RENDER_MODE_MEDIA){
+						displayOneMedia(mediaIndex);
+					}
+				}
+			}
+		});
+	}
+
+	public void displayOneMedia(int mediaIndex){
+
+	}
 }
