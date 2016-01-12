@@ -9,11 +9,10 @@ import java.util.List;
 import java.util.Locale;
 
 import uk.lancs.sharc.R;
-import uk.lancs.sharc.model.LocationSource;
+import uk.lancs.sharc.model.ContentTriggerSource;
 import uk.lancs.sharc.model.MapWindowAdapter;
-import uk.lancs.sharc.model.MediaContentManager;
 import uk.lancs.sharc.model.MediaModel;
-import uk.lancs.sharc.model.TapLocationSource;
+import uk.lancs.sharc.model.TapContentTriggerSource;
 import uk.lancs.sharc.service.BackgroundService;
 import uk.lancs.sharc.service.CloudManager;
 import uk.lancs.sharc.service.DropboxCloud;
@@ -49,8 +48,6 @@ import android.hardware.SensorManager;
 import android.location.Location;
 import android.location.LocationManager;
 import android.media.MediaRecorder;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -158,13 +155,8 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     private Sensor sensor;                      //Manage all sensors
     private float mDeclination;                 //heading of the device
 
-    //Location service
-    LocationListener[] mLocationListeners = new LocationListener[] {
-	        new LocationListener(LocationManager.GPS_PROVIDER),
-	        new LocationListener(LocationManager.NETWORK_PROVIDER)
-	};
 	String testingCode;
-	
+
 	//Cloud manager
 	CloudManager cloudManager;
 	String pref_cloudAccId;//remember the previously logged in account
@@ -741,7 +733,6 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	        selectedLocationIcon = R.raw.yahred24;
 	        createCurrentLocationMarker();
 	        
-	        setUpLocationService();
 	        //Start sensor
 	        sensorService = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 			sensor = sensorService.getDefaultSensor(Sensor.TYPE_ORIENTATION);
@@ -1348,10 +1339,8 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 					Toast.makeText(getApplicationContext(), "This circle shows your current location", Toast.LENGTH_LONG).show();
 				} else {
 					currentPOIIndex = Integer.valueOf(arg0.getTitle());
-					//pushMediaToUser(Integer.valueOf(arg0.getTitle()));
-					LocationSource locationSource = new TapLocationSource(currentPOIIndex, getApplicationContext(), LocationSource.LOCATION_SOURCE_POI_TAP);
-					MediaContentManager mediaContentManager = new MediaContentManager(locationSource, MainActivity.this, null);
-					mediaContentManager.renderContent();
+					ContentTriggerSource contentTriggerSource = new TapContentTriggerSource(currentPOIIndex, getApplicationContext(), MainActivity.this, ContentTriggerSource.SOURCE_POI_TAP);
+					contentTriggerSource.renderContent();
 				}
 				if (currentPos != null)
 					currentPos.showInfoWindow();
@@ -1364,71 +1353,12 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	public void onMapClick(LatLng arg0) {
 		// Click on a trigger zone 
     	if(selectedExperienceDetail != null) {
-			//pushMediaToUser(selectedExperienceDetail.getTriggerZoneIndexFromLocation(arg0));
 			currentPOIIndex = selectedExperienceDetail.getTriggerZoneIndexFromLocation(arg0);
-			LocationSource locationSource = new TapLocationSource(currentPOIIndex, getApplicationContext(), LocationSource.LOCATION_SOURCE_MAP_TOUCH);
-			MediaContentManager mediaContentManager = new MediaContentManager(locationSource, MainActivity.this, null);
-			mediaContentManager.renderContent();
+			ContentTriggerSource contentTriggerSource = new TapContentTriggerSource(currentPOIIndex, getApplicationContext(), MainActivity.this, ContentTriggerSource.SOURCE_MAP_TOUCH);
+			contentTriggerSource.renderContent();
 		}
 	}
-    
-    public void pushMediaToUser(int poiID)
-    {
-    	try 
-		{
-    		//currentPOIIndex = Integer.valueOf(arg0.getTitle());    		
-        	displayMediaTab(poiID, "FROM_MAP_PULL");            		
-        	if(smepSettings.isSoundNotification())
-        	{
-			    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-			    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-			    r.play();
-        	}
-		} 
-		catch (Exception e) {Log.e(TAG, "Error when playing sound: " + e.getMessage());}
-    }
 
-	//////////////////////////////////////////////////////////////////////////////
-	// LOCATION CHANGE SERVICE
-	//////////////////////////////////////////////////////////////////////////////
-
-    /**
-     * <p>This class tracks the current location of the user</p>
-     **/
-    private class LocationListener implements android.location.LocationListener
-	{
-	    Location mLastLocation;	    
-	    
-	    public LocationListener(String provider)
-	    {
-	        //Log.e(TAG, "LocationListener " + provider);
-	        mLastLocation = new Location(provider);
-	    }
-	    @Override
-	    public void onLocationChanged(Location location)
-	    {
-	        //Log.e(TAG, "onLocationChanged..................................: " + location);
-	    	mLastLocation.set(location);		   
-	    	updateSMEPWhenLocationChange(location);
-	    }
-	    	    
-	    @Override
-	    public void onProviderDisabled(String provider)
-	    {
-	        //Log.e(TAG, "onProviderDisabled: " + provider);            
-	    }
-	    @Override
-	    public void onProviderEnabled(String provider)
-	    {
-	        //Log.e(TAG, "onProviderEnabled: " + provider);
-	    }
-	    @Override
-	    public void onStatusChanged(String provider, int status, Bundle extras)
-	    {
-	        //Log.e(TAG, "onStatusChanged: " + provider);
-	    }
-	}	
-	
 	public void updateSMEPWhenLocationChange(Location location) {
 		try {
 			//Log.d("Mock Location:","Location changed:" + "Test mode: " + isTestMode);
@@ -1451,43 +1381,13 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
             if (smepSettings.isYAHCentred()) {
 				mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(currentPos.getPosition(), mMap.getCameraPosition().zoom));
 			}
-			
-			/*SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
-			if(mySMEPAppVariable.isNewMedia())
-			{
-				mySMEPAppVariable.setNewMedia(false);
-				currentPOIIndex = mySMEPAppVariable.getNewMediaIndex();
-				displayMediaTab(currentPOIIndex, "FROM_LOCATION_SERVICE");
-			}
-			*/
-			
+
 			if (smepSettings.isTestMode()) {
 				restfulManager.startMockLocationService(testingCode);
 			}
 		} catch (Exception e) {
             e.printStackTrace();
 		}
-	}
-	
-	private void setUpLocationService()	{
-		LocationManager mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
-		try	{
-	        mLocationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE, mLocationListeners[1]);
-	    } 
-		catch (java.lang.SecurityException ex) {
-	        Log.i(TAG, "fail to request location update, ignore", ex);
-	    } 
-		catch (IllegalArgumentException ex) {
-	        Log.d(TAG, "network provider does not exist, " + ex.getMessage());
-	    }
-	    try {
-	        mLocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, LOCATION_INTERVAL, LOCATION_DISTANCE, mLocationListeners[0]);
-	    } 
-		catch (java.lang.SecurityException ex) {
-	        Log.i(TAG, "fail to request location update, ignore", ex);
-	    } catch (IllegalArgumentException ex) {
-	        Log.d(TAG, "gps provider does not exist " + ex.getMessage());
-	    }
 	}
 
 	public void gotoCurrentLocation(View v)
@@ -2262,32 +2162,15 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		return restfulManager;
 	}
 
-	/*public void renderMedia(final int displayMode, int poiIndex, int mediaIndex){//may need to change later for Commander scenario as only one media is shown not all media of a POI
+	public void renderMedia(final int contentTriggerSourceType, final int displayMode, final int mediaIndex){//may need to change later for Commander scenario as only one media is shown not all media of a POI
 		runOnUiThread(new Runnable() {
 			@Override public void run() {
 				SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
 				if(mySMEPAppVariable.isNewMedia())
 				{
 					mySMEPAppVariable.setNewMedia(false);
-					currentPOIIndex = mySMEPAppVariable.getNewMediaIndex();
-					displayMediaTab(currentPOIIndex, "FROM_LOCATION_SERVICE");
-					if(displayMode == MediaContentManager.RENDER_MODE_MEDIA){
-						displayOneMedia();
-					}
-				}
-			}
-		});
-	}*/
-
-	public void renderMedia(final int displayMode, final int mediaIndex){//may need to change later for Commander scenario as only one media is shown not all media of a POI
-		runOnUiThread(new Runnable() {
-			@Override public void run() {
-				SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
-				if(mySMEPAppVariable.isNewMedia())
-				{
-					mySMEPAppVariable.setNewMedia(false);
-					displayMediaTab(mySMEPAppVariable.getNewMediaIndex(), "FROM_LOCATION_SERVICE");
-					if(displayMode == MediaContentManager.RENDER_MODE_MEDIA){
+					displayMediaTab(mySMEPAppVariable.getNewMediaIndex(), String.valueOf(contentTriggerSourceType));
+					if(displayMode == ContentTriggerSource.RENDER_MODE_MEDIA){
 						displayOneMedia(mediaIndex);
 					}
 				}
@@ -2296,6 +2179,21 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	}
 
 	public void displayOneMedia(int mediaIndex){
-
+		AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+		dialog.setTitle("Please enter title for the media (optional)");
+		final AlertDialog alert = dialog.create();
+		String htmlMediaItem = selectedExperienceDetail.getPOIHtmlListItems(currentPOIIndex, initialLocation).get(mediaIndex);
+		final WebView webviewMedia = new WebView(this);
+		String base = "file://" + SharcLibrary.SHARC_MEDIA_FOLDER + "/";
+		SharcLibrary.setupWebView(webviewMedia, MainActivity.this);
+		webviewMedia.getSettings().setBuiltInZoomControls(true);
+		webviewMedia.loadDataWithBaseURL(base, htmlMediaItem, "text/html", "utf-8", null);
+		dialog.setView(webviewMedia);
+		dialog.setNegativeButton("Close", new DialogInterface.OnClickListener() {
+			public void onClick(DialogInterface dialog, int whichButton) {
+				// Canceled.
+			}
+		});
+		setDialogFontSizeAndShow(dialog, FONT_SIZE);
 	}
 }

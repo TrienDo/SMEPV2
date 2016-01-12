@@ -9,6 +9,7 @@ import uk.lancs.sharc.service.SharcLibrary;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.View.OnClickListener;
@@ -59,6 +60,8 @@ public class MediaListAdapter extends ArrayAdapter<String>
 		TextView txtNoComment = (TextView) rowView.findViewById(R.id.txtNoComment);
 		ImageButton btnComment = (ImageButton) rowView.findViewById(R.id.btnCommentMedia);
 		Button btnBack = (Button) rowView.findViewById(R.id.btnBackToMap);
+		WebView webviewMedia = (WebView) rowView.findViewById(R.id.webViewMedia);
+		webviewMedia.setTag(position);
 
 		if(position==0 || listType == 1)
 		{
@@ -89,7 +92,7 @@ public class MediaListAdapter extends ArrayAdapter<String>
 		if(listType != 0)
 			countLine = "";
 		//Content in webview
-		WebView webviewMedia = (WebView) rowView.findViewById(R.id.webViewMedia);		
+
 		String base = "file://" + SharcLibrary.SHARC_MEDIA_FOLDER + "/";
 		if(listType == 0 && position == 0)//eoi
 		{
@@ -98,14 +101,29 @@ public class MediaListAdapter extends ArrayAdapter<String>
 		}
 		else
 			SharcLibrary.setupWebView(webviewMedia, context);
-		webviewMedia.loadDataWithBaseURL(base, countLine + mediaList.get(position), "text/html", "utf-8",null);
+		webviewMedia.loadDataWithBaseURL(base, countLine + mediaList.get(position), "text/html", "utf-8", null);
 
-		//Buttons
+		/*webviewMedia.setOnTouchListener(new View.OnTouchListener() {
+			@Override
+			public boolean onTouch(View v, MotionEvent event) {
+				int position = (Integer) v.getTag();
+				if(position > 0)
+					Toast.makeText(getContext(), "You've selected media: " +  mediaList.get(position), Toast.LENGTH_LONG).show();
+				return false;
+			}
+		});*/
+
+		//Button events
 		btnLike.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				int position = (Integer) v.getTag();
-				Toast.makeText(getContext(), "You've liked " + String.valueOf(position), Toast.LENGTH_LONG).show();
+				//Toast.makeText(getContext(), "You've liked " + String.valueOf(position), Toast.LENGTH_LONG).show();
+				if(position > 0) {
+					MainActivity activity = (MainActivity)context;
+					activity.displayOneMedia(position);
+					//Toast.makeText(getContext(), "You've selected media: " + mediaList.get(position), Toast.LENGTH_LONG).show();
+				}
 				
 			}
 		});
@@ -123,10 +141,13 @@ public class MediaListAdapter extends ArrayAdapter<String>
 		btnBack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				MainActivity activity = (MainActivity)context;
+				MainActivity activity = (MainActivity) context;
 				activity.displayMapTab();
 			}
 		});
+
+
+		//Webview's event
 		return rowView;
 	}
 }

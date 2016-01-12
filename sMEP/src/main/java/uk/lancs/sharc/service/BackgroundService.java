@@ -1,16 +1,13 @@
 package uk.lancs.sharc.service;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.Hashtable;
 import java.util.List;
 
-import uk.lancs.sharc.model.GpsLocationSource;
-import uk.lancs.sharc.model.LocationSource;
-import uk.lancs.sharc.model.MediaContentManager;
+import uk.lancs.sharc.controller.MainActivity;
+import uk.lancs.sharc.model.ContentTriggerSource;
+import uk.lancs.sharc.model.GpsContentTriggerSource;
 import uk.lancs.sharc.model.SMEPAppVariable;
 import uk.lancs.sharc.model.POIModel;
-import com.google.android.gms.maps.model.LatLng;
 
 import android.app.Activity;
 import android.app.Service;
@@ -18,13 +15,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.location.Location;
 import android.location.LocationManager;
-import android.media.Ringtone;
-import android.media.RingtoneManager;
-import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
-import android.os.Vibrator;
-import android.provider.MediaStore;
 import android.util.Log;
 
 /**
@@ -54,7 +46,9 @@ public class BackgroundService extends Service
 	    public void onLocationChanged(Location location)
         {
 	    	SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();//Get the global settings of SMEP
-	    	if(mySMEPAppVariable.isNewExperience())
+	    	//Update screen
+			((MainActivity)mySMEPAppVariable.getActivity()).updateSMEPWhenLocationChange(location);
+			if(mySMEPAppVariable.isNewExperience())
             {
 	    		allPOIs = mySMEPAppVariable.getAllPOIs();
 	    		shownLocation.clear();
@@ -74,102 +68,24 @@ public class BackgroundService extends Service
 			    if(mySMEPAppVariable.isTestMode())
 			    {
 			    	mCurrentLocation.set(mySMEPAppVariable.getMockLocation());
-			    	//findTriggerZone(mySMEPAppVariable.getMockLocation());
 					checkAndRenderContent(mySMEPAppVariable.getMockLocation(), mySMEPAppVariable.getActivity());
 			    }
 			    else
 			    {
-			    	if(location.getAccuracy() < 100)//Only use GPS with high accuracy as GPS may jump
+			    	if(location.getAccuracy() <= 100)//Only use GPS with high accuracy as GPS may jump
 					{
 						mCurrentLocation.set(location);
 						checkAndRenderContent(location, mySMEPAppVariable.getActivity());
-						//findTriggerZone(location);
 					}
 			    }
 		    }
 	    }
 
 		private void checkAndRenderContent(Location location, Activity activity){
-			LocationSource locationSource = new GpsLocationSource(location, allPOIs, getApplicationContext());
-			MediaContentManager mediaContentManager = new MediaContentManager(locationSource, activity, shownLocation);
-			shownLocation = mediaContentManager.renderContent();
+			ContentTriggerSource contentTriggerSource = new GpsContentTriggerSource(location, allPOIs, getApplicationContext(),activity, shownLocation);
+			shownLocation = contentTriggerSource.renderContent();
 		}
 
-		/**
-		 *This method identify whether the current location is within any trigger zone to push media to the user
-		 * @param L1: current location
-		 */
-		private void findTriggerZone(Location L1)
-	    {
-			if(allPOIs.size()>0)
-			{
-				boolean isWithin = false;
-				LatLng tmpPoint;
-				for (int i = 0; i < allPOIs.size(); i++)
-				{
-					isWithin = false;
-
-					if(allPOIs.get(i).getTriggerType().equalsIgnoreCase("circle"))
-					{
-						float[] results = new float[1];
-						tmpPoint = allPOIs.get(i).getTriggerZoneCoordinates().get(0);
-						Location.distanceBetween(L1.getLatitude(),L1.getLongitude(), tmpPoint.latitude,tmpPoint.longitude, results);
-						if(results[0] < allPOIs.get(i).getTriggerZoneRadius())//radius of circle
-							isWithin = true;
-					}
-					else if(allPOIs.get(i).getTriggerType().equalsIgnoreCase("polygon"))
-					{
-						List<LatLng> polyPath = allPOIs.get(i).getTriggerZoneCoordinates();
-						isWithin = SharcLibrary.isCurrentPointInsideRegion(new LatLng(L1.getLatitude(), L1.getLongitude()), polyPath);
-					}
-
-					if(isWithin)
-					{
-                        SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
-                        if(shownLocation.get(i) == null)//If the user has not visited this POI
-						{
-							shownLocation.put(i, new Date().getTime());       //push id in the hashmap to record ID and time that a POI is visited
-                            pushMediaForPOI(i);
-
-
-						}
-                        else if(mySMEPAppVariable.isPushAgain())//The user has already visited this POI but wants media to be push again when revisiting
-                        {
-							long period = new Date().getTime() - shownLocation.get(i);//Get milliseconds between last push and current time
-							if(period >= mySMEPAppVariable.getTimeThreshold())        //only push again if the user comes back after time threshold - converted to millisecond
-                            {
-                                shownLocation.put(i,new Date().getTime());
-                                pushMediaForPOI(i);
-                            }
-                        }
-					}
-				}
-			}
-	    }
-
-		private void pushMediaForPOI(int i)
-        {
-            SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
-            mySMEPAppVariable.setNewMedia(true);//Mark that there are new media so Main UI can render them
-            mySMEPAppVariable.setNewMediaIndex(i);
-            if(mySMEPAppVariable.isVibrationNotification())
-            {
-                Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-                v.vibrate(1000);
-            }
-            if(mySMEPAppVariable.isSoundNotification())
-            {
-                try {
-                    Uri notification = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION);
-                    Ringtone r = RingtoneManager.getRingtone(getApplicationContext(), notification);
-                    r.play();
-                }
-                catch (Exception e) {
-                    Log.e(TAG, "Can't play sound: " + e.getLocalizedMessage());
-                    e.printStackTrace();
-                }
-            }
-        }
 	    @Override
 	    public void onProviderDisabled(String provider)
 	    {
