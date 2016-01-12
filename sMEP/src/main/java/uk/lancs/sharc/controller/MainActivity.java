@@ -46,7 +46,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.location.Location;
-import android.location.LocationManager;
 import android.media.MediaRecorder;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -1049,7 +1048,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				Toast.makeText(this, getString(R.string.message_dropboxConnection), Toast.LENGTH_LONG).show();
 			if (!SharcLibrary.isNetworkAvailable(this) && cloudManager != null)
 				Toast.makeText(this, getString(R.string.message_wifiConnection), Toast.LENGTH_LONG).show();
-			String htmlCode = "Here you can review and upload your reponses for the experience: '" + selectedExperienceDetail.getMetaData().getProName() + "'.";
+			String htmlCode = "Here you can review and upload your reponses for the experience: '" + selectedExperienceDetail.getMetaData().getName() + "'.";
 			if (responseList.size() > 0) {
 				htmlCode += connection;
 				btnResponse.setVisibility(View.VISIBLE);
@@ -1150,7 +1149,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
         		.visible(true)
             );
 			//All experiences
-			nearbyExperienceName.add(allExperienceMetaData.get(i).getProName());
+			nearbyExperienceName.add(allExperienceMetaData.get(i).getName());
 			nearbyExperiences.add(i);//key = index of current list, value = index of marker --> reuse marker event
 			//Only experiences around 5 km
 			/*
@@ -1161,7 +1160,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
                 Location.distanceBetween(exLocation.latitude,exLocation.longitude, initialLocation.latitude,initialLocation.longitude, results);
                 if(results[0] < 5000)//radius of circle
                 {
-                    nearbyExperienceName.add(allExperienceMetaData.get(i).getProName());
+                    nearbyExperienceName.add(allExperienceMetaData.get(i).getName());
                     nearbyExperiences.add(i);//key = index of current list, value = index of marker --> reuse marker event
                 }
             }
@@ -1209,29 +1208,28 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     	final ExperienceMetaDataModel selectedExperienceMeta = allExperienceMetaData.get(Integer.parseInt(markerTitle));
     	if(isOnline)
     	{
-			int proSize = selectedExperienceMeta.getProSize();
+			int proSize = selectedExperienceMeta.getSize();
 			if(proSize == 0)
 				proSize = 1;
 			AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-	    	builder.setTitle(selectedExperienceMeta.getProName()  + " (" + proSize + " MB)")
-	    	.setMessage(selectedExperienceMeta.getProDesc() + selectedExperienceMeta.getSummary())
+	    	builder.setTitle(selectedExperienceMeta.getName()  + " (" + proSize + " MB)")
+	    	.setMessage(selectedExperienceMeta.getDescription() + selectedExperienceMeta.getSummary())
 					.setIcon(android.R.drawable.ic_dialog_alert)
 	    	.setPositiveButton("Download", new DialogInterface.OnClickListener() {
-	    	    public void onClick(DialogInterface dialog, int which) {			      	
-	    	    	//experienceMetaDB.insertExperience(selectedExperienceMeta.getProName(), selectedExperienceMeta.getProPath(), selectedExperienceMeta.getProDesc(), selectedExperienceMeta.getProDate(), selectedExperienceMeta.getProAuthID(), selectedExperienceMeta.getProPublicURL(), selectedExperienceMeta.getProLocation());
+	    	    public void onClick(DialogInterface dialog, int which) {
 					experienceDatabaseManager.addOrUpdateExperience(selectedExperienceMeta);
 					clearMap();
 					experienceDatabaseManager.setSelectedExperience(selectedExperienceMeta.getExperienceId());
                     selectedExperienceDetail = new ExperienceDetailsModel(experienceDatabaseManager, true);
 					selectedExperienceDetail.setMetaData(selectedExperienceMeta);
-					smepInteractionLog.addLog(InteractionLog.DOWNLOAD_ONLINE_EXPERIENCE, selectedExperienceMeta.getProName());
+					smepInteractionLog.addLog(InteractionLog.DOWNLOAD_ONLINE_EXPERIENCE, selectedExperienceMeta.getName());
 					restfulManager.downloadExperience(selectedExperienceMeta.getExperienceId());
 					setSelectedTabIcons(0);
 	    	    }
 	    	})
 	    	.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
-					smepInteractionLog.addLog(InteractionLog.CANCEL_DOWNLOAD_EXPERIENCE, selectedExperienceMeta.getProName());
+					smepInteractionLog.addLog(InteractionLog.CANCEL_DOWNLOAD_EXPERIENCE, selectedExperienceMeta.getName());
 				}
 			})
 	    	.show();
@@ -1239,8 +1237,8 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     	else
     	{
 			AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-            alert.setTitle(selectedExperienceMeta.getProName())
-	    	.setMessage(selectedExperienceMeta.getProDesc() + selectedExperienceMeta.getSummary())
+            alert.setTitle(selectedExperienceMeta.getName())
+	    	.setMessage(selectedExperienceMeta.getDescription() + selectedExperienceMeta.getSummary())
 	    	.setIcon(android.R.drawable.ic_dialog_alert)
 	    	.setPositiveButton("Play", new DialogInterface.OnClickListener() {
 	    	    public void onClick(DialogInterface dialog, int which) {			      	
@@ -1250,18 +1248,18 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 					selectedExperienceDetail.setMetaData(selectedExperienceMeta);
 					presentExperience();
 					setSelectedTabIcons(0);
-					smepInteractionLog.addLog(InteractionLog.PLAY_EXPERIENCE, selectedExperienceMeta.getProName());
+					smepInteractionLog.addLog(InteractionLog.PLAY_EXPERIENCE, selectedExperienceMeta.getName());
 	    	    }
 	    	})
 	    	.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
-					smepInteractionLog.addLog(InteractionLog.CANCEL_PLAY_EXPERIENCE, selectedExperienceMeta.getProName());
+					smepInteractionLog.addLog(InteractionLog.CANCEL_PLAY_EXPERIENCE, selectedExperienceMeta.getName());
 				}
 			})
 	    	.setNeutralButton("Delete", new DialogInterface.OnClickListener() {
 				public void onClick(DialogInterface dialog, int which) {
 					//Delete db
-					smepInteractionLog.addLog(InteractionLog.DELETE_EXPERIENCE, selectedExperienceMeta.getProName());
+					smepInteractionLog.addLog(InteractionLog.DELETE_EXPERIENCE, selectedExperienceMeta.getName());
 					//Delete entry
 					experienceDatabaseManager.deleteExperience(selectedExperienceMeta.getExperienceId());
 					//Reload map

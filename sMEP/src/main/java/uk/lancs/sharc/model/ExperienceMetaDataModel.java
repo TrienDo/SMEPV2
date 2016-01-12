@@ -72,7 +72,7 @@ public class ExperienceMetaDataModel extends SugarRecord {
 		this.summary = summary;
 	}
 
-	public int getProSize() {
+	public int getSize() {
 		return size;
 	}
 
@@ -116,9 +116,6 @@ public class ExperienceMetaDataModel extends SugarRecord {
 		this.poiCount = poiCount;
 	}
 
-	public String getProAuthName(){ return "Designer " + this.designerId;}
-
-	public String getProDate(){ return this.createdDate;}
 	public int getEoiCount() {
 		return eoiCount;
 	}
@@ -135,15 +132,11 @@ public class ExperienceMetaDataModel extends SugarRecord {
 		this.routeCount = routeCount;
 	}
 
-	public String getProName() {
+	public String getName() {
 		return name;
 	}
 
-	public String getProLocation() {
-		return latLng;
-	}
-
-	public String getProDesc() {
+	public String getDescription() {
         return  description;
 	}
 
@@ -151,7 +144,7 @@ public class ExperienceMetaDataModel extends SugarRecord {
 		return createdDate;
 	}
 
-	public String getProAuthID() {
+	public String getDesignerId() {
 		return designerId;
 	}
 
@@ -161,7 +154,7 @@ public class ExperienceMetaDataModel extends SugarRecord {
 		return new LatLng(Double.parseDouble(location[0]), Double.parseDouble(location[1]));
 	}
 
-	public String getProPublicURL() {
+	public String getPublicURL() {
 		return snapshotPath;
 	}
 
@@ -186,7 +179,7 @@ public class ExperienceMetaDataModel extends SugarRecord {
 	} 
 	public String getExperienceStats()
 	{
-		String htmlCode = "<div><b>The current experience is '" + this.getProName()+ "'. It comprises: </b></div>";
+		String htmlCode = "<div><b>The current experience is '" + this.getName()+ "'. It comprises: </b></div>";
 		htmlCode += "<div>" + this.getRouteCount() + (this.getRouteCount()  > 1 ? " routes </div>" : " route </div>") + this.getRouteInfo();
 		htmlCode += "<div>" + this.getEoiCount() + (this.getEoiCount() > 1 ? " Events of Interest (EOIs). </div>" : " Event of Interest (EOIs). </div>");
 		htmlCode += "<div>" + this.getPoiCount() + (this.getPoiCount() > 1 ? " Points of Interest (POIs). </div>" : " Point of Interest (POIs). </div>");

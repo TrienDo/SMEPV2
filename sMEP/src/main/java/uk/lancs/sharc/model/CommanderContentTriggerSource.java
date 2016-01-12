@@ -18,6 +18,10 @@ public class CommanderContentTriggerSource extends ContentTriggerSource {
     private String commandFromCommader;
     private Context context;
 
+    /*
+    @context: application context
+    @activity: MainActivity
+     */
     public CommanderContentTriggerSource(String commandFromCommader, Context context, Activity activity){
         super(activity, context, null);
         //commandFromCommader = "3#2"; split

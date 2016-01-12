@@ -154,7 +154,7 @@ public class RestfulManager {
                         tmpExperience = new ExperienceMetaDataModel(id, name, description, createdDate, lastPublishedDate, designerId, isPublished,
                                 moderationMode, latLng, summary, snapshotPath, thumbnailPath, size, theme);
 
-                        logData += "#" + tmpExperience.getProName();
+                        logData += "#" + tmpExperience.getName();
                         ((MainActivity) activity).getAllExperienceMetaData().add(tmpExperience);
                     }
                     //smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.VIEW_ONLINE_EXPERIENCES, logData);

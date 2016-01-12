@@ -72,7 +72,7 @@ public class BackgroundService extends Service
 			    }
 			    else
 			    {
-			    	if(location.getAccuracy() <= 100)//Only use GPS with high accuracy as GPS may jump
+			    	if(location.getAccuracy() <= 10)//Only use GPS with high accuracy as GPS may jump
 					{
 						mCurrentLocation.set(location);
 						checkAndRenderContent(location, mySMEPAppVariable.getActivity());
