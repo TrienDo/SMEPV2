@@ -1541,7 +1541,6 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
             public void onClick(DialogInterface dialog, int whichButton) {
                 EditText content = (EditText) textEntryView.findViewById(R.id.editTextMediaContentD);
                 EditText title = (EditText) textEntryView.findViewById(R.id.editTextTitleD);
-                String id = String.valueOf((new Date()).getTime());
                 String[] entity = getAssociatedEntity();
                 ResponseModel res = new ResponseModel(SharcLibrary.getIdString(pref_cloudAccId),selectedExperienceDetail.getMetaData().getExperienceId(), "-1", MediaModel.TYPE_TEXT,
 						content.getText().toString(), title.getText().toString(), entity[0], entity[1], ResponseModel.STATUS_FOR_UPLOAD, -1, SharcLibrary.getMySQLDateStamp());
@@ -1913,8 +1912,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				//Get the index of the response
 				int index = Integer.parseInt(args[0]);
         		ResponseModel response = selectedExperienceDetail.getMyResponseAt(index);
-				uploadOneResponse(response);
-				selectedExperienceDetail.deleteMyResponseAt(index);
+				uploadOneResponse(index, response);
             } 
             catch (Exception e) 
             {
@@ -1965,8 +1963,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				//Get the index of the response
 				for(int index = 0; index < selectedExperienceDetail.getMyResponses().size(); index++) {
 					ResponseModel response = selectedExperienceDetail.getMyResponseAt(index);
-					uploadOneResponse(response);
-					selectedExperienceDetail.deleteMyResponseAt(index);
+					uploadOneResponse(index, response);
 				}
 			}
 			catch (Exception e)
@@ -1997,7 +1994,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		}
 	}
 
-	public void uploadOneResponse(ResponseModel response) throws Exception {
+	public void uploadOneResponse(int index, ResponseModel response) throws Exception {
 		String[] ret;
 		String filename = response.getMyId();
 		if (response.getContentType().equalsIgnoreCase(MediaModel.TYPE_TEXT))
@@ -2019,8 +2016,11 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		response.setSize(Integer.parseInt(ret[0]));
 		response.setContent(ret[1]);
 		response.setFileId(ret[2]);
-		response.setUserId(String.valueOf(restfulManager.getUserId()));
-		restfulManager.submitResponse(response);
+		response.setUserId(restfulManager.getUserId());
+		if(restfulManager.submitResponse(response))
+			selectedExperienceDetail.deleteMyResponseAt(index);
+		else
+			Toast.makeText(this, "Error when uploading responses. Please try again", Toast.LENGTH_LONG).show();
 	}
 
 	//////////////////////////////////////////////////////////////////////////////

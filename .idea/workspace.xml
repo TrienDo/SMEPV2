@@ -69,11 +69,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
-      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/controller/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.31988472">
-              <caret line="1162" column="77" selection-start-line="1162" selection-start-column="77" selection-end-line="1162" selection-end-column="77" />
+            <state vertical-scroll-proportion="-21.758621">
+              <caret line="2027" column="40" selection-start-line="2027" selection-start-column="40" selection-end-line="2027" selection-end-column="40" />
               <folding>
                 <element signature="imports" expanded="true" />
                 <element signature="e#4755#4763#0" expanded="true" />
@@ -83,6 +83,37 @@
                 <element signature="e#44845#44846#0" expanded="true" />
                 <element signature="e#50667#51697#0" expanded="true" />
                 <element signature="e#51696#51697#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="SharcLibrary.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/SharcLibrary.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="0.0">
+              <caret line="117" column="25" selection-start-line="117" selection-start-column="25" selection-end-line="117" selection-end-column="25" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="RestfulManager.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/RestfulManager.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state vertical-scroll-proportion="-1.1268011">
+              <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+              <folding>
+                <element signature="e#1649#1650#0" expanded="true" />
+                <element signature="e#1678#1679#0" expanded="true" />
+                <element signature="e#2219#2220#0" expanded="true" />
+                <element signature="e#2280#2281#0" expanded="true" />
+                <element signature="class#GetAllOnlineExperiencesThread#0;class#RestfulManager#0" expanded="false" />
+                <element signature="class#ExperienceDetailsThread#0;class#RestfulManager#0" expanded="false" />
+                <element signature="e#15493#15494#0" expanded="true" />
+                <element signature="e#15541#15542#0" expanded="true" />
+                <element signature="e#18390#18497#0" expanded="true" />
+                <element signature="e#18496#18497#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -2413,7 +2444,6 @@
         <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/PoiTapLocationSource.java" />
         <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/TapLocationSource.java" />
         <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/BeaconLocationSource.java" />
-        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/RestfulManager.java" />
         <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/CommanderLocationSource.java" />
         <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/GpsLocationSource.java" />
         <option value="$PROJECT_DIR$/sMEP/src/main/AndroidManifest.xml" />
@@ -2427,8 +2457,9 @@
         <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ContentTriggerSource.java" />
         <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/BackgroundService.java" />
         <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/CommanderContentTriggerSource.java" />
-        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/controller/MainActivity.java" />
         <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ExperienceMetaDataModel.java" />
+        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/RestfulManager.java" />
+        <option value="$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/controller/MainActivity.java" />
       </list>
     </option>
   </component>
@@ -2736,6 +2767,9 @@
       <sortByType />
     </navigator>
     <panes>
+      <pane id="ProjectPane" />
+      <pane id="PackagesPane" />
+      <pane id="Scratches" />
       <pane id="AndroidView">
         <subPane>
           <PATH>
@@ -2775,6 +2809,10 @@
               <option name="myItemId" value="sharc" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="service" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -2793,10 +2831,6 @@
               <option name="myItemId" value="sharc" />
               <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidPsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="model" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
           <PATH>
             <PATH_ELEMENT>
@@ -2807,9 +2841,6 @@
         </subPane>
       </pane>
       <pane id="Scope" />
-      <pane id="ProjectPane" />
-      <pane id="PackagesPane" />
-      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -3113,14 +3144,13 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="1912" y="-8" width="1936" height="1212" extended-state="0" />
-    <editor active="true" />
+    <editor active="false" />
     <layout>
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32941177" sideWeight="0.4498934" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34185606" sideWeight="0.4936034" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.31628788" sideWeight="0.84648186" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.2009804" sideWeight="0.695629" order="3" side_tool="false" content_ui="tabs" />
@@ -3143,6 +3173,7 @@
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.34185606" sideWeight="0.4936034" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24411765" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -3412,25 +3443,10 @@
         <state />
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/DropboxCloud.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-0.73913044">
-          <caret line="146" column="53" selection-start-line="146" selection-start-column="53" selection-end-line="146" selection-end-column="53" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/ResponseModel.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="-1.3767773">
           <caret line="29" column="25" selection-start-line="29" selection-start-column="19" selection-end-line="29" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/GoogleDriveCloud.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.5947867">
-          <caret line="84" column="68" selection-start-line="84" selection-start-column="68" selection-end-line="84" selection-end-column="68" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3445,7 +3461,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.5068323">
           <caret line="86" column="17" selection-start-line="86" selection-start-column="17" selection-end-line="86" selection-end-column="17" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -3453,13 +3468,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.61863357">
           <caret line="44" column="25" selection-start-line="44" selection-start-column="25" selection-end-line="44" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/RestfulManager.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.54906833">
-          <caret line="59" column="5" selection-start-line="59" selection-start-column="5" selection-end-line="59" selection-end-column="5" />
         </state>
       </provider>
     </entry>
@@ -3522,13 +3530,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/SharcLibrary.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.26235294">
-          <caret line="117" column="25" selection-start-line="117" selection-start-column="25" selection-end-line="117" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/GpsContentTriggerSource.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
@@ -3554,14 +3555,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/BackgroundService.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.51724136">
-          <caret line="57" column="46" selection-start-line="57" selection-start-column="46" selection-end-line="57" selection-end-column="46" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/model/CommanderContentTriggerSource.java">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.3429395">
@@ -3575,22 +3568,54 @@
         <state vertical-scroll-proportion="1.0661478">
           <caret line="156" column="30" selection-start-line="156" selection-start-column="18" selection-end-line="156" selection-end-column="30" />
           <folding>
-            <element signature="e#1093#1094#0" expanded="true" />
-            <element signature="e#1110#1111#0" expanded="true" />
-            <element signature="e#2501#2502#0" expanded="true" />
-            <element signature="e#2536#2537#0" expanded="true" />
-            <element signature="e#2565#2566#0" expanded="true" />
-            <element signature="e#2587#2588#0" expanded="true" />
-            <element signature="e#2948#2949#0" expanded="true" />
-            <element signature="e#2966#2967#0" expanded="true" />
+            <element signature="e#1093#1094#0" expanded="false" />
+            <element signature="e#1110#1111#0" expanded="false" />
+            <element signature="e#2501#2502#0" expanded="false" />
+            <element signature="e#2536#2537#0" expanded="false" />
+            <element signature="e#2565#2566#0" expanded="false" />
+            <element signature="e#2587#2588#0" expanded="false" />
+            <element signature="e#2948#2949#0" expanded="false" />
+            <element signature="e#2966#2967#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/BackgroundService.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.759366">
+          <caret line="57" column="46" selection-start-line="57" selection-start-column="46" selection-end-line="57" selection-end-column="46" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/GoogleDriveCloud.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="108" column="96" selection-start-line="108" selection-start-column="82" selection-end-line="108" selection-end-column="96" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/DropboxCloud.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.41210374">
+          <caret line="203" column="94" selection-start-line="203" selection-start-column="51" selection-end-line="203" selection-end-column="94" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/SharcLibrary.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0">
+          <caret line="117" column="25" selection-start-line="117" selection-start-column="25" selection-end-line="117" selection-end-column="25" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/controller/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.31988472">
-          <caret line="1162" column="77" selection-start-line="1162" selection-start-column="77" selection-end-line="1162" selection-end-column="77" />
+        <state vertical-scroll-proportion="-21.758621">
+          <caret line="2027" column="40" selection-start-line="2027" selection-start-column="40" selection-end-line="2027" selection-end-column="40" />
           <folding>
             <element signature="imports" expanded="true" />
             <element signature="e#4755#4763#0" expanded="true" />
@@ -3600,6 +3625,25 @@
             <element signature="e#44845#44846#0" expanded="true" />
             <element signature="e#50667#51697#0" expanded="true" />
             <element signature="e#51696#51697#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/sMEP/src/main/java/uk/lancs/sharc/service/RestfulManager.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-1.1268011">
+          <caret line="45" column="0" selection-start-line="45" selection-start-column="0" selection-end-line="45" selection-end-column="0" />
+          <folding>
+            <element signature="e#1649#1650#0" expanded="true" />
+            <element signature="e#1678#1679#0" expanded="true" />
+            <element signature="e#2219#2220#0" expanded="true" />
+            <element signature="e#2280#2281#0" expanded="true" />
+            <element signature="class#GetAllOnlineExperiencesThread#0;class#RestfulManager#0" expanded="false" />
+            <element signature="class#ExperienceDetailsThread#0;class#RestfulManager#0" expanded="false" />
+            <element signature="e#15493#15494#0" expanded="true" />
+            <element signature="e#15541#15542#0" expanded="true" />
+            <element signature="e#18390#18497#0" expanded="true" />
+            <element signature="e#18496#18497#0" expanded="true" />
           </folding>
         </state>
       </provider>

@@ -83,9 +83,48 @@ public class RestfulManager {
         new UpdateConsumersExperiencesThread().execute(experienceId);
     }
 
-    public void submitResponse(ResponseModel res){
-        new SubmitResponseThread(res).execute();
+    public boolean submitResponse(ResponseModel response){
+        try
+        {
+            JSONParser jParser = new JSONParser();
+            List<NameValuePair> params = new ArrayList<NameValuePair>();
+            //Response info
+            params.add(new BasicNameValuePair("apiKey", getApiKey()));
+            params.add(new BasicNameValuePair("userId", getUserId()));
+
+            params.add(new BasicNameValuePair("id", response.getMid()));
+            params.add(new BasicNameValuePair("experienceId", response.getExperienceId()));
+
+            params.add(new BasicNameValuePair("contentType", response.getContentType()));
+            params.add(new BasicNameValuePair("content", response.getContent()));
+            params.add(new BasicNameValuePair("description", response.getDescription()));
+
+            params.add(new BasicNameValuePair("entityType", response.getEntityType()));
+            params.add(new BasicNameValuePair("entityId", response.getEntityId()));
+            params.add(new BasicNameValuePair("status", response.getStatus()));
+
+            params.add(new BasicNameValuePair("size", "" + response.getSize()));
+            params.add(new BasicNameValuePair("submittedDate", response.getSubmittedDate()));
+            params.add(new BasicNameValuePair("fileId", response.getFileId()));
+            //insert MySQL data
+            JSONObject json = jParser.makeHttpRequest(RestfulManager.api_submit_response, "POST", params);
+            String ret = json.getString("status");
+            if (ret.equalsIgnoreCase(RestfulManager.STATUS_SUCCESS))
+                return true;
+            else
+                return false;
+            //smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.VIEW_ONLINE_EXPERIENCES, logData);
+        }
+        catch (Exception e){
+            e.printStackTrace();
+            return false;
+        }
     }
+
+
+    /*public void submitResponse(ResponseModel res){
+        new SubmitResponseThread(res).execute();
+    }*/
 
     public void startMockLocationService(String locationId){
         new MockLocationService().execute(locationId);
