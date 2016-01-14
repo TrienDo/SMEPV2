@@ -68,7 +68,7 @@
             <meta-data android:name="DATABASE" android:value="/storage/emulated/0/Sharc/Databases/sharc20.db" />
         -->
 
-        <meta-data android:name="DATABASE" android:value="sharc20.db" />
+        <meta-data android:name="DATABASE" android:value="sharc20smep.db" />
         <meta-data android:name="VERSION" android:value="2" />
         <meta-data android:name="QUERY_LOG" android:value="true" />
         <meta-data android:name="DOMAIN_PACKAGE_NAME" android:value="uk.lancs.sharc" />

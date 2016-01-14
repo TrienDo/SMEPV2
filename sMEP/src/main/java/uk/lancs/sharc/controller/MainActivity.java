@@ -741,7 +741,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			setupListView();
 			startBackgroundService();
 			smepInteractionLog.addLog(InteractionLog.START_APP, smepSettings.getAppVersion());
-			//showTermsAndConditions();
+			showTermsAndConditions();
 	    } 
 	    catch (Exception e) 
 	    {
