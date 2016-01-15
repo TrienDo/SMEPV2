@@ -635,21 +635,21 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		alert.setPositiveButton("Login with Dropbox", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				cloudManager = new DropboxCloud(MainActivity.this);
-				if(cloudManager.isLoginRemembered())
+				if (cloudManager.isLoginRemembered())
 					cloudManager.getUserDetail();
 				else
 					cloudManager.login(DropboxCloud.REQUEST_LINK_TO_DROPBOX);
-			//smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.ADD_RESPONSE_TEXT,  entity[0] + "#" + entity[1]);
+				//smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.ADD_RESPONSE_TEXT,  entity[0] + "#" + entity[1]);
 			}
 		});
 		alert.setNeutralButton("Login with Google Drive", new DialogInterface.OnClickListener() {
 			public void onClick(DialogInterface dialog, int whichButton) {
 				cloudManager = new GoogleDriveCloud(MainActivity.this);
-				if(cloudManager.isLoginRemembered())
+				if (cloudManager.isLoginRemembered())
 					cloudManager.getUserDetail();
 				else
 					cloudManager.login(GoogleDriveCloud.REQUEST_AUTHORIZATION);
-			//smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.ADD_RESPONSE_TEXT,  entity[0] + "#" + entity[1]);
+				//smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.ADD_RESPONSE_TEXT,  entity[0] + "#" + entity[1]);
 			}
 		});
 		//alert.setNegativeButton("Cancel", null);
@@ -1086,10 +1086,12 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	
 	public void displayMediaItems(List<String> mediaList, int type)
 	{
-		MediaListAdapter adapter = new MediaListAdapter(MainActivity.this, mediaList, type);
-		//CustomList adapter = new CustomList(MediaReviewActivity.this, type, web, imageId);
-		ListView mLv = (ListView)findViewById(R.id.webViewTab);				
-		mLv.setAdapter(adapter);			   
+		if(mediaList != null) {
+			MediaListAdapter adapter = new MediaListAdapter(MainActivity.this, mediaList, type);
+			//CustomList adapter = new CustomList(MediaReviewActivity.this, type, web, imageId);
+			ListView mLv = (ListView) findViewById(R.id.webViewTab);
+			mLv.setAdapter(adapter);
+		}
 	}
 	
 	public void setupListView()
@@ -2052,11 +2054,11 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		List<ResponseModel> mediaComment = selectedExperienceDetail.getCommentsForEntity(entity[1]);
 		for(int i = 0; i < mediaComment.size(); i++)
 		{
-			htmlMediaItem += "<div style='text-align:left;margin-left:10;font-weight:bold;'>" + mediaComment.get(i).getUserId() + "</div>";
+			htmlMediaItem += "<div style='text-align:left;margin-left:0;font-weight:bold;'>" + mediaComment.get(i).getUserId() + "</div>";
 			String path = mediaComment.get(i).getContent();
 			path = SharcLibrary.SHARC_MEDIA_FOLDER + path.substring(path.lastIndexOf("/"));//media cached locally
 			try {
-				htmlMediaItem += "<div style='text-align:left;margin-left:10;'>" + SharcLibrary.readTextFile(new FileInputStream(path)) + "</div>";
+				htmlMediaItem += "<div style='text-align:left;margin-left:0;'>" + SharcLibrary.readTextFile(new FileInputStream(path)) + "</div>";
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 			}
