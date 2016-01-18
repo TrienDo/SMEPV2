@@ -70,7 +70,7 @@
     <!-- From: file:/C:/Users/SHARC/workspace/AndroidStudio/SMEP/sMEP/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="app_name">SMEP2</string>
-    <string name="app_version">2.7.02</string>
+    <string name="app_version">2.7.03</string>
     <!-- From: file:/C:/Users/SHARC/workspace/AndroidStudio/SMEP/sMEP/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/7.3.0/res/values/common_strings.xml -->
     <eat-comment/>
     <string name="common_android_wear_notification_needs_update_text">An application requires an update to the Android Wear app.</string>
