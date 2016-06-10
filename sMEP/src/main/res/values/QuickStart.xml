@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="Guide_Page2_title">Offline Use</string>
+  <string name="Guide_Page1_text3">- You can also submit a response at locations or in reaction to media items, events or to the whole experience.</string>
+  <string name="Guide_Page1_text4">- This quide can be accessed again via the menu.</string>
+  <string name="Guide_Page1_title">Welcome</string>
+  <string name="Guide_Page1_text1">-This app lets you download and "play" a locative media experience</string>
+  <string name="Guide_Page2_text1">- You can use this app without an internet connection, however it must be set up for your area first.</string>
+  <string name="Guide_Page2_text2">- To use this app offline you will need to download the desired experience, and view the area you will be visiting with the map</string>
+  <string name="Guide_Page1_text5">- This app can be run in the background simply by clicking the Android home button, or fully closed by removing it from the recent apps window.</string>
+  <string name="Guide_Page1_text2">- As you approach a Point of Interest (POI) in your experience you will receive a sound and vibration notification, and be presented the associated media content.</string>
+</resources>

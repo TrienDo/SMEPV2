@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="quick_guide">true</bool>
+    <bool name="open_experience">true</bool>
+    <bool name="download_experience">true</bool>
+    <bool name="create_experience">true</bool>
+    <bool name="set_YAH_marker">true</bool>
+    <bool name="show_GPS_info">true</bool>
+    <bool name="push_media">true</bool>
+    <bool name="push_on_revisit">true</bool>
+    <bool name="sound">true</bool>
+    <bool name="vibration">true</bool>
+    <bool name="satellite">true</bool>
+    <bool name="auto_rotate">true</bool>
+    <bool name="centre_YAH">true</bool>
+    <bool name="test_mode">false</bool>
+    <bool name="show_trigger_zones">true</bool>
+    <bool name="show_POI">true</bool>
+    <bool name="reset_POI">true</bool>
+</resources>
