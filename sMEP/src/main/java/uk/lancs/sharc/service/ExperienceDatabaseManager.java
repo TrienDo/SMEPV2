@@ -1,5 +1,8 @@
 package uk.lancs.sharc.service;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -9,11 +12,6 @@ import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.List;
-
-import android.database.Cursor;
-
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import uk.lancs.sharc.model.EOIModel;
 import uk.lancs.sharc.model.ExperienceMetaDataModel;
@@ -37,7 +35,13 @@ public class ExperienceDatabaseManager
     //select all experiences to present them as markers on Google Maps
     public List<ExperienceMetaDataModel> getExperiences()
     {
-        return ExperienceMetaDataModel.listAll(ExperienceMetaDataModel.class);
+        List<ExperienceMetaDataModel> experiences =  ExperienceMetaDataModel.listAll(ExperienceMetaDataModel.class);
+        for(ExperienceMetaDataModel e : experiences){
+           if(e.getName() != ""){
+               experiences.remove(e.getLocation());
+           }
+        }
+        return experiences;
     }
 
     public void parseJsonAndSaveToDB(JSONObject jsonExperience) //parse content of an experience from JSON file and download media files

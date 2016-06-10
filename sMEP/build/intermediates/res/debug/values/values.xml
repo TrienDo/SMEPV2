@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:ns1="urn:oasis:names:tc:xliff:document:1.2">
+    <!-- From: file:/C:/Users/SHARC/workspace/AndroidStudio/SMEP/sMEP/src/main/res/values/MenuEffectBools.xml -->
+    <eat-comment/>
+    <bool name="auto_rotate">true</bool>
+    <bool name="centre_YAH">true</bool>
+    <bool name="create_experience">true</bool>
+    <bool name="download_experience">true</bool>
+    <!-- From: file:/C:/Users/SHARC/workspace/AndroidStudio/SMEP/sMEP/src/main/res/values/SMEPSettings.xml -->
+    <eat-comment/>
+    <bool name="isPushingMedia">true</bool>
+    <bool name="isRotating">false</bool>
+    <bool name="isSatellite">false</bool>
+    <bool name="isShowingGPS">true</bool>
+    <bool name="isShowingThumbnails">true</bool>
+    <bool name="isShowingTriggers">true</bool>
+    <bool name="isSoundNotification">true</bool>
+    <bool name="isTestMode">false</bool>
+    <bool name="isVibrationNotification">true</bool>
+    <bool name="isYAHCentred">true</bool>
+    <!-- From: file:/C:/Users/SHARC/workspace/AndroidStudio/SMEP/sMEP/src/main/res/values/MenuEffectBools.xml -->
+    <eat-comment/>
+    <bool name="open_experience">true</bool>
+    <bool name="push_media">true</bool>
+    <bool name="push_on_revisit">true</bool>
+    <bool name="quick_guide">true</bool>
+    <bool name="reset_POI">true</bool>
+    <bool name="satellite">true</bool>
+    <bool name="set_YAH_marker">true</bool>
+    <bool name="show_GPS_info">true</bool>
+    <bool name="show_POI">true</bool>
+    <bool name="show_trigger_zones">true</bool>
+    <bool name="sound">true</bool>
+    <bool name="test_mode">false</bool>
+    <bool name="vibration">true</bool>
     <!-- From: file:/C:/Users/SHARC/workspace/AndroidStudio/SMEP/sMEP/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/7.3.0/res/values/common_colors.xml -->
     <eat-comment/>
     <color name="common_action_bar_splitter">#d2d2d2</color>
@@ -69,7 +102,7 @@
     <string name="accept">Accept</string>
     <!-- From: file:/C:/Users/SHARC/workspace/AndroidStudio/SMEP/sMEP/src/main/res/values/strings.xml -->
     <eat-comment/>
-    <string name="app_name">SMEP2</string>
+    <string name="app_name">The Great War Trail App</string>
     <string name="app_version">2.7.03</string>
     <!-- From: file:/C:/Users/SHARC/workspace/AndroidStudio/SMEP/sMEP/build/intermediates/exploded-aar/com.google.android.gms/play-services-base/7.3.0/res/values/common_strings.xml -->
     <eat-comment/>
@@ -126,7 +159,7 @@ available. Please contact the developer for assistance.</string>
     <!-- From: file:/C:/Users/SHARC/workspace/AndroidStudio/SMEP/sMEP/src/main/res/values/strings.xml -->
     <eat-comment/>
     <string name="terms_and_conditions">Note that all data (e.g. photos, videos) you generate using this app are stored locally on the device. When you decide to upload your responses, these data will be stored in your personal cloud storage. However other people will be able to see your responses. We may also analyse your responses for our research purposes and your identity will be kept anonymous.\n\nPlease accept that these are prototypes and problems with reliability can occur. However, in case you do experience technical problems (or if you have suggestions for improvements) then please do contact thesharcproject@gmail.com so that we can try to improve the prototypes.\n\nClick the I Agree button to continue or Cancel to quit the app.</string>
-    <string name="title_activity_usermanual">SMET Quick Guide</string>
+    <string name="title_activity_usermanual">The Great War Trail App Quick Guide</string>
     <!-- From: file:/C:/Users/SHARC/workspace/AndroidStudio/SMEP/sMEP/build/intermediates/exploded-aar/com.google.android.gms/play-services-wallet/7.3.0/res/values/wallet_strings.xml -->
     <eat-comment/>
     <string name="wallet_buy_button_place_holder" translation_description="Text on a button that allows a user to make a payment with Google Wallet [CHAR LIMIT=30]">Buy with Google</string>

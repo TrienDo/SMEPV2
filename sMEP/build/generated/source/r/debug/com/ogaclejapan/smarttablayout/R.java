@@ -35,11 +35,11 @@ public final class R {
 		public static final int stl_underlineThickness = 0x7f010040;
 	}
 	public static final class id {
-		public static final int bottom = 0x7f09001f;
-		public static final int center = 0x7f090020;
-		public static final int linear = 0x7f09001d;
-		public static final int smart = 0x7f09001e;
-		public static final int top = 0x7f090021;
+		public static final int bottom = 0x7f0a001f;
+		public static final int center = 0x7f0a0020;
+		public static final int linear = 0x7f0a001d;
+		public static final int smart = 0x7f0a001e;
+		public static final int top = 0x7f0a0021;
 	}
 	public static final class styleable {
 		public static final int[] stl_SmartTabLayout = { 0x7f010034, 0x7f010035, 0x7f010036, 0x7f010037, 0x7f010038, 0x7f010039, 0x7f01003a, 0x7f01003b, 0x7f01003c, 0x7f01003d, 0x7f01003e, 0x7f01003f, 0x7f010040, 0x7f010041, 0x7f010042, 0x7f010043, 0x7f010044, 0x7f010045, 0x7f010046, 0x7f010047, 0x7f010048, 0x7f010049, 0x7f01004a, 0x7f01004b, 0x7f01004c };

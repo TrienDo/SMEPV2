@@ -109,10 +109,7 @@ public class RestfulManager {
             //insert MySQL data
             JSONObject json = jParser.makeHttpRequest(RestfulManager.api_submit_response, "POST", params);
             String ret = json.getString("status");
-            if (ret.equalsIgnoreCase(RestfulManager.STATUS_SUCCESS))
-                return true;
-            else
-                return false;
+            return ret.equalsIgnoreCase(RestfulManager.STATUS_SUCCESS);
             //smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.VIEW_ONLINE_EXPERIENCES, logData);
         }
         catch (Exception e){
@@ -190,11 +187,13 @@ public class RestfulManager {
                         String thumbnailPath = objExperience.getString("thumbnailPath");
                         int size = objExperience.getInt("size");
                         String theme = objExperience.getString("theme");
-                        tmpExperience = new ExperienceMetaDataModel(id, name, description, createdDate, lastPublishedDate, designerId, isPublished,
-                                moderationMode, latLng, summary, snapshotPath, thumbnailPath, size, theme);
+                        if(theme.equals("WW1")) {
+                            tmpExperience = new ExperienceMetaDataModel(id, name, description, createdDate, lastPublishedDate, designerId, isPublished,
+                                    moderationMode, latLng, summary, snapshotPath, thumbnailPath, size, theme);
 
-                        logData += "#" + tmpExperience.getName();
-                        ((MainActivity) activity).getAllExperienceMetaData().add(tmpExperience);
+                            logData += "#" + tmpExperience.getName();
+                            ((MainActivity) activity).getAllExperienceMetaData().add(tmpExperience);
+                        }
                     }
                     //smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.VIEW_ONLINE_EXPERIENCES, logData);
                 }

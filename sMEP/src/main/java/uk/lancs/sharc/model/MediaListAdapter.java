@@ -1,28 +1,21 @@
 package uk.lancs.sharc.model;
 
-import java.util.ArrayList;
+import android.app.Activity;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.view.ViewGroup;
+import android.webkit.WebView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
+import android.widget.ImageButton;
+import android.widget.TextView;
+
 import java.util.List;
 
 import uk.lancs.sharc.R;
 import uk.lancs.sharc.controller.MainActivity;
 import uk.lancs.sharc.service.SharcLibrary;
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.view.LayoutInflater;
-import android.view.MotionEvent;
-import android.view.View;
-import android.view.WindowManager;
-import android.view.View.OnClickListener;
-import android.view.ViewGroup;
-import android.webkit.WebChromeClient;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
-import android.webkit.WebSettings.PluginState;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ImageButton;
-import android.widget.TextView;
-import android.widget.Toast;
 
 /**
  * <p>This class instructs how the media list view should be rendered</p>
@@ -55,8 +48,8 @@ public class MediaListAdapter extends ArrayAdapter<String>
 		String countLine = "<h5 style='margin-left:20px;'>[Media item " + position + " of " + (mediaList.size()-1) + "]</h5>";
 		//Get number of like and comment
 		String htmlCode = mediaList.get(position);
-		TextView txtNoLike = (TextView) rowView.findViewById(R.id.txtNoLike);
-		ImageButton btnLike = (ImageButton) rowView.findViewById(R.id.btnLikeMedia);
+		//TextView txtNoLike = (TextView) rowView.findViewById(R.id.txtNoLike);
+		//ImageButton btnLike = (ImageButton) rowView.findViewById(R.id.btnLikeMedia);
 		TextView txtNoComment = (TextView) rowView.findViewById(R.id.txtNoComment);
 		ImageButton btnComment = (ImageButton) rowView.findViewById(R.id.btnCommentMedia);
 		Button btnBack = (Button) rowView.findViewById(R.id.btnBackToMap);
@@ -66,9 +59,9 @@ public class MediaListAdapter extends ArrayAdapter<String>
 		if(position==0 || listType == 1)
 		{
 			//Hide all button			
-			btnLike.setVisibility(View.GONE);
+			//btnLike.setVisibility(View.GONE);
 			btnComment.setVisibility(View.GONE);
-			txtNoLike.setVisibility(View.GONE);
+			//txtNoLike.setVisibility(View.GONE);
 			txtNoComment.setVisibility(View.GONE);
 			btnBack.setVisibility(View.GONE);
 			countLine = "";
@@ -77,9 +70,9 @@ public class MediaListAdapter extends ArrayAdapter<String>
 		{
 			htmlCode = htmlCode.substring(htmlCode.indexOf("<span"),htmlCode.indexOf("</span>"));////000#id#1111#type#noLike#noComments#therest
 			String[] params = htmlCode.split("#");
-			txtNoLike.setText(params[4]);
+			//txtNoLike.setText(params[4]);
 			txtNoComment.setText(params[5]);
-			btnLike.setTag(position);
+			//btnLike.setTag(position);
 			btnComment.setTag(position);
 			btnBack.setTag(position);
 		}
@@ -114,7 +107,7 @@ public class MediaListAdapter extends ArrayAdapter<String>
 		});*/
 
 		//Button events
-		btnLike.setOnClickListener(new OnClickListener() {
+		/*btnLike.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				int position = (Integer) v.getTag();
@@ -126,7 +119,7 @@ public class MediaListAdapter extends ArrayAdapter<String>
 				}
 				
 			}
-		});
+		});*/
 
         btnComment.setOnClickListener(new OnClickListener() {
             @Override

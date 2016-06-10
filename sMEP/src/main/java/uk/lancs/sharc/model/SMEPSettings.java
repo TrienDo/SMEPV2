@@ -1,4 +1,10 @@
 package uk.lancs.sharc.model;
+
+import android.content.Context;
+import android.content.res.Resources;
+
+import uk.lancs.sharc.R;
+
 /**
  * <p>This class holds settings of SMEP and provide setters/getters for these
  * configurations (e.g., selected view mode of Goolge maps, sound notification)</p>
@@ -20,19 +26,20 @@ public class SMEPSettings {
 	private boolean isYAHCentred;
 	private String 	appVersion;
 	
-	public SMEPSettings()
+	public SMEPSettings(Context context)
 	{
-		isSatellite = false;//Map view mode
-		isShowingTriggers = true;//Trigger view mode
-		isShowingThumbnails = true;//Trigger view mode
-		isRotating = false; //Rotate the map or not	
-		isTestMode = false; //Rotate the map or not
-		isPushingMedia = true;
-		isSoundNotification = true;
-		isVibrationNotification = true;
-		setYAHCentred(false);
+		Resources res = context.getResources();
+		isSatellite =res.getBoolean(R.bool.isSatellite);// false //Map view mode
+		isShowingTriggers = res.getBoolean(R.bool.isShowingTriggers);//true;//Trigger view mode
+		isShowingThumbnails = res.getBoolean(R.bool.isShowingThumbnails);//true;//Trigger view mode
+		isRotating = res.getBoolean(R.bool.isRotating);//false; //Rotate the map or not
+		isTestMode = res.getBoolean(R.bool.isTestMode);//false; //Rotate the map or not
+		isPushingMedia = res.getBoolean(R.bool.isPushingMedia);//true;
+		isSoundNotification = res.getBoolean(R.bool.isSoundNotification);//true;
+		isVibrationNotification = res.getBoolean(R.bool.isVibrationNotification);//true;
+		setYAHCentred(res.getBoolean(R.bool.isYAHCentred));//true
 		appVersion = "1.0";
-		isShowingGPS = true;
+		isShowingGPS = res.getBoolean(R.bool.isShowingGPS);//false;
 	}
 	public boolean isShowingGPS() {
 		return isShowingGPS;

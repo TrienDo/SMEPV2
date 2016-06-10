@@ -1,12 +1,11 @@
 package uk.lancs.sharc.controller;
 
 import android.content.SharedPreferences;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.ViewPager;
-
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +21,7 @@ public class Usermanual extends FragmentActivity {
     private Button skip;
     private Button next;
     private Button prev;
-    private final int totalScreen = 8;
+    private final int totalScreen = 7;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -132,7 +131,6 @@ public class Usermanual extends FragmentActivity {
                 case 4 : return new UsermanualFragment5();
                 case 5 : return new UsermanualFragment6();
                 case 6 : return new UsermanualFragment7();
-                case 7 : return new UsermanualFragment8();
                 default: return null;
             }
         }
