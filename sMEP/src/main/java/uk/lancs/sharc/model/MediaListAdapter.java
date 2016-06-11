@@ -38,32 +38,52 @@ public class MediaListAdapter extends ArrayAdapter<String>
 		MainActivity activity = (MainActivity)context;
 		experienceDetails = activity.getSelectedExperienceDetail();
 	}
-		
-	@Override
-	public View getView(int position, View view, ViewGroup parent) 
+	public class viewHolder
 	{
-		LayoutInflater inflater = context.getLayoutInflater();
-		View rowView= inflater.inflate(R.layout.media_list_item, null, true);
+		public TextView txtNoComment;
+		public ImageButton btnComment;
+		public Button btnBack;
+		public WebView webviewMedia;
+
+	}
+	@Override
+	public View getView(int position, View convertView, ViewGroup parent)
+	{	View rowView = convertView;
+		viewHolder holder;
+
+		if(convertView == null){
+			//inflate
+			LayoutInflater inflater = context.getLayoutInflater();
+			rowView= inflater.inflate(R.layout.media_list_item, null, true);
+			holder = new viewHolder();
+			//add items
+			holder.txtNoComment = (TextView) rowView.findViewById(R.id.txtNoComment);
+			holder.btnComment = (ImageButton) rowView.findViewById(R.id.btnCommentMedia);
+			holder.btnBack = (Button) rowView.findViewById(R.id.btnBackToMap);
+			holder.webviewMedia = (WebView) rowView.findViewById(R.id.webViewMedia);
+			//set tag, for holder recycle
+			rowView.setTag(holder);
+		}else{
+			holder = (viewHolder)rowView.getTag();
+		}
+
 
 		String countLine = "<h5 style='margin-left:20px;'>[Media item " + position + " of " + (mediaList.size()-1) + "]</h5>";
 		//Get number of like and comment
 		String htmlCode = mediaList.get(position);
 		//TextView txtNoLike = (TextView) rowView.findViewById(R.id.txtNoLike);
 		//ImageButton btnLike = (ImageButton) rowView.findViewById(R.id.btnLikeMedia);
-		TextView txtNoComment = (TextView) rowView.findViewById(R.id.txtNoComment);
-		ImageButton btnComment = (ImageButton) rowView.findViewById(R.id.btnCommentMedia);
-		Button btnBack = (Button) rowView.findViewById(R.id.btnBackToMap);
-		WebView webviewMedia = (WebView) rowView.findViewById(R.id.webViewMedia);
-		webviewMedia.setTag(position);
+
+		holder.webviewMedia.setTag(position);
 
 		if(position==0 || listType == 1)
 		{
 			//Hide all button			
 			//btnLike.setVisibility(View.GONE);
-			btnComment.setVisibility(View.GONE);
+			holder.btnComment.setVisibility(View.GONE);
 			//txtNoLike.setVisibility(View.GONE);
-			txtNoComment.setVisibility(View.GONE);
-			btnBack.setVisibility(View.GONE);
+			holder.txtNoComment.setVisibility(View.GONE);
+			holder.btnBack.setVisibility(View.GONE);
 			countLine = "";
 		}
 		else
@@ -71,16 +91,16 @@ public class MediaListAdapter extends ArrayAdapter<String>
 			htmlCode = htmlCode.substring(htmlCode.indexOf("<span"),htmlCode.indexOf("</span>"));////000#id#1111#type#noLike#noComments#therest
 			String[] params = htmlCode.split("#");
 			//txtNoLike.setText(params[4]);
-			txtNoComment.setText(params[5]);
+			holder.txtNoComment.setText(params[5]);
 			//btnLike.setTag(position);
-			btnComment.setTag(position);
-			btnBack.setTag(position);
+			holder.btnComment.setTag(position);
+			holder.btnBack.setTag(position);
 		}
 
 		if(position == mediaList.size() - 1)
-			btnBack.setVisibility(View.VISIBLE);
+			holder.btnBack.setVisibility(View.VISIBLE);
 		else
-			btnBack.setVisibility(View.GONE);
+			holder.btnBack.setVisibility(View.GONE);
 
 		if(listType != 0)
 			countLine = "";
@@ -90,11 +110,11 @@ public class MediaListAdapter extends ArrayAdapter<String>
 		if(listType == 0 && position == 0)//eoi
 		{
 			AndroidWebViewInterface inObj = new AndroidWebViewInterface(context);
-			SharcLibrary.setupWebView(webviewMedia, context, inObj);
+			SharcLibrary.setupWebView(holder.webviewMedia, context, inObj);
 		}
 		else
-			SharcLibrary.setupWebView(webviewMedia, context);
-		webviewMedia.loadDataWithBaseURL(base, countLine + mediaList.get(position), "text/html", "utf-8", null);
+			SharcLibrary.setupWebView(holder.webviewMedia, context);
+		holder.webviewMedia.loadDataWithBaseURL(base, countLine + mediaList.get(position), "text/html", "utf-8", null);
 
 		/*webviewMedia.setOnTouchListener(new View.OnTouchListener() {
 			@Override
@@ -121,7 +141,7 @@ public class MediaListAdapter extends ArrayAdapter<String>
 			}
 		});*/
 
-        btnComment.setOnClickListener(new OnClickListener() {
+		holder.btnComment.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 int position = (Integer) v.getTag();
@@ -131,7 +151,7 @@ public class MediaListAdapter extends ArrayAdapter<String>
             }
         });
 
-		btnBack.setOnClickListener(new OnClickListener() {
+		holder.btnBack.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
 				MainActivity activity = (MainActivity) context;

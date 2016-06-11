@@ -801,13 +801,16 @@ containing a value of this type.
         public static final int tab_selected=0x7f020033;
         public static final int upload=0x7f020034;
         public static final int us_1=0x7f020035;
-        public static final int us_2=0x7f020036;
-        public static final int us_3=0x7f020037;
-        public static final int us_4=0x7f020038;
-        public static final int us_5=0x7f020039;
-        public static final int us_6=0x7f02003a;
-        public static final int us_7=0x7f02003b;
-        public static final int us_8=0x7f02003c;
+        public static final int us_1_depreciated=0x7f020036;
+        public static final int us_2=0x7f020037;
+        public static final int us_2_depreciated=0x7f020038;
+        public static final int us_3=0x7f020039;
+        public static final int us_4=0x7f02003a;
+        public static final int us_5=0x7f02003b;
+        public static final int us_6=0x7f02003c;
+        public static final int us_7=0x7f02003d;
+        public static final int us_8=0x7f02003e;
+        public static final int us_8_depreciated=0x7f02003f;
     }
     public static final class id {
         public static final int adjust_height=0x7f0a0003;
