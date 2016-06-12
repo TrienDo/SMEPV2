@@ -17,4 +17,5 @@
     <bool name="show_trigger_zones">true</bool>
     <bool name="show_POI">true</bool>
     <bool name="reset_POI">true</bool>
+    <bool name="view_logs">true</bool>
 </resources>

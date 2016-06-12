@@ -17,6 +17,7 @@ ADDED from Z:\SHARC\GIT\SMEPV2-1\sMEP\src\main\AndroidManifest.xml:2:1-114:12
 		ADDED from Z:\SHARC\GIT\SMEPV2-1\sMEP\src\main\AndroidManifest.xml:2:11-69
 uses-sdk
 ADDED from Z:\SHARC\GIT\SMEPV2-1\sMEP\src\main\AndroidManifest.xml:7:5-9:41
+MERGED from [com.android.support:multidex:1.0.1] Z:\SHARC\GIT\SMEPV2-1\sMEP\build\intermediates\exploded-aar\com.android.support\multidex\1.0.1\AndroidManifest.xml:18:5-42
 MERGED from [SMEPV2-1:library:unspecified] Z:\SHARC\GIT\SMEPV2-1\sMEP\build\intermediates\exploded-aar\SMEPV2-1\library\unspecified\AndroidManifest.xml:7:5-9:41
 MERGED from [com.android.support:support-v4:22.2.0] Z:\SHARC\GIT\SMEPV2-1\sMEP\build\intermediates\exploded-aar\com.android.support\support-v4\22.2.0\AndroidManifest.xml:20:5-43
 MERGED from [com.github.satyan:sugar:1.4] Z:\SHARC\GIT\SMEPV2-1\sMEP\build\intermediates\exploded-aar\com.github.satyan\sugar\1.4\AndroidManifest.xml:7:5-9:41

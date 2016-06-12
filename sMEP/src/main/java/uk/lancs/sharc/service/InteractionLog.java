@@ -1,23 +1,35 @@
 package uk.lancs.sharc.service;
 
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.res.Resources;
+import android.os.Build;
+import android.text.TextUtils;
+import android.view.LayoutInflater;
+import android.view.View;
+
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.google.android.gms.maps.model.LatLng;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.Hashtable;
 
-import com.dropbox.sync.android.DbxAccountManager;
-import com.google.android.gms.maps.model.LatLng;
-
-import android.app.Activity;
-import android.os.Build;
-import android.text.TextUtils;
-
+import uk.lancs.sharc.R;
 import uk.lancs.sharc.controller.MainActivity;
-import uk.lancs.sharc.service.SharcLibrary;
 
 /**
  * <p>InteractionLog helps log key user interactions in SMEP </p>
@@ -32,12 +44,25 @@ public class InteractionLog {
 	private String deviceID;							//An unique ID for each device = Build.SERIAL;
 	private Hashtable<String, String> actionNames; 		//A map of ActionID - Action name (human readable format)
 	private Activity activity;
+	private ArrayList<Integer[]> logStore = null;
+	private Comparator<Integer[]> sort = new Comparator<Integer[]>() {
+		@Override
+		public int compare(Integer[] data1, Integer[] data2) {
+			if(data1[0] < data2[0])
+				return -1;
+			else if(data1[0] == data2[0])
+				return 0;
+			else if(data1[0] > data2[0])
+				return 1;
+			return 0;
+		}};
+
 	public InteractionLog(Activity activity)
 	{
 		this.activity = activity;
 		actionNames = new Hashtable<String, String>();
 		createActionNameHashtable();					//Fill in the map of ActionID - Action name
-		
+
 		//Get log file ready for writing log
 		//Logfile path = Sharc/smepLog.csv
 		//E.g., in Nexus 7: root/storage/emulated/0/Sharc/smepLog.csv 
@@ -51,6 +76,18 @@ public class InteractionLog {
 		
 		//Get device id
 		deviceID = Build.SERIAL;
+		//setup temporary logging if the view log button is enabled
+		Resources res = activity.getResources();
+		if(res.getBoolean(R.bool.view_logs)){
+			logStore = new ArrayList<Integer[]>();
+			for(String key : actionNames.keySet()){
+				Integer[] data = new Integer[2];
+				data[0] = Integer.parseInt(key);
+				data[1] = 0;
+				logStore.add(data);
+			}
+		}
+		Collections.sort(logStore,sort);
 	}
 	
 	public void addLog(String actionID, String actionData)
@@ -87,7 +124,12 @@ public class InteractionLog {
 		logData.add(actionID);
 		logData.add(actionNames.get(actionID));
 		logData.add(actionData);
-		
+		if(logStore != null){
+			Integer actionInt = Integer.parseInt(actionID);
+			Integer[] data = logStore.get(actionInt);
+			data[1]++;
+			logStore.set(data[0],data);
+		}
 		try {
 			oswLogWriter.append(TextUtils.join(",", logData.toArray()));//Separate fields by comma 
 			oswLogWriter.append(System.getProperty("line.separator"));
@@ -97,17 +139,17 @@ public class InteractionLog {
 		}		
 	}
 	
-	public static final String START_APP 						= "00";
-	public static final String EXIT_APP 						= "01";
-	public static final String SELECT_YAH 						= "02"; //Sliding menu: Set You-Are-Here (YAH) marker
-	public static final String SELECT_LOGIN 					= "03"; //Sliding menu:
-	public static final String SELECT_LOGOUT 					= "04"; //Sliding menu:
-	public static final String VIEW_CACHED_EXPERIENCES 			= "05"; //Sliding menu: Play a downloaded experience 
-	public static final String VIEW_ONLINE_EXPERIENCES 			= "06"; //Sliding menu: Download experiences	
+	public static final String START_APP 						= "0";
+	public static final String EXIT_APP 						= "1";
+	public static final String SELECT_YAH 						= "2"; //Sliding menu: Set You-Are-Here (YAH) marker
+	public static final String SELECT_LOGIN 					= "3"; //Sliding menu:
+	public static final String SELECT_LOGOUT 					= "4"; //Sliding menu:
+	public static final String VIEW_CACHED_EXPERIENCES 			= "5"; //Sliding menu: Play a downloaded experience
+	public static final String VIEW_ONLINE_EXPERIENCES 			= "6"; //Sliding menu: Download experiences
 	
-	public static final String DOWNLOAD_ONLINE_EXPERIENCE		= "07"; //A dialog shows when an online experience marker on map is selected: Download 
-	public static final String CANCEL_DOWNLOAD_EXPERIENCE 		= "08"; //A dialog shows when an online experience marker on map is selected: Cancel
-	public static final String PLAY_EXPERIENCE 					= "09"; //A dialog shows when a cached experience marker on map is selected: Play
+	public static final String DOWNLOAD_ONLINE_EXPERIENCE		= "7"; //A dialog shows when an online experience marker on map is selected: Download
+	public static final String CANCEL_DOWNLOAD_EXPERIENCE 		= "8"; //A dialog shows when an online experience marker on map is selected: Cancel
+	public static final String PLAY_EXPERIENCE 					= "9"; //A dialog shows when a cached experience marker on map is selected: Play
 	public static final String CANCEL_PLAY_EXPERIENCE 			= "10"; //A dialog shows when a cached experience marker on map is selected: Cancel
 	public static final String DELETE_EXPERIENCE 				= "11"; //A dialog shows when a cached experience marker on map is selected: Delete
 	
@@ -141,22 +183,22 @@ public class InteractionLog {
 	
 	public static final String SELECT_BACK_BUTTON				= "36"; //Button Back of Android
 	public static final String SELECT_PUSH_AGAIN				= "37"; //Button Back of Android
-	public static final String SHOW_GPS_INFO					= "48"; //Show GPS in title bar
+	public static final String SHOW_GPS_INFO					= "38"; //Show GPS in title bar
 
 	
 	private void createActionNameHashtable()
 	{
-		actionNames.put("00", "START_APP");
-		actionNames.put("01", "EXIT_APP");
-		actionNames.put("02", "SELECT_YAH");
-		actionNames.put("03", "SELECT_LOGIN");
-		actionNames.put("04", "SELECT_LOGOUT");
-		actionNames.put("05", "VIEW_CACHED_EXPERIENCES");
-		actionNames.put("06", "VIEW_ONLINE_EXPERIENCES");
+		actionNames.put("0", "START_APP");
+		actionNames.put("1", "EXIT_APP");
+		actionNames.put("2", "SELECT_YAH");
+		actionNames.put("3", "SELECT_LOGIN");
+		actionNames.put("4", "SELECT_LOGOUT");
+		actionNames.put("5", "VIEW_CACHED_EXPERIENCES");
+		actionNames.put("6", "VIEW_ONLINE_EXPERIENCES");
 		
-		actionNames.put("07", "DOWNLOAD_ONLINE_EXPERIENCE");
-		actionNames.put("08", "CANCEL_DOWNLOAD_EXPERIENCE");
-		actionNames.put("09", "PLAY_EXPERIENCE");
+		actionNames.put("7", "DOWNLOAD_ONLINE_EXPERIENCE");
+		actionNames.put("8", "CANCEL_DOWNLOAD_EXPERIENCE");
+		actionNames.put("9", "PLAY_EXPERIENCE");
 		actionNames.put("10", "CANCEL_PLAY_EXPERIENCE");
 		actionNames.put("11", "DELETE_EXPERIENCE");
 		
@@ -190,6 +232,77 @@ public class InteractionLog {
 		
 		actionNames.put("36", "SELECT_BACK_BUTTON");
 		actionNames.put("37", "SELECT_PUSH_AGAIN");
-		actionNames.put("48", "SHOW_GPS_INFO");
+		actionNames.put("38", "SHOW_GPS_INFO");
+	}
+	//display a graph
+	public void showGraph() {
+		activity.runOnUiThread(new Runnable() {
+			@Override
+			public void run() {
+				MainActivity mActivity = (MainActivity)activity;
+				AlertDialog.Builder alert = new AlertDialog.Builder(mActivity);
+				if (logStore != null && !logStore.isEmpty()) {
+					alert.setTitle("Graph Of Logs");
+
+					LayoutInflater inflater = mActivity.getLayoutInflater();
+					View view = inflater.inflate(R.layout.graph_view,null);
+					BarChart chart = (BarChart) view.findViewById(R.id.chart );
+					chart.setDragEnabled(true);
+					chart.setMaxVisibleValueCount(5);
+					chart.setDescription("");
+
+					//xAxis
+					XAxis xAxis = chart.getXAxis();
+					xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+					xAxis.setDrawGridLines(false);
+					xAxis.setSpaceBetweenLabels(1);
+
+					YAxis leftAxis = chart.getAxisLeft();
+					leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+					leftAxis.setSpaceTop(15);
+					leftAxis.setLabelCount(8, false);
+					//leftAxis.setValueFormatter(custom);
+					leftAxis.setSpaceTop(15f);
+					leftAxis.setAxisMinValue(0f); // this rep
+
+
+					Collections.sort(logStore,sort);
+
+					ArrayList<BarEntry>yVals = new ArrayList<BarEntry>();
+					for(Integer[] i : logStore){
+						BarEntry bar = new BarEntry(i[1],i[0]);
+						yVals.add(bar);
+					}
+					ArrayList<String> xVals = new ArrayList<String>();
+					for(Integer[] i : logStore){
+						String s = actionNames.get(i[0].toString());
+						xVals.add(s);
+					}
+					BarDataSet data;
+					if (chart.getData() != null &&
+							chart.getData().getDataSetCount() > 0) {
+						data = (BarDataSet) chart.getData().getDataSetByIndex(0);
+						data.setYVals(yVals);
+						chart.getData().setXVals(xVals);
+					}else{
+						data = new BarDataSet(yVals,"DataSet");
+						ArrayList<IBarDataSet> dataSets = new ArrayList<IBarDataSet>();
+						dataSets.add(data);
+						BarData addData = new BarData(xVals,dataSets);
+						chart.setData(addData);
+					}
+
+					chart.setVisibleXRangeMinimum(2);
+					chart.setVisibleXRangeMaximum(3);
+					chart.setMinimumHeight((int)(mActivity.getResources().getDisplayMetrics().heightPixels*0.90)-100);
+
+					alert.setNegativeButton("Close", null);    //Do nothing
+					alert.setView(view);
+				} else
+					alert.setMessage("No information found In This Log");
+				mActivity.setDialogFontSizeAndShow(alert, 18f);
+
+			}
+		});
 	}
 }

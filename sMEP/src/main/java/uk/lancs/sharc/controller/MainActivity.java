@@ -599,6 +599,17 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				}
 			});
 		}
+		//show Logs
+		if(res.getBoolean(R.bool.view_logs)) {
+			Button btnViewLogs = (Button) findViewById(R.id.btnViewLogs);
+			btnViewLogs.setVisibility(Button.VISIBLE);
+			btnViewLogs.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					smepInteractionLog.showGraph();
+				}
+			});
+		}
     }
 
 	public void showHelp()
@@ -1148,7 +1159,6 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				button.setTextSize(fontSize);
 			}
 		});
-
 		alertDialog.show();
 	}
 
