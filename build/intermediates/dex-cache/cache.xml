@@ -1,3 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<items version="2" />
+<items version="2" >
 
+    <item
+        jar="C:\Users\SHARC\Downloads\SMEP2_V7.03\SMEPV2-1\sMEP\build\intermediates\incremental-classes\debug\instant-run-bootstrap.jar"
+        jumboMode="true"
+        revision="23.0.2"
+        sha1="46dbd2b73c61d315019d0a1f696ce2b18ba09968">
+        <dex dex="C:\Users\SHARC\Downloads\SMEP2_V7.03\SMEPV2-1\sMEP\build\intermediates\transforms\dex\debug\folders\1000\10\instant-run-bootstrap_b63392629a03aa34fb9c68f3f1b561d169e6c9fa\classes.dex" />
+    </item>
+
+</items>

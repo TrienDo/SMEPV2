@@ -802,16 +802,13 @@ containing a value of this type.
         public static final int tab_selected=0x7f020033;
         public static final int upload=0x7f020034;
         public static final int us_1=0x7f020035;
-        public static final int us_1_depreciated=0x7f020036;
-        public static final int us_2=0x7f020037;
-        public static final int us_2_depreciated=0x7f020038;
-        public static final int us_3=0x7f020039;
-        public static final int us_4=0x7f02003a;
-        public static final int us_5=0x7f02003b;
-        public static final int us_6=0x7f02003c;
-        public static final int us_7=0x7f02003d;
-        public static final int us_8=0x7f02003e;
-        public static final int us_8_depreciated=0x7f02003f;
+        public static final int us_2=0x7f020036;
+        public static final int us_3=0x7f020037;
+        public static final int us_4=0x7f020038;
+        public static final int us_5=0x7f020039;
+        public static final int us_6=0x7f02003a;
+        public static final int us_7=0x7f02003b;
+        public static final int us_8=0x7f02003c;
     }
     public static final class id {
         public static final int adjust_height=0x7f0a0003;
@@ -983,19 +980,20 @@ containing a value of this type.
         public static final int yahred32=0x7f04001f;
     }
     public static final class string {
-        public static final int Guide_Page1_text1=0x7f050020;
-        public static final int Guide_Page1_text2=0x7f050021;
-        public static final int Guide_Page1_text3=0x7f050022;
-        public static final int Guide_Page1_text4=0x7f050023;
-        public static final int Guide_Page1_text5=0x7f050024;
-        public static final int Guide_Page1_title=0x7f050025;
-        public static final int Guide_Page2_text1=0x7f050026;
-        public static final int Guide_Page2_text2=0x7f050027;
-        public static final int Guide_Page2_title=0x7f050028;
-        public static final int accept=0x7f050029;
-        public static final int app_name=0x7f05002a;
-        public static final int app_version=0x7f05002b;
-        public static final int btnViewLogs=0x7f05002c;
+        public static final int Experience_Filter=0x7f050020;
+        public static final int Guide_Page1_text1=0x7f050021;
+        public static final int Guide_Page1_text2=0x7f050022;
+        public static final int Guide_Page1_text3=0x7f050023;
+        public static final int Guide_Page1_text4=0x7f050024;
+        public static final int Guide_Page1_text5=0x7f050025;
+        public static final int Guide_Page1_title=0x7f050026;
+        public static final int Guide_Page2_text1=0x7f050027;
+        public static final int Guide_Page2_text2=0x7f050028;
+        public static final int Guide_Page2_title=0x7f050029;
+        public static final int accept=0x7f05002a;
+        public static final int app_name=0x7f05002b;
+        public static final int app_version=0x7f05002c;
+        public static final int btnViewLogs=0x7f05002d;
         public static final int common_android_wear_notification_needs_update_text=0x7f050000;
         public static final int common_android_wear_update_text=0x7f050001;
         public static final int common_android_wear_update_title=0x7f050002;
@@ -1027,20 +1025,20 @@ containing a value of this type.
         public static final int common_signin_button_text=0x7f05001c;
         public static final int common_signin_button_text_long=0x7f05001d;
         public static final int commono_google_play_services_api_unavailable_text=0x7f05001e;
-        public static final int create_calendar_message=0x7f05002d;
-        public static final int create_calendar_title=0x7f05002e;
-        public static final int decline=0x7f05002f;
-        public static final int location_state_inside=0x7f050030;
-        public static final int location_state_outside=0x7f050031;
-        public static final int message_dropboxConnection=0x7f050032;
-        public static final int message_no_experience=0x7f050033;
-        public static final int message_no_gps=0x7f050034;
-        public static final int message_upload_error=0x7f050035;
-        public static final int message_wifiConnection=0x7f050036;
-        public static final int store_picture_message=0x7f050037;
-        public static final int store_picture_title=0x7f050038;
-        public static final int terms_and_conditions=0x7f050039;
-        public static final int title_activity_usermanual=0x7f05003a;
+        public static final int create_calendar_message=0x7f05002e;
+        public static final int create_calendar_title=0x7f05002f;
+        public static final int decline=0x7f050030;
+        public static final int location_state_inside=0x7f050031;
+        public static final int location_state_outside=0x7f050032;
+        public static final int message_dropboxConnection=0x7f050033;
+        public static final int message_no_experience=0x7f050034;
+        public static final int message_no_gps=0x7f050035;
+        public static final int message_upload_error=0x7f050036;
+        public static final int message_wifiConnection=0x7f050037;
+        public static final int store_picture_message=0x7f050038;
+        public static final int store_picture_title=0x7f050039;
+        public static final int terms_and_conditions=0x7f05003a;
+        public static final int title_activity_usermanual=0x7f05003b;
         public static final int wallet_buy_button_place_holder=0x7f05001f;
     }
     public static final class style {

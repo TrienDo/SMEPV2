@@ -2,6 +2,7 @@ package uk.lancs.sharc.service;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.res.Resources;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -18,6 +19,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.lancs.sharc.R;
 import uk.lancs.sharc.controller.MainActivity;
 import uk.lancs.sharc.model.ExperienceMetaDataModel;
 import uk.lancs.sharc.model.JSONParser;
@@ -187,7 +189,11 @@ public class RestfulManager {
                         String thumbnailPath = objExperience.getString("thumbnailPath");
                         int size = objExperience.getInt("size");
                         String theme = objExperience.getString("theme");
-                        if(theme.equals("WW1")) {
+
+                        //// TODO: 25/05/2016 how to load multiple? - Simon Maddocks
+                        Resources res = activity.getApplicationContext().getResources();
+                        String themeFilter = res.getString(R.string.Experience_Filter);
+                        if (theme.equals(themeFilter) || themeFilter.equals("any") || themeFilter.equals("none")) {
                             tmpExperience = new ExperienceMetaDataModel(id, name, description, createdDate, lastPublishedDate, designerId, isPublished,
                                     moderationMode, latLng, summary, snapshotPath, thumbnailPath, size, theme);
 
