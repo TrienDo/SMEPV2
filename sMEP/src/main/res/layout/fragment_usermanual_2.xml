@@ -1,11 +1,61 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="uk.lancs.sharc.smat.controller.UsermanualFragment1">
-    <ImageView
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:scrollbars="none"
+    android:layout_weight="1">
+
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    >
+    <TableRow
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/us_2"
-        />
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:paddingBottom="6dip"
+        android:paddingTop="4dip" >
+        <TextView
+            android:id="@+id/um2title"
+            android:layout_width="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:textSize="70sp"
+            android:text="@string/Guide_Page2_title"
+            android:textStyle="bold" />
 
-</FrameLayout>
+    </TableRow>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:paddingBottom="6dip"
+        android:paddingTop="4dip" >
+        <TextView
+            android:id="@+id/um2txt1"
+            android:layout_width="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:textSize="30sp"
+            android:text="@string/Guide_Page2_text1" />
+
+    </TableRow>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:paddingBottom="6dip"
+        android:paddingTop="4dip" >
+        <TextView
+            android:id="@+id/um2txt2"
+            android:layout_width="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:textSize="30sp"
+            android:text="@string/Guide_Page2_text2" />
+
+    </TableRow>
+</TableLayout>
+</ScrollView>

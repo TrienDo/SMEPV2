@@ -1,34 +1,4 @@
 package uk.lancs.sharc.controller;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
-
-import uk.lancs.sharc.R;
-import uk.lancs.sharc.model.ContentTriggerSource;
-import uk.lancs.sharc.model.MapWindowAdapter;
-import uk.lancs.sharc.model.MediaModel;
-import uk.lancs.sharc.model.TapContentTriggerSource;
-import uk.lancs.sharc.service.BackgroundService;
-import uk.lancs.sharc.service.CloudManager;
-import uk.lancs.sharc.service.DropboxCloud;
-import uk.lancs.sharc.service.ErrorReporter;
-import uk.lancs.sharc.service.ExperienceDatabaseManager;
-import uk.lancs.sharc.service.GoogleDriveCloud;
-import uk.lancs.sharc.service.RestfulManager;
-import uk.lancs.sharc.service.SharcLibrary;
-import uk.lancs.sharc.model.ExperienceDetailsModel;
-import uk.lancs.sharc.model.ExperienceMetaDataModel;
-import uk.lancs.sharc.service.InteractionLog;
-import uk.lancs.sharc.model.SMEPAppVariable;
-import uk.lancs.sharc.model.MediaListAdapter;
-import uk.lancs.sharc.model.ResponseListAdapter;
-import uk.lancs.sharc.model.SMEPSettings;
-import uk.lancs.sharc.model.ResponseModel;
 
 import android.accounts.AccountManager;
 import android.app.ActionBar;
@@ -39,6 +9,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.hardware.GeomagneticField;
 import android.hardware.Sensor;
@@ -95,6 +66,37 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.jeremyfeinstein.slidingmenu.lib.app.SlidingActivity;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
+
+import uk.lancs.sharc.R;
+import uk.lancs.sharc.model.ContentTriggerSource;
+import uk.lancs.sharc.model.ExperienceDetailsModel;
+import uk.lancs.sharc.model.ExperienceMetaDataModel;
+import uk.lancs.sharc.model.MapWindowAdapter;
+import uk.lancs.sharc.model.MediaListAdapter;
+import uk.lancs.sharc.model.MediaModel;
+import uk.lancs.sharc.model.ResponseListAdapter;
+import uk.lancs.sharc.model.ResponseModel;
+import uk.lancs.sharc.model.SMEPAppVariable;
+import uk.lancs.sharc.model.SMEPSettings;
+import uk.lancs.sharc.model.TapContentTriggerSource;
+import uk.lancs.sharc.service.BackgroundService;
+import uk.lancs.sharc.service.CloudManager;
+import uk.lancs.sharc.service.DropboxCloud;
+import uk.lancs.sharc.service.ErrorReporter;
+import uk.lancs.sharc.service.ExperienceDatabaseManager;
+import uk.lancs.sharc.service.GoogleDriveCloud;
+import uk.lancs.sharc.service.InteractionLog;
+import uk.lancs.sharc.service.RestfulManager;
+import uk.lancs.sharc.service.SharcLibrary;
+
 /**
  * <p>This class controls the logic of the app and user interaction</p>
  *
@@ -123,9 +125,9 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	private ArrayList<Marker> allExperienceMarkers = new ArrayList<Marker>();
     Button btnResponse;
 	private Location lastKnownLocation = null;
-	
+
 	//Setting
-	SMEPSettings smepSettings = new SMEPSettings();
+	SMEPSettings smepSettings;
 	AlertDialog adYAH;                      //Dialog box to select YAH marker --> need to close this dialog from other place -> global
     private int selectedLocationIcon = 0;   //id of the selected YAH icon
     private ProgressDialog pDialog;         //dialog shows waiting icon when downloading data
@@ -173,7 +175,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     long timeInMilliseconds = 0L;
     long updatedTime = 0L;
     private TextView timerValue;                                    //Textview to display recording time
-    
+
     //Logfile
     InteractionLog smepInteractionLog;
 
@@ -200,7 +202,8 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		actionBar.setDisplayShowHomeEnabled(false);//Hide home button
 		getActionBar().setDisplayShowTitleEnabled(false);
 		actionBar.setDisplayShowTitleEnabled(true);
-		actionBar.setTitle("GPS is not available yet. Please wait...");
+		//actionBar.setTitle("GPS is not available yet. Please wait...");
+		getActionBar().setTitle(getString(R.string.app_name));
 		//Replace the up icon of app with menu icon
         ViewGroup home = (ViewGroup) findViewById(android.R.id.home).getParent();
 		// get the first child (up imageview)
@@ -295,22 +298,22 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		}
 	    smepInteractionLog.addLog(InteractionLog.EXIT_APP, "exit");
 	}
-	
+
     public void startBackgroundService()
     {
     	//Start tracking service
 		Log.e(TAG, "Starting service");
-		Intent trackingIntent = new Intent(this, BackgroundService.class);			
+		Intent trackingIntent = new Intent(this, BackgroundService.class);
 	    startService(trackingIntent);
     }
-    
+
 	@Override
-    public boolean onKeyDown(int keyCode, KeyEvent event) 
+    public boolean onKeyDown(int keyCode, KeyEvent event)
 	{
 		if(keyCode==KeyEvent.KEYCODE_BACK)
 		{
 			smepInteractionLog.addLog(InteractionLog.SELECT_BACK_BUTTON, "from tab " + currentTab);
-			displayMapTab();			
+			displayMapTab();
 			return true;
 		}
 		else if(keyCode==KeyEvent.KEYCODE_HOME)
@@ -320,14 +323,15 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			return true;
 		}
 		else
-			return super.onKeyDown(keyCode, event); 
+			return super.onKeyDown(keyCode, event);
 	}
 
 	public void createActionListenerForSlideMenu()
     {
+		Resources res = getResources();
 		//SMEP version
 		TextView txtVersion = (TextView) findViewById(R.id.txtSetting);
-		txtVersion.setText("SMEP Settings (Version " + getString(R.string.app_version) + ")");
+		txtVersion.setText("Settings (App Version " + getString(R.string.app_version) + ")");
 		smepSettings.setAppVersion(getString(R.string.app_version));
 
 		//Three buttons for login/out
@@ -338,7 +342,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				loginOrLogout();
 			}
 		});
-		
+
 		TextView txtUserName = (TextView) findViewById(R.id.txtUsername);
 		txtUserName.setOnClickListener(new OnClickListener() {
 			@Override
@@ -355,58 +359,70 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			}
 		});
 		//Done login/out
-
-		Button btnShowHelp = (Button) findViewById(R.id.btnShowHelp);
-		btnShowHelp.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				showHelp();
-			}
-		});
-
-        Button btnLoadFile = (Button) findViewById(R.id.btnLoadProject);
-		btnLoadFile.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				presentDownloadedExperiences();
-			}
-		});
-		
-		Button btnExploreProject = (Button) findViewById(R.id.btnExploreProject);
-		btnExploreProject.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				loadOnlineExperiences();
-			}
-		});
-		
-		Button btnSelectYAH = (Button) findViewById(R.id.btnSelectYAH);
-		btnSelectYAH.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				selectYAHMarker();
-			}
-		});
-
-		Switch switchShowGPS = (Switch) findViewById(R.id.switchShowGPS);
-		switchShowGPS.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-				smepSettings.setIsShowingGPS(isChecked);
-				if (!isChecked)
-					getActionBar().setTitle("[" + getString(R.string.app_name) + ": SHARC Mobile Experience Player - V" + getString(R.string.app_version) + "]");
-				else {
-					if (lastKnownLocation != null)
-						getActionBar().setTitle("GPS Accuracy: " + String.format("%.1f", lastKnownLocation.getAccuracy()) + " (m)");
-					else
-						getActionBar().setTitle("GPS is not available");
+		if(res.getBoolean(R.bool.quick_guide)) {
+			Button btnShowHelp = (Button) findViewById(R.id.btnShowHelp);
+			btnShowHelp.setVisibility(Button.VISIBLE);
+			btnShowHelp.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					showHelp();
 				}
-				smepInteractionLog.addLog(InteractionLog.SHOW_GPS_INFO, String.valueOf(isChecked));
-			}
-		});
+			});
+		}
+		if(res.getBoolean(R.bool.open_experience)) {
+			Button btnLoadFile = (Button) findViewById(R.id.btnLoadProject);
+			btnLoadFile.setVisibility(Button.VISIBLE);
+			btnLoadFile.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					presentDownloadedExperiences();
+				}
+			});
+		}
+		if(res.getBoolean(R.bool.download_experience)) {
+			Button btnExploreProject = (Button) findViewById(R.id.btnExploreProject);
+			btnExploreProject.setVisibility(Button.VISIBLE);
+			btnExploreProject.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					loadOnlineExperiences();
+				}
+			});
+		}
+		if(res.getBoolean(R.bool.set_YAH_marker)) {
+			Button btnSelectYAH = (Button) findViewById(R.id.btnSelectYAH);
+			btnSelectYAH.setVisibility(Button.VISIBLE);
+			btnSelectYAH.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					selectYAHMarker();
+				}
+			});
+		}
+		if(res.getBoolean(R.bool.show_GPS_info)) {
+			Switch switchShowGPS = (Switch) findViewById(R.id.switchShowGPS);
+			switchShowGPS.setVisibility(Button.VISIBLE);
+			switchShowGPS.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					smepSettings.setIsShowingGPS(isChecked);
+					if (!isChecked)
+						getActionBar().setTitle(getString(R.string.app_name));
+					else {
+						if (lastKnownLocation != null)
+							getActionBar().setTitle("GPS Accuracy: " + String.format("%.1f", lastKnownLocation.getAccuracy()) + " (m)");
+						else
+							getActionBar().setTitle("GPS is not available");
+					}
+					smepInteractionLog.addLog(InteractionLog.SHOW_GPS_INFO, String.valueOf(isChecked));
+				}
+			});
+		}
+		getActionBar().setTitle(getString(R.string.app_name));
+		if(res.getBoolean(R.bool.push_media)) {
 		Switch switchPushMedia = (Switch) findViewById(R.id.switchPushMedia);
+			switchPushMedia.setVisibility(Button.VISIBLE);
 		switchPushMedia.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
 			@Override
@@ -415,166 +431,185 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				smepInteractionLog.addLog(InteractionLog.SELECT_PUSH, String.valueOf(isChecked));
 			}
 		});
+		}
+		if(res.getBoolean(R.bool.push_on_revisit)) {
+			Switch switchPushMediaAgain = (Switch) findViewById(R.id.switchPushMediaAgain);
+			switchPushMediaAgain.setVisibility(Button.VISIBLE);
+			switchPushMediaAgain.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-		Switch switchPushMediaAgain = (Switch) findViewById(R.id.switchPushMediaAgain);
-		switchPushMediaAgain.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
+					mySMEPAppVariable.setIsPushAgain(isChecked);
+					smepInteractionLog.addLog(InteractionLog.SELECT_PUSH_AGAIN, String.valueOf(isChecked));
+				}
+			});
+		}
+		if(res.getBoolean(R.bool.sound)) {
+			Switch switchSoundNotification = (Switch) findViewById(R.id.switchSoundNotification);
+			switchSoundNotification.setVisibility(Button.VISIBLE);
+			switchSoundNotification.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					smepSettings.setSoundNotification(isChecked);
+					SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
+					mySMEPAppVariable.setSoundNotification(isChecked);
+					smepInteractionLog.addLog(InteractionLog.SELECT_SOUND, String.valueOf(isChecked));
+				}
+			});
+		}
+		if(res.getBoolean(R.bool.vibration)) {
+			Switch switchVibrationNotification = (Switch) findViewById(R.id.switchVibrationNotification);
+			switchVibrationNotification.setVisibility(Button.VISIBLE);
+			switchVibrationNotification.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-			@Override
-			public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-			{
-                SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
-                mySMEPAppVariable.setIsPushAgain(isChecked);
-				smepInteractionLog.addLog(InteractionLog.SELECT_PUSH_AGAIN, String.valueOf(isChecked));
-			}
-		});
-		
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					smepSettings.setVibrationNotification(isChecked);
+					SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
+					mySMEPAppVariable.setVibrationNotification(isChecked);
+					smepInteractionLog.addLog(InteractionLog.SELECT_VIBRATION, String.valueOf(isChecked));
+				}
+			});
+		}
+		if(res.getBoolean(R.bool.satellite)) {
+			Switch switchMapType = (Switch) findViewById(R.id.switchMapType);
+			switchMapType.setVisibility(Button.VISIBLE);
+			switchMapType.setOnCheckedChangeListener(new OnCheckedChangeListener() {
 
-		Switch switchSoundNotification = (Switch) findViewById(R.id.switchSoundNotification);
-		switchSoundNotification.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		   @Override
-		   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
-		   {
-			   smepSettings.setSoundNotification(isChecked);
-			   SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
-			   mySMEPAppVariable.setSoundNotification(isChecked);
-			   smepInteractionLog.addLog(InteractionLog.SELECT_SOUND, String.valueOf(isChecked));
-		   }
-		});
-		
-		Switch switchVibrationNotification = (Switch) findViewById(R.id.switchVibrationNotification);
-		switchVibrationNotification.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		 
-		   @Override
-		   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
-		   {
-			   smepSettings.setVibrationNotification(isChecked);
-			   SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
-			   mySMEPAppVariable.setVibrationNotification(isChecked);
-			   smepInteractionLog.addLog(InteractionLog.SELECT_VIBRATION, String.valueOf(isChecked));
-		   }
-		});
-		
-		Switch switchMapType = (Switch) findViewById(R.id.switchMapType);
-		switchMapType.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		 
-		   @Override
-		   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
-		   {
-			   smepSettings.setSatellite(isChecked);	
-			   if(isChecked)
-		    		mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
-			   else
-		    		mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
-			   smepInteractionLog.addLog(InteractionLog.SELECT_SETELLITE, String.valueOf(isChecked));
-		   }
-		});
-		
-		Switch switchMapRotate = (Switch) findViewById(R.id.switchMapRotate);
-		switchMapRotate.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		 
-		   @Override
-		   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
-		   {
-			   smepSettings.setRotating(isChecked);
-			   if(isChecked)
-		    		sensorService.registerListener(mySensorEventListener, sensor,SensorManager.SENSOR_DELAY_NORMAL);
-			   else
-		    		sensorService.unregisterListener(mySensorEventListener);
-			   smepInteractionLog.addLog(InteractionLog.SELECT_ROTATION, String.valueOf(isChecked));
-		   }
-		});
-		
-		Switch switchMapCentre = (Switch) findViewById(R.id.switchMapCentre);
-		switchMapCentre.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		 
-		   @Override
-		   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
-		   {
-			   smepSettings.setYAHCentred(isChecked);	
-			   smepInteractionLog.addLog(InteractionLog.SELECT_YAH_CENTRED, String.valueOf(isChecked));
-		   }
-		});	
-		
-		Switch switchTestMode = (Switch) findViewById(R.id.switchTestMode);
-		switchTestMode.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		 
-		   @Override
-		   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
-		   {
-			   	final boolean selection = isChecked;
-			   	smepInteractionLog.addLog(InteractionLog.SELECT_TEST, String.valueOf(isChecked));
-			   	if(isChecked)
-			   	{
-				    AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
-					alert.setTitle("Please enter the testing code:");				
-					final EditText testCode = new EditText(MainActivity.this);
-					alert.setView(testCode);				
-					
-					alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            testingCode = testCode.getText().toString();
-                            smepSettings.setTestMode(selection);
-                            //Global variable for the whole application
-                            SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
-                            currentPosition.setVisible(selection);
-                            mySMEPAppVariable.setTestMode(selection);
-                        }
-                    });
-	
-					alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            // Canceled.
-                            Switch switchTest = (Switch) findViewById(R.id.switchTestMode);
-                            switchTest.setSelected(false);
-                        }
-                    });
-                    setDialogFontSizeAndShow(alert, FONT_SIZE);
-					//alert.show();
-			   	}
-			   	else
-			   	{
-			   		smepSettings.setTestMode(selection);
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					smepSettings.setSatellite(isChecked);
+					if (isChecked)
+						mMap.setMapType(GoogleMap.MAP_TYPE_SATELLITE);
+					else
+						mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+					smepInteractionLog.addLog(InteractionLog.SELECT_SETELLITE, String.valueOf(isChecked));
+				}
+			});
+		}
+		if(res.getBoolean(R.bool.auto_rotate)) {
+			Switch switchMapRotate = (Switch) findViewById(R.id.switchMapRotate);
+			switchMapRotate.setVisibility(Button.VISIBLE);
+			switchMapRotate.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					smepSettings.setRotating(isChecked);
+					if (isChecked)
+						sensorService.registerListener(mySensorEventListener, sensor, SensorManager.SENSOR_DELAY_NORMAL);
+					else
+						sensorService.unregisterListener(mySensorEventListener);
+					smepInteractionLog.addLog(InteractionLog.SELECT_ROTATION, String.valueOf(isChecked));
+				}
+			});
+		}
+		if(res.getBoolean(R.bool.centre_YAH)) {
+			Switch switchMapCentre = (Switch) findViewById(R.id.switchMapCentre);
+			switchMapCentre.setVisibility(Button.VISIBLE);
+			switchMapCentre.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					smepSettings.setYAHCentred(isChecked);
+					smepInteractionLog.addLog(InteractionLog.SELECT_YAH_CENTRED, String.valueOf(isChecked));
+				}
+			});
+		}
+		if(res.getBoolean(R.bool.test_mode)) {
+			Switch switchTestMode = (Switch) findViewById(R.id.switchTestMode);
+			switchTestMode.setVisibility(Button.VISIBLE);
+			switchTestMode.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					final boolean selection = isChecked;
+					smepInteractionLog.addLog(InteractionLog.SELECT_TEST, String.valueOf(isChecked));
+					if (isChecked) {
+						AlertDialog.Builder alert = new AlertDialog.Builder(MainActivity.this);
+						alert.setTitle("Please enter the testing code:");
+						final EditText testCode = new EditText(MainActivity.this);
+						alert.setView(testCode);
+
+						alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+								testingCode = testCode.getText().toString();
+								smepSettings.setTestMode(selection);
+								//Global variable for the whole application
+								SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
+								currentPosition.setVisible(selection);
+								mySMEPAppVariable.setTestMode(selection);
+							}
+						});
+
+						alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+							public void onClick(DialogInterface dialog, int whichButton) {
+								// Canceled.
+								Switch switchTest = (Switch) findViewById(R.id.switchTestMode);
+								switchTest.setSelected(false);
+							}
+						});
+						setDialogFontSizeAndShow(alert, FONT_SIZE);
+						//alert.show();
+					} else {
+						smepSettings.setTestMode(selection);
+						//Global variable for the whole application
+						SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
+						currentPosition.setVisible(selection);
+						mySMEPAppVariable.setTestMode(selection);
+					}
+				}
+			});
+		}
+		if(res.getBoolean(R.bool.show_trigger_zones)) {
+			Switch switchTriggerZone = (Switch) findViewById(R.id.switchTriggerZone);
+			switchTriggerZone.setVisibility(Button.VISIBLE);
+			switchTriggerZone.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					smepSettings.setShowingTriggers(isChecked);
+					smepInteractionLog.addLog(InteractionLog.SELECT_SHOW_TRIGGER_ZONE, String.valueOf(isChecked));
+					selectedExperienceDetail.showTriggerZones(isChecked);
+				}
+			});
+		}
+		if(res.getBoolean(R.bool.show_POI)) {
+			Switch switchShowPOI = (Switch) findViewById(R.id.switchShowPOI);
+			switchShowPOI.setVisibility(Button.VISIBLE);
+			switchShowPOI.setOnCheckedChangeListener(new OnCheckedChangeListener() {
+				@Override
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+					smepSettings.setShowingThumbnails(isChecked);
+					smepInteractionLog.addLog(InteractionLog.SELECT_SHOW_POI_THUMBS, String.valueOf(isChecked));
+					selectedExperienceDetail.showPOIThumbnails(isChecked);
+				}
+			});
+		}
+		if(res.getBoolean(R.bool.reset_POI)) {
+			Button btnResetPOIs = (Button) findViewById(R.id.btnResetPOIs);
+			btnResetPOIs.setVisibility(Button.VISIBLE);
+			btnResetPOIs.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
 					//Global variable for the whole application
 					SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
-					currentPosition.setVisible(selection);
-					mySMEPAppVariable.setTestMode(selection);
-			   	}
-		   }
-		});
-		
-		Switch switchTriggerZone = (Switch) findViewById(R.id.switchTriggerZone);
-		switchTriggerZone.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		   @Override
-		   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
-		   {
-			   smepSettings.setShowingTriggers(isChecked);
-			   smepInteractionLog.addLog(InteractionLog.SELECT_SHOW_TRIGGER_ZONE, String.valueOf(isChecked));
-			   selectedExperienceDetail.showTriggerZones(isChecked);
-		   }
-		});
-		
-		Switch switchShowPOI = (Switch) findViewById(R.id.switchShowPOI);
-		switchShowPOI.setOnCheckedChangeListener(new OnCheckedChangeListener() {
-		   @Override
-		   public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) 
-		   {
-			   smepSettings.setShowingThumbnails(isChecked);
-			   smepInteractionLog.addLog(InteractionLog.SELECT_SHOW_POI_THUMBS, String.valueOf(isChecked));
-			   selectedExperienceDetail.showPOIThumbnails(isChecked);
-		   }
-		});
-		
-		Button btnResetPOIs = (Button) findViewById(R.id.btnResetPOIs);
-		btnResetPOIs.setOnClickListener(new OnClickListener() {
-			@Override
-			public void onClick(View v) {
-		    	//Global variable for the whole application
-			    SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
-			    mySMEPAppVariable.setResetPOI(true);
-			    getSlidingMenu().showContent(false);
-			    smepInteractionLog.addLog(InteractionLog.SELECT_RESET_POI, "resetPOI");
-			}
-		});
+					mySMEPAppVariable.setResetPOI(true);
+					getSlidingMenu().showContent(false);
+					smepInteractionLog.addLog(InteractionLog.SELECT_RESET_POI, "resetPOI");
+				}
+			});
+		}
+		//show Logs
+		if(res.getBoolean(R.bool.view_logs)) {
+			Button btnViewLogs = (Button) findViewById(R.id.btnViewLogs);
+			btnViewLogs.setVisibility(Button.VISIBLE);
+			btnViewLogs.setOnClickListener(new OnClickListener() {
+				@Override
+				public void onClick(View v) {
+					smepInteractionLog.showGraph();
+				}
+			});
+		}
     }
 
 	public void showHelp()
@@ -667,11 +702,11 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     public void gotoExperiencesBrowsingMapMode()
     {
     	getSlidingMenu().showContent(false);
-		displayMapTab();				
+		displayMapTab();
 		clearMap();
 		moveAndZoomToLocation(initialLocation, 10);
     }
-	
+
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
         if(selectedExperienceDetail == null && item.getItemId() != android.R.id.home) {
@@ -682,25 +717,26 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			processTab(item.getItemId());
 	    return true;
 	}
-	
+
 	public void init()
-	{		
+	{
 		try
 	    {
 			SMEPAppVariable mySMEPAppVariable = (SMEPAppVariable) getApplicationContext();
 			mySMEPAppVariable.setActivity(this);
+			smepSettings = new SMEPSettings(this.getApplicationContext());
 			smepInteractionLog = new InteractionLog(MainActivity.this);
 			restfulManager = new RestfulManager(MainActivity.this);
 			btnResponse = (Button) findViewById(R.id.btnAddResponse);
             setBehindContentView(R.layout.sliding_menu); //https://www.youtube.com/watch?v=vmiUh0RQ7QY --> Sliding menu tutorial
 			//getSlidingMenu().setBehindWidth(630);
-			DisplayMetrics metrics = getResources().getDisplayMetrics();		
+			DisplayMetrics metrics = getResources().getDisplayMetrics();
 			final float menu_width = 315.0f;
 			getSlidingMenu().setBehindWidth((int) (metrics.density * menu_width));
 			createActionListenerForSlideMenu();
 			mMapFragment = (MapFragment) getFragmentManager().findFragmentById(R.id.myMap);
         	mMap = mMapFragment.getMap();
-        	
+
 	        if (mMap != null) {
 	        	mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);       	//mMap.control
 	        	//mMap.setMyLocationEnabled(true);
@@ -709,7 +745,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	        mMap.setOnMapClickListener(this);
             mMap.setInfoWindowAdapter(new MapWindowAdapter(this));
 	        //Make sharc folder
-	        SharcLibrary.createFolder(SharcLibrary.SHARC_FOLDER);	        
+	        SharcLibrary.createFolder(SharcLibrary.SHARC_FOLDER);
   	        //Make media folder to store media files
 	        SharcLibrary.createFolder(SharcLibrary.SHARC_MEDIA_FOLDER);
 			//Create log folder
@@ -727,25 +763,25 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 							.anchor(0.5f, 0.5f)
 			);
 	        currentPosition.setVisible(false);
-	        
+
 	        //Current real position
 	        selectedLocationIcon = R.raw.yahred24;
 	        createCurrentLocationMarker();
-	        
+
 	        //Start sensor
 	        sensorService = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
 			sensor = sensorService.getDefaultSensor(Sensor.TYPE_ORIENTATION);
-			if (sensor != null) 
+			if (sensor != null)
 				sensorService.registerListener(mySensorEventListener, sensor,SensorManager.SENSOR_DELAY_NORMAL);
 			params = mMapFragment.getView().getLayoutParams();
 			setupListView();
 			startBackgroundService();
 			smepInteractionLog.addLog(InteractionLog.START_APP, smepSettings.getAppVersion());
 			showTermsAndConditions();
-	    } 
-	    catch (Exception e) 
+	    }
+	    catch (Exception e)
 	    {
-	        Log.e(TAG, "Error: " + e.toString());	        
+	        Log.e(TAG, "Error: " + e.toString());
 	    }
 	}
 
@@ -775,7 +811,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	{
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 
-		alert.setTitle("Starting SMEP");
+		alert.setTitle("Starting " + getString(R.string.app_name));
 		//alert.setCancelable(false);
 		LayoutInflater factory = LayoutInflater.from(this);
 		alert.setMessage("How would you like to start?");
@@ -809,11 +845,11 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
         currentPos.showInfoWindow();
 		currentAccuracy = mMap.addCircle(new CircleOptions().center(currentPos.getPosition()).radius(10f).strokeColor(Color.argb(100, 93, 188, 210)).strokeWidth(1).fillColor(Color.argb(30, 93, 188, 210)));
 	}
-			
+
 	public void clearMap()
 	{
 		//Data
-		allExperienceMetaData.clear();	
+		allExperienceMetaData.clear();
 		//Viz
 		allExperienceMarkers.clear();
 		if(selectedExperienceDetail != null)
@@ -831,9 +867,9 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
         selectedExperienceDetail = null;
         currentPOIIndex = -1;
 	}
-	
+
 	public void selectYAHMarker()
-	{	
+	{
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		adYAH = alert.create();
 		adYAH.setTitle("Please select a You-Are-Here (YAH) marker");
@@ -841,24 +877,24 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		LayoutInflater factory = LayoutInflater.from(this);
 		final View textEntryView = factory.inflate(R.layout.select_yah_dialog, null);
 		adYAH.setView(textEntryView);
-		adYAH.show();		
+		adYAH.show();
 	}
-	
+
 	public void setBlueYAH(View v)
 	{
 		setYAHMarker(R.raw.yahblue24, "SmallBlue");
 	}
-	
+
 	public void setRedYAH(View v)
 	{
 		setYAHMarker(R.raw.yahred24, "SmallRed");
 	}
-	
+
 	public void setBlueYAHBig(View v)
 	{
 		setYAHMarker(R.raw.yahblue32, "BigBlue");
 	}
-	
+
 	public void setRedYAHBig(View v)
 	{
 		setYAHMarker(R.raw.yahred32, "BigRed");
@@ -900,7 +936,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			 	break;
 			 case 1:
 				btnResponse.setText("Add your response for this POI");
-				break; 
+				break;
 			 case 2:
 				btnResponse.setText("Add your response for EOIs");
 			 	break;
@@ -913,7 +949,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		 }
 		getActionBar().setSelectedNavigationItem(index);
 	}
-	
+
 	public void displayMapTab()
 	{
 		setSelectedTabIcons(0);
@@ -921,7 +957,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		showMap(true);
 		smepInteractionLog.addLog(InteractionLog.SELECT_MAP_TAB, mMap.getCameraPosition().target.latitude + " " + mMap.getCameraPosition().target.longitude + "#" + mMap.getCameraPosition().zoom);
 	}
-	
+
 	public void switchToPOIMediaTab(String type)//type = 0: selected by user from tab, 1: selected by user from POI marker, 2: pushed by location service 
 	{
 		setSelectedTabIcons(1);
@@ -943,11 +979,11 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	}
 
 	public void displayMediaTab(int poiID,String type)
-	{	
+	{
 		currentPOIIndex = poiID;
 		List<String> mediaList = selectedExperienceDetail.getPOIHtmlListItems(poiID, initialLocation);
 		displayMediaItems(mediaList, 0);
-				
+
 	    if(smepSettings.isPushingMedia())   //Push -> Go to the POI Media tab
 	    {
 	    	switchToPOIMediaTab(type);
@@ -965,7 +1001,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		mediaItemsPresentation.setVisibility(View.VISIBLE);
 		responseTab.setVisibility(View.GONE);
 		showMap(false);
-				
+
 		if(selectedExperienceDetail!=null)
 		{
 			List eoiList = selectedExperienceDetail.getAllEOIMediaListItems();
@@ -981,7 +1017,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			displayMediaItems(new ArrayList<String>(){{add(getString(R.string.message_no_experience));}}, 1);
 			smepInteractionLog.addLog(InteractionLog.SELECT_EOI_TAB, "No EOIs info");
 		}
-		
+
 	}
 
 	//Show info of an EOI when the user clicks on a button in the Point of Interest's media tab
@@ -1025,15 +1061,15 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			displayMediaItems(new ArrayList<String>(){{add(getString(R.string.message_no_experience));}}, 2);
 			smepInteractionLog.addLog(InteractionLog.SELECT_EOI_TAB, "No summary info");
 		}
-		
+
 	}
-	
+
 	public void displayResponseTab()
 	{
 		setSelectedTabIcons(4);
 		mediaItemsPresentation.setVisibility(View.GONE);
 		responseTab.setVisibility(View.VISIBLE);
-		showMap(false);		
+		showMap(false);
 		ArrayList<String> responseList = new ArrayList<String>();
 		if(selectedExperienceDetail!=null) {
 			responseList.addAll(selectedExperienceDetail.getMyResponsesList());
@@ -1062,16 +1098,16 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			responseList.add(0, getString(R.string.message_no_experience));
 		smepInteractionLog.addLog(InteractionLog.SELECT_RESPONSE_TAB, TextUtils.join("#", responseList));
 	  	ResponseListAdapter adapter = new ResponseListAdapter(MainActivity.this, responseList);
-		ListView mLv = (ListView)findViewById(R.id.responseTab);				
+		ListView mLv = (ListView)findViewById(R.id.responseTab);
 		mLv.setAdapter(adapter);
 	}
-	
+
 	public void showMap(boolean isFull)
 	{
 		ImageButton goCurLocation = (ImageButton) findViewById(R.id.btnCurrentLocation);
 		if(isFull)
 		{
-			params.height = params.MATCH_PARENT;
+			params.height = ViewGroup.LayoutParams.MATCH_PARENT;
 			goCurLocation.setVisibility(View.VISIBLE);
 			//params.width = params.MATCH_PARENT;
 		}
@@ -1083,7 +1119,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		}
 		mMapFragment.getView().setLayoutParams(params);
 	}
-	
+
 	public void displayMediaItems(List<String> mediaList, int type)
 	{
 		if(mediaList != null) {
@@ -1093,18 +1129,18 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			mLv.setAdapter(adapter);
 		}
 	}
-	
+
 	public void setupListView()
-	{		 
+	{
 		ArrayList<String> data = new ArrayList<String>();
 		data.add("No data available");
 		MediaListAdapter adapter = new MediaListAdapter(MainActivity.this, data, 0);
 		mediaItemsPresentation = (ListView)findViewById(R.id.webViewTab);
 		mediaItemsPresentation.setAdapter(adapter);
-		
+
 		ResponseListAdapter resAdapter = new ResponseListAdapter(MainActivity.this, data);
-		responseTab = (ListView)findViewById(R.id.responseTab);				
-		responseTab.setAdapter(resAdapter);		
+		responseTab = (ListView)findViewById(R.id.responseTab);
+		responseTab.setAdapter(resAdapter);
 	}
 
 	public void setDialogFontSizeAndShow(AlertDialog.Builder alert, final float fontSize)
@@ -1123,7 +1159,6 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				button.setTextSize(fontSize);
 			}
 		});
-
 		alertDialog.show();
 	}
 
@@ -1135,7 +1170,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     	smepInteractionLog.addLog(InteractionLog.VIEW_CACHED_EXPERIENCES, logData);
     	displayAllExperienceMetaData(false);
     }
-    
+
     public void displayAllExperienceMetaData(boolean isOnline)
     {
     	Marker tmpMarker = null;
@@ -1146,8 +1181,8 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
         	tmpMarker = mMap.addMarker(new MarkerOptions()
             	.title(String.valueOf(i))
             	.anchor(0, 0)
-        		.position(exLocation)	        
-        		.icon(BitmapDescriptorFactory.fromResource(R.raw.experience))	 
+        		.position(exLocation)
+        		.icon(BitmapDescriptorFactory.fromResource(R.raw.experience))
         		.visible(true)
             );
 			//All experiences
@@ -1171,34 +1206,34 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
             */
 
     	}
-        allExperienceMarkers.add(tmpMarker);                
+        allExperienceMarkers.add(tmpMarker);
         showNearByExperienceList(nearbyExperienceName.toArray(new CharSequence[nearbyExperienceName.size()]), isOnline);
     }
-	
+
     public void addOnlineExperienceMarkerListener()
     {
-    	mMap.setOnMarkerClickListener(new OnMarkerClickListener() 
-        {				
+    	mMap.setOnMarkerClickListener(new OnMarkerClickListener()
+        {
 			@Override
-			public boolean onMarkerClick(Marker arg0) 
-			{				
+			public boolean onMarkerClick(Marker arg0)
+			{
 				return markerClick(arg0.getTitle(),true);
             }
         });
     }
-    
+
     public void addDBExperienceMarkerListener()
     {
-    	mMap.setOnMarkerClickListener(new OnMarkerClickListener() 
-        {				
+    	mMap.setOnMarkerClickListener(new OnMarkerClickListener()
+        {
 			@Override
-			public boolean onMarkerClick(Marker arg0) 
-			{				
-				return markerClick(arg0.getTitle(),false);				
+			public boolean onMarkerClick(Marker arg0)
+			{
+				return markerClick(arg0.getTitle(),false);
             }
         });
     }
-    
+
     public boolean markerClick(String markerTitle, boolean isOnline)
     {
     	if(markerTitle.equalsIgnoreCase("YAH"))//current location marker
@@ -1243,7 +1278,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	    	.setMessage(selectedExperienceMeta.getDescription() + selectedExperienceMeta.getSummary())
 	    	.setIcon(android.R.drawable.ic_dialog_alert)
 	    	.setPositiveButton("Play", new DialogInterface.OnClickListener() {
-	    	    public void onClick(DialogInterface dialog, int which) {			      	
+	    	    public void onClick(DialogInterface dialog, int which) {
 	    	    	clearMap();
 					experienceDatabaseManager.setSelectedExperience(selectedExperienceMeta.getExperienceId());
 					selectedExperienceDetail = new ExperienceDetailsModel(experienceDatabaseManager, false);
@@ -1275,10 +1310,10 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
             currentPos.showInfoWindow();
     	return true;
     }
-    
+
     public void showNearByExperienceList(final CharSequence[] items, final boolean isOnline)
     {
-    	AlertDialog.Builder alert = new AlertDialog.Builder(this);		
+    	AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		//alert.setCancelable(false);
 		if(items.length > 0)
 		{
@@ -1322,11 +1357,11 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		{
 			keepTrackConsumerExperience();
 		}
-    }   
-    
+    }
+
     public void addPOIMarkerListener()
     {
-    	
+
     	mMap.setOnMarkerClickListener(new OnMarkerClickListener() {
 			@Override
 			public boolean onMarkerClick(Marker arg0) {
@@ -1348,7 +1383,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			}
 		});
     }
-	
+
     @Override
 	public void onMapClick(LatLng arg0) {
 		// Click on a trigger zone 
@@ -1394,7 +1429,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	{
 		moveAndZoomToLocation(initialLocation, 16);
 	}
-	
+
     public void moveAndZoomToLocation(LatLng location, int zoomLevel)
     {
 		if(location == null)
@@ -1406,7 +1441,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
             mMap.animateCamera(CameraUpdateFactory.zoomTo(zoomLevel), 2000, null);
         }
     }
-    
+
 	//////////////////////////////////////////////////////////////////////////////
 	// DIRECTION SENSOR
 	//////////////////////////////////////////////////////////////////////////////
@@ -1418,10 +1453,10 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		@Override
 		public void onSensorChanged(SensorEvent event) {
 		    // angle between the magnetic north direction
-			float bearing = (float) (event.values[0] + mDeclination);
-			currentPos.setRotation(bearing - mMap.getCameraPosition().bearing);	        
-	        if(smepSettings.isRotating()) 
-	        	updateCamera(bearing);		   
+			float bearing = event.values[0] + mDeclination;
+			currentPos.setRotation(bearing - mMap.getCameraPosition().bearing);
+	        if(smepSettings.isRotating())
+	        	updateCamera(bearing);
 		}
 	};
 
@@ -1430,7 +1465,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	    CameraPosition pos = CameraPosition.builder(oldPos).bearing(bearing).build();/**/
 	    mMap.moveCamera(CameraUpdateFactory.newCameraPosition(pos));
 	}
-   
+
 	//////////////////////////////////////////////////////////////////////////////
 	// RESPONSE
 	//////////////////////////////////////////////////////////////////////////////
@@ -1489,7 +1524,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				break;
 			default:
 				super.onActivityResult(requestCode, resultCode, data);
- 	   	} 
+ 	   	}
 
  	}
 
@@ -1514,7 +1549,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			smepInteractionLog.addLog(InteractionLog.OPEN_RESPONSE_DIALOG, String.valueOf(currentTab));
     	}
 		else
-		{			
+		{
 			new UploadAllToCloudThread().execute();
 			/*File mPath = new File("/data/data/uk.lancs.sharc/databases");
 		    if(mPath.exists()) 
@@ -1528,7 +1563,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		    }*/
 		}
 	}
-    
+
     public void addTextResponse(View v)
     {
     	AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -1538,7 +1573,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		LayoutInflater factory = LayoutInflater.from(this);
 		final View textEntryView = factory.inflate(R.layout.response_add_text_dialog, null);
 		alert.setView(textEntryView);
-		
+
 		alert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int whichButton) {
                 EditText content = (EditText) textEntryView.findViewById(R.id.editTextMediaContentD);
@@ -1556,7 +1591,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
         setDialogFontSizeAndShow(alert, FONT_SIZE);
 		//alert.show();
     }
-    
+
     public String[] getAssociatedEntity()
     {
     	String mEntityType = "";
@@ -1587,14 +1622,14 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 
     public void addPhotoResponse(View v)
     {
-    	Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);		 
-        fileUri = getOutputMediaFileUri(TAKE_PICTURE); 
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); 
+    	Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        fileUri = getOutputMediaFileUri(TAKE_PICTURE);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri);
         // start the image capture Intent
         startActivityForResult(intent, TAKE_PICTURE);
     }
-    
-    public Uri getOutputMediaFileUri(int type) 
+
+    public Uri getOutputMediaFileUri(int type)
     {
         // External sdcard location
         File mediaStorageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM).getAbsoluteFile();
@@ -1616,7 +1651,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
         outputFile = mediaFile.getAbsolutePath();
         return Uri.fromFile(mediaFile);
 	}
-	 
+
 	public void addDescription(final ResponseModel curRes)
 	{
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -1646,7 +1681,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		//alert.show();
 		// see http://androidsnippets.com/prompt-user-input-with-an-alertdialog
 	}
-    
+
     public void addAudioResponse(View v)
     {
     	AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -1685,7 +1720,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 		setDialogFontSizeAndShow(alert, FONT_SIZE);
 		//alert.show();
     }
-   
+
     public void recordAudio (View v)
     {
     	Button record = (Button)v;//findViewById(R.id.btnAudioRecording);
@@ -1699,11 +1734,11 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     		myAudioRecorder = new MediaRecorder();
             myAudioRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
             myAudioRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
-            myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);            
+            myAudioRecorder.setAudioEncoder(MediaRecorder.OutputFormat.AMR_NB);
     		myAudioRecorder.setOutputFile(outputFile);
     		try {
 	   	         myAudioRecorder.prepare();
-	   	         myAudioRecorder.start();	   	    
+	   	         myAudioRecorder.start();
 	   	    } catch (Exception e) {
 	   	         e.printStackTrace();
 	   	    }
@@ -1731,13 +1766,13 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     		}
     	}
     }
-    
+
     private void stopRecording()
     {
     	if(myAudioRecorder!=null)
     	{
 			customHandler.removeCallbacks(updateTimerThread);
-	
+
 			try {
 				myAudioRecorder.stop();
 			}
@@ -1752,7 +1787,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 			}
     	}
     }
-    
+
     private Runnable updateTimerThread = new Runnable() {
 		public void run() {
 
@@ -1772,15 +1807,15 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	};
     public void addVideoResponse(View v)
     {
-    	Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);		 
-        fileUri = getOutputMediaFileUri(CAPTURE_VIDEO); 
+    	Intent intent = new Intent(MediaStore.ACTION_VIDEO_CAPTURE);
+        fileUri = getOutputMediaFileUri(CAPTURE_VIDEO);
         // set video quality
-        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1); 
-        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name 
+        intent.putExtra(MediaStore.EXTRA_VIDEO_QUALITY, 1);
+        intent.putExtra(MediaStore.EXTRA_OUTPUT, fileUri); // set the image file name
         // start the video capture Intent
         startActivityForResult(intent, CAPTURE_VIDEO);
     }
-    
+
     public void showResponseDone(ResponseModel res)
     {
 		if(res.getEntityType().equalsIgnoreCase("NEW"))
@@ -1792,7 +1827,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     }
 
     public void uploadResponse(int index)
-    {    	
+    {
     	if(cloudManager == null || !cloudManager.isLoggedin())
     	{
     		Toast.makeText(this, getString(R.string.message_dropboxConnection), Toast.LENGTH_LONG).show();
@@ -1802,22 +1837,22 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
     	{
     		Toast.makeText(this, getString(R.string.message_wifiConnection), Toast.LENGTH_LONG).show();
     		return;
-    	}  
+    	}
     	smepInteractionLog.addLog(InteractionLog.SELECT_UPLOAD_RESPONSE, index + "#" + selectedExperienceDetail.getMyResponsePresentationName(index));
     	new UploadToCloudThread().execute(String.valueOf(index));
     }
-    
+
     public void viewResponse(final int index)
-    {    	    	
+    {
     	AlertDialog.Builder alert = new AlertDialog.Builder(this);
 		alert.setTitle("View a response");
 		//alert.setCancelable(false);
 		LayoutInflater factory = LayoutInflater.from(this);
 		final View textEntryView = factory.inflate(R.layout.response_preview_dialog, null);
-		alert.setView(textEntryView);		
+		alert.setView(textEntryView);
 		alert.setNegativeButton("Close", null);	//Do nothing on no
 		//alert.setPositiveButton("Yes", new DialogInterface.OnClickListener() {
-    	//    public void onClick(DialogInterface dialog, int which) {			      	
+    	//    public void onClick(DialogInterface dialog, int which) {
     	    	String responseContent = selectedExperienceDetail.getMyResponseContentAt(index);
     	    	WebView wv = (WebView) textEntryView.findViewById(R.id.webViewContent);
     			String base = "file://" + SharcLibrary.SHARC_MEDIA_FOLDER + "/";
@@ -1828,7 +1863,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
         //alert.show();
 		smepInteractionLog.addLog(InteractionLog.SELECT_VIEW_RESPONSE, index + "#" + selectedExperienceDetail.getMyResponsePresentationName(index));
     }
-    
+
     public void deleteResponse(final int index)
     {
 		AlertDialog.Builder alert = new AlertDialog.Builder(this);
@@ -1855,7 +1890,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 	//////////////////////////////////////////////////////////////////////////////
 
     public void displayUserDetail()
-    {    	
+    {
     	TextView txtUsername = (TextView) findViewById(R.id.txtUsername);
     	TextView txtUseremail = (TextView) findViewById(R.id.txtUseremail);
 
@@ -1907,7 +1942,7 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
             pDialog.setCancelable(false);
             pDialog.show();
         }
- 
+
         protected String doInBackground(String... args)
         {
 			try {
@@ -1915,24 +1950,24 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
 				int index = Integer.parseInt(args[0]);
         		ResponseModel response = selectedExperienceDetail.getMyResponseAt(index);
 				uploadOneResponse(index, response);
-            } 
-            catch (Exception e) 
+            }
+            catch (Exception e)
             {
 				e.printStackTrace();
                 isError = true;
             }
             return null;
         }
- 
-        //After completing background task Dismiss the progress dialog         
-        protected void onPostExecute(String file_url) 
+
+        //After completing background task Dismiss the progress dialog
+        protected void onPostExecute(String file_url)
         {
             // dismiss the dialog after getting all files
             pDialog.dismiss();
             // updating UI from Background Thread
-            runOnUiThread(new Runnable() 
+            runOnUiThread(new Runnable()
             {
-                public void run() 
+                public void run()
                 {
                 	displayResponseTab();//To view new list after delete the submitted response
                     if(isError)
@@ -1940,8 +1975,8 @@ public class MainActivity extends SlidingActivity implements OnMapClickListener 
                     else
                         Toast.makeText(MainActivity.this,"The response has been uploaded successfully and is waiting for the designer to approve", Toast.LENGTH_LONG).show();
                 }
-            }); 
-        }    
+            });
+        }
     }
 
 	//This inner class (thread) enable uploading all responses

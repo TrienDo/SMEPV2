@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- todo add the rest of sliding menu button names to here -->
+<resources>
+    <string name="btnViewLogs">View Logs</string>
+</resources>

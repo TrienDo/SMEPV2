@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="isSatellite">false</bool>
+    <bool name="isShowingTriggers">true</bool>
+    <bool name="isShowingThumbnails">true</bool>
+    <bool name="isRotating">false</bool>
+    <bool name="isTestMode">false</bool>
+    <bool name="isPushingMedia">true</bool>
+    <bool name="isShowingGPS">true</bool>
+    <bool name="isSoundNotification">true</bool>
+    <bool name="isVibrationNotification">true</bool>
+    <bool name="isYAHCentred">true</bool>
+</resources>

@@ -1,11 +1,110 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context="uk.lancs.sharc.smat.controller.UsermanualFragment1">
-    <ImageView
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:scrollbars="none"
+    android:layout_weight="1">
+
+<TableLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <TableRow
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/us_1"
-        />
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:paddingBottom="6dip"
+        android:paddingTop="4dip" >
+        <TextView
+            android:id="@+id/um1title"
+            android:layout_width="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:textSize="70dp"
+            android:text="@string/Guide_Page1_title"
+            android:textStyle="bold"
+            android:singleLine="true" />
 
-</FrameLayout>
+    </TableRow>
+<TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:paddingBottom="6dip"
+        android:paddingTop="4dip" >
+                <TextView
+                    android:id="@+id/um1txt1"
+                    android:layout_width="wrap_content"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:textSize="30dp"
+                    android:text="@string/Guide_Page1_text1" />
+
+    </TableRow>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:paddingBottom="6dip"
+        android:paddingTop="4dip" >
+        <TextView
+            android:id="@+id/um1txt2"
+            android:layout_width="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:textSize="30dp"
+            android:text="@string/Guide_Page1_text2" />
+
+    </TableRow>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:paddingBottom="6dip"
+        android:paddingTop="4dip" >
+        <TextView
+            android:id="@+id/um1txt3"
+            android:layout_width="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:textSize="30dp"
+            android:text="@string/Guide_Page1_text3" />
+
+    </TableRow>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:paddingBottom="6dip"
+        android:paddingTop="4dip" >
+        <TextView
+            android:id="@+id/um1txt4"
+            android:layout_width="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:textSize="30dp"
+            android:text="@string/Guide_Page1_text4" />
+
+    </TableRow>
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/white"
+        android:orientation="vertical"
+        android:paddingBottom="6dip"
+        android:paddingTop="4dip" >
+        <TextView
+            android:id="@+id/um1txt5"
+            android:layout_width="wrap_content"
+            android:gravity="center_vertical"
+            android:paddingLeft="10dp"
+            android:textSize="30dp"
+            android:text="@string/Guide_Page1_text5" />
+
+    </TableRow>
+</TableLayout>
+</ScrollView>

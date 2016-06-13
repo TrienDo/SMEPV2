@@ -2,6 +2,7 @@ package uk.lancs.sharc.service;
 
 import android.app.Activity;
 import android.app.ProgressDialog;
+import android.content.res.Resources;
 import android.location.Location;
 import android.os.AsyncTask;
 import android.util.Log;
@@ -18,6 +19,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
+import uk.lancs.sharc.R;
 import uk.lancs.sharc.controller.MainActivity;
 import uk.lancs.sharc.model.ExperienceMetaDataModel;
 import uk.lancs.sharc.model.JSONParser;
@@ -109,10 +111,7 @@ public class RestfulManager {
             //insert MySQL data
             JSONObject json = jParser.makeHttpRequest(RestfulManager.api_submit_response, "POST", params);
             String ret = json.getString("status");
-            if (ret.equalsIgnoreCase(RestfulManager.STATUS_SUCCESS))
-                return true;
-            else
-                return false;
+            return ret.equalsIgnoreCase(RestfulManager.STATUS_SUCCESS);
             //smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.VIEW_ONLINE_EXPERIENCES, logData);
         }
         catch (Exception e){
@@ -190,11 +189,17 @@ public class RestfulManager {
                         String thumbnailPath = objExperience.getString("thumbnailPath");
                         int size = objExperience.getInt("size");
                         String theme = objExperience.getString("theme");
-                        tmpExperience = new ExperienceMetaDataModel(id, name, description, createdDate, lastPublishedDate, designerId, isPublished,
-                                moderationMode, latLng, summary, snapshotPath, thumbnailPath, size, theme);
 
-                        logData += "#" + tmpExperience.getName();
-                        ((MainActivity) activity).getAllExperienceMetaData().add(tmpExperience);
+                        //// TODO: 25/05/2016 how to load multiple? - Simon Maddocks
+                        Resources res = activity.getApplicationContext().getResources();
+                        String themeFilter = res.getString(R.string.Experience_Filter);
+                        if (theme.equals(themeFilter) || themeFilter.equals("any") || themeFilter.equals("none")) {
+                            tmpExperience = new ExperienceMetaDataModel(id, name, description, createdDate, lastPublishedDate, designerId, isPublished,
+                                    moderationMode, latLng, summary, snapshotPath, thumbnailPath, size, theme);
+
+                            logData += "#" + tmpExperience.getName();
+                            ((MainActivity) activity).getAllExperienceMetaData().add(tmpExperience);
+                        }
                     }
                     //smepInteractionLog.addLog(initialLocation, mDbxAcctMgr, InteractionLog.VIEW_ONLINE_EXPERIENCES, logData);
                 }
